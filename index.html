@@ -37,7 +37,8 @@
   .tab.active { color: var(--pink); border-bottom-color: var(--pink); }
 
   .page { display: none; padding: 16px; }
-  .page.active { display: block; }
+  .page.active { display: block; animation: pgFadeIn 0.18s ease; }
+  @keyframes pgFadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
   .card { background: var(--card); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
   .sec-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
@@ -97,6 +98,7 @@
   .li { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
   .ld { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
   .lb { width: 14px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+  .cal-loading { display: flex; align-items: center; justify-content: center; height: 200px; color: var(--muted); font-size: 13px; }
   .detail-panel { background: var(--card); border-top: 0.5px solid var(--border); padding: 14px 16px; min-height: 76px; }
   .d-date { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
   .d-tags { display: flex; flex-wrap: wrap; gap: 5px; }
@@ -256,6 +258,7 @@
       <div id="onot-rows"></div>
     </div>
     <div class="tip">לפי פניני הלכה (פ"ו ה"ה): פרישה בשלוש עונות – הפלגה, עונה בינונית (30 יום), ועונת החודש – כולן באותה עונת יום/לילה.</div>
+    <button class="btn-ghost" id="btn-copy-results" onclick="copyResults()" style="margin-top:4px">📋 העתיקי תוצאות</button>
   </div>
 </div>
 
@@ -264,12 +267,15 @@
   <div class="month-nav">
     <button class="mnav-btn" onclick="chMonth(-1)">›</button>
     <div><div class="mlabel" id="mlabel"></div><div class="mlabel2" id="mlabel2"></div></div>
-    <button class="mnav-btn" onclick="chMonth(1)">‹</button>
+    <div style="display:flex;align-items:center;gap:4px">
+      <button class="mnav-btn" style="font-size:13px;color:var(--pink);padding:2px 6px" onclick="jumpToToday()">היום</button>
+      <button class="mnav-btn" onclick="chMonth(1)">‹</button>
+    </div>
   </div>
   <div class="dow-row">
-    <div class="dow-cell">א'</div><div class="dow-cell">ב'</div><div class="dow-cell">ג'</div>
-    <div class="dow-cell">ד'</div><div class="dow-cell">ה'</div><div class="dow-cell">ו'</div>
-    <div class="dow-cell">ש'</div>
+    <div class="dow-cell">א׳</div><div class="dow-cell">ב׳</div><div class="dow-cell">ג׳</div>
+    <div class="dow-cell">ד׳</div><div class="dow-cell">ה׳</div><div class="dow-cell">ו׳</div>
+    <div class="dow-cell">ש׳</div>
   </div>
   <div class="cal-grid" id="cal-grid"></div>
   <div class="legend">
@@ -477,7 +483,7 @@ function fhebMonth(d){
   catch(e){ return ''; }
 }
 function fhebDay(d){
-  try{ const p=new Intl.DateTimeFormat('he-u-ca-hebrew',{day:'numeric'}).formatToParts(d); return (p.find(x=>x.type==='day')||{value:''}).value; }
+  try{ const p=new Intl.DateTimeFormat('he-u-ca-hebrew-nu-hebr',{day:'numeric'}).formatToParts(d); return (p.find(x=>x.type==='day')||{value:''}).value; }
   catch(e){ return ''; }
 }
 // FIX: -nu-latn forces Arabic numerals so parseInt() works correctly.
@@ -636,6 +642,22 @@ async function calculate(){
   checkAndScheduleNotifications();
 }
 
+function copyResults(){
+  const tvila=document.getElementById('r-tvila').innerText;
+  const hpst=document.getElementById('r-hpst').innerText;
+  const sef=document.getElementById('r-sefirah').innerText;
+  const onot=document.getElementById('onot-rows').innerText;
+  const txt=`לוח הטהרה שלי\n\nליל הטבילה: ${tvila}\nהפסק טהרה: ${hpst}\nתחילת ספירה: ${sef}\n\nעונות פרישה:\n${onot}`;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=document.getElementById('btn-copy-results');
+    btn.textContent='✓ הועתק!'; setTimeout(()=>btn.textContent='📋 העתיקי תוצאות',2000);
+  }).catch(()=>alert(txt));
+}
+
+['inp-date','inp-prev','inp-hpst'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown',e=>{ if(e.key==='Enter') calculate(); });
+});
+
 async function saveCycle(dv,isNight,tvila,hpstCustom){
   const cycles=await lc();
   const entry={id:Date.now(),date:dv,time:isNight?'night':'day',tvila:iso(tvila)};
@@ -697,13 +719,15 @@ function getDayStyle(types){
 
 async function renderCal(){
   const today=new Date(); today.setHours(0,0,0,0);
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML='<div class="cal-loading">טוען...</div>';
   const cycles=await lc();
   const map=buildMap(cycles);
   document.getElementById('mlabel').textContent=GREG_M[vm]+' '+vy;
   document.getElementById('mlabel2').textContent=fhebMonth(new Date(vy,vm,1));
   const first=new Date(vy,vm,1); const last=new Date(vy,vm+1,0);
-  const startDow=(first.getDay()+6)%7;
-  const grid=document.getElementById('cal-grid'); grid.innerHTML='';
+  const startDow=first.getDay();
+  grid.innerHTML='';
   for(let i=0;i<startDow;i++) grid.appendChild(makeCell(new Date(vy,vm,1-startDow+i),true,map,today));
   for(let d=1;d<=last.getDate();d++) grid.appendChild(makeCell(new Date(vy,vm,d),false,map,today));
   const tail=7-((startDow+last.getDate())%7); if(tail<7) for(let i=1;i<=tail;i++) grid.appendChild(makeCell(new Date(vy,vm+1,i),true,map,today));
@@ -746,6 +770,18 @@ function showDayDetail(date,info){
 }
 
 function chMonth(d){ vm+=d; if(vm>11){vm=0;vy++;} if(vm<0){vm=11;vy--;} renderCal(); }
+function jumpToToday(){ const n=new Date(); vy=n.getFullYear(); vm=n.getMonth(); renderCal(); }
+
+// Touch swipe to change months
+(function(){
+  let tx=0;
+  const cg=document.getElementById('cal-grid');
+  cg.addEventListener('touchstart',e=>{ tx=e.touches[0].clientX; },{passive:true});
+  cg.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>50) chMonth(dx<0?1:-1);
+  },{passive:true});
+})();
 
 async function addFromCal(){
   const dv=document.getElementById('cal-nd').value;
