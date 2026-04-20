@@ -526,7 +526,7 @@ if (FB_READY) {
     else { document.getElementById('auth-modal').style.display='flex'; document.getElementById('app').style.display='none'; }
   });
 } else {
-  showApp(null);
+  document.getElementById('auth-modal').style.display = 'flex';
 }
 
 // ════════════════════════════════════════
