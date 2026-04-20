@@ -1028,21 +1028,50 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus}) {
       <div className="sec-label">התראות</div>
       <div className="card">
         <div className="notif-row">
-          <div><div style={{fontSize:14}}>הפעלת התראות</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{'Notification' in window?Notification.permission==='granted'?'מאושרות':'לחצי להפעלה':'לא נתמך'}</div></div>
+          <div><div style={{fontSize:14}}>הפעלת התראות</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{'Notification' in window?Notification.permission==='granted'?'מאושרות ✓':Notification.permission==='denied'?'חסומות — שנ״י בדפדפן':'לחצי להפעלה':'לא נתמך'}</div></div>
           <Toggle value={!!prefs.enabled} onChange={toggleEnabled}/>
         </div>
-        {prefs.enabled&&[
-          {key:'hpst',label:'הפסק טהרה',sub:'בדיקת ההפסק'},
-          {key:'sefirah',label:'תחילת ספירה',sub:'7 ימים נקיים'},
-          {key:'tvila',label:'ליל הטבילה',sub:'מועד הטבילה'},
-          {key:'prisha',label:'עונות פרישה',sub:'שלוש העונות'},
-          {key:'next',label:'ווסת צפוי',sub:'תחזית הבאה'},
-        ].map(({key:k,label,sub})=>(
-          <div key={k} className="notif-row">
-            <div><div style={{fontSize:14}}>{label}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{sub}</div></div>
-            <Toggle value={prefs[k]!==false} onChange={v=>save({...prefs,[k]:v})}/>
+        {prefs.enabled&&(<>
+          <div className="notif-row">
+            <div><div style={{fontSize:14}}>שעת ההתראה</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>השעה שבה תישלח כל תזכורת</div></div>
+            <input
+              type="time"
+              value={`${String(prefs.notifHour??8).padStart(2,'0')}:${String(prefs.notifMin??0).padStart(2,'0')}`}
+              onChange={e=>{const[h,m]=(e.target.value||'08:00').split(':').map(Number);save({...prefs,notifHour:h,notifMin:m});}}
+              style={{fontSize:14,fontWeight:500,color:'var(--text)',background:'transparent',border:'none',outline:'none',fontFamily:'inherit',cursor:'pointer',direction:'ltr'}}
+            />
           </div>
-        ))}
+          {[
+            {key:'hpst',   label:'הפסק טהרה',  dkey:'hpstDays',   def:NOTIF_DEFAULTS.hpstDays},
+            {key:'sefirah',label:'תחילת ספירה', dkey:'sefirahDays',def:NOTIF_DEFAULTS.sefirahDays},
+            {key:'tvila',  label:'ליל הטבילה',  dkey:'tvilaDays',  def:NOTIF_DEFAULTS.tvilaDays},
+            {key:'prisha', label:'עונות פרישה', dkey:'prishaDays', def:NOTIF_DEFAULTS.prishaDays},
+            {key:'next',   label:'ווסת צפוי',   dkey:'nextDays',   def:NOTIF_DEFAULTS.nextDays},
+          ].map(({key:k,label,dkey,def})=>{
+            const on=prefs[k]!==false;
+            const days=prefs[dkey]??def;
+            const setDays=v=>save({...prefs,[dkey]:Math.max(0,Math.min(14,v))});
+            const sub=days===0?'ביום האירוע':days===1?'יום אחד לפני':`${days} ימים לפני`;
+            return (
+              <div key={k} className="notif-row" style={{alignItems:'flex-start',paddingTop:14,paddingBottom:14}}>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:14}}>{label}</div>
+                  <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{on?sub:'כבוי'}</div>
+                </div>
+                <div style={{display:'flex',alignItems:'center',gap:8}}>
+                  {on&&(
+                    <div style={{display:'flex',alignItems:'center',gap:0,background:'var(--bg-soft)',borderRadius:10,overflow:'hidden'}}>
+                      <button onClick={()=>setDays(days-1)} style={{width:32,height:32,border:'none',background:'transparent',color:'var(--text)',fontSize:18,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',opacity:days===0?0.3:1}}>−</button>
+                      <span style={{fontSize:13,fontWeight:600,minWidth:20,textAlign:'center'}}>{days}</span>
+                      <button onClick={()=>setDays(days+1)} style={{width:32,height:32,border:'none',background:'transparent',color:'var(--text)',fontSize:18,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',opacity:days===14?0.3:1}}>+</button>
+                    </div>
+                  )}
+                  <Toggle value={on} onChange={v=>save({...prefs,[k]:v})}/>
+                </div>
+              </div>
+            );
+          })}
+        </>)}
       </div>
 
       <div className="sec-label">חשבון</div>
