@@ -340,24 +340,28 @@
     </div>
     <div id="notif-settings" style="display:none">
       <div class="setting-row">
-        <div><div class="setting-label">הפסק טהרה</div><div class="setting-sub">תזכורת ביום הפסק טהרה</div></div>
-        <label class="toggle"><input type="checkbox" id="notif-hpst" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label>
+        <div><div class="setting-label">הפסק טהרה</div><div class="setting-sub">תזכורת לפני הפסק טהרה</div></div>
+        <div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)"><input type="number" id="notif-hpst-days" min="0" max="7" value="0" onchange="saveNotifPrefs()" style="width:34px;text-align:center;padding:2px 4px;border:1.5px solid var(--border);border-radius:6px;background:var(--card);color:var(--text)"><span>ימים לפני</span></div><label class="toggle"><input type="checkbox" id="notif-hpst" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label></div>
       </div>
       <div class="setting-row">
-        <div><div class="setting-label">תחילת ספירת 7 נקיים</div><div class="setting-sub">תזכורת ביום תחילת הספירה</div></div>
-        <label class="toggle"><input type="checkbox" id="notif-sefirah" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label>
+        <div><div class="setting-label">תחילת ספירת 7 נקיים</div><div class="setting-sub">תזכורת לפני תחילת הספירה</div></div>
+        <div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)"><input type="number" id="notif-sefirah-days" min="0" max="7" value="0" onchange="saveNotifPrefs()" style="width:34px;text-align:center;padding:2px 4px;border:1.5px solid var(--border);border-radius:6px;background:var(--card);color:var(--text)"><span>ימים לפני</span></div><label class="toggle"><input type="checkbox" id="notif-sefirah" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label></div>
       </div>
       <div class="setting-row">
-        <div><div class="setting-label">ליל הטבילה</div><div class="setting-sub">תזכורת ביום הטבילה</div></div>
-        <label class="toggle"><input type="checkbox" id="notif-tvila" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label>
+        <div><div class="setting-label">ליל הטבילה</div><div class="setting-sub">תזכורת לפני ליל הטבילה</div></div>
+        <div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)"><input type="number" id="notif-tvila-days" min="0" max="7" value="0" onchange="saveNotifPrefs()" style="width:34px;text-align:center;padding:2px 4px;border:1.5px solid var(--border);border-radius:6px;background:var(--card);color:var(--text)"><span>ימים לפני</span></div><label class="toggle"><input type="checkbox" id="notif-tvila" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label></div>
       </div>
       <div class="setting-row">
-        <div><div class="setting-label">עונות פרישה</div><div class="setting-sub">תזכורת יום לפני כל עונת פרישה</div></div>
-        <label class="toggle"><input type="checkbox" id="notif-prisha" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label>
+        <div><div class="setting-label">עונות פרישה</div><div class="setting-sub">תזכורת לפני כל עונת פרישה</div></div>
+        <div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)"><input type="number" id="notif-prisha-days" min="0" max="7" value="1" onchange="saveNotifPrefs()" style="width:34px;text-align:center;padding:2px 4px;border:1.5px solid var(--border);border-radius:6px;background:var(--card);color:var(--text)"><span>ימים לפני</span></div><label class="toggle"><input type="checkbox" id="notif-prisha" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label></div>
       </div>
       <div class="setting-row">
-        <div><div class="setting-label">ווסת צפוי</div><div class="setting-sub">תזכורת יומיים לפני הווסת הצפוי</div></div>
-        <label class="toggle"><input type="checkbox" id="notif-next" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label>
+        <div><div class="setting-label">ווסת צפוי</div><div class="setting-sub">תזכורת לפני הווסת הצפוי</div></div>
+        <div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)"><input type="number" id="notif-next-days" min="0" max="7" value="2" onchange="saveNotifPrefs()" style="width:34px;text-align:center;padding:2px 4px;border:1.5px solid var(--border);border-radius:6px;background:var(--card);color:var(--text)"><span>ימים לפני</span></div><label class="toggle"><input type="checkbox" id="notif-next" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="setting-row" style="margin-top:8px">
+        <div><div class="setting-label">שעת התראות</div><div class="setting-sub">שעה לשליחת כל ההתראות</div></div>
+        <input type="time" id="notif-time" value="08:00" onchange="saveNotifPrefs()" style="font-size:15px;padding:4px 8px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);direction:ltr">
       </div>
     </div>
   </div>
@@ -891,10 +895,19 @@ function loadNotifPrefs(){
   document.getElementById('notif-tvila').checked=prefs.tvila!==false;
   document.getElementById('notif-prisha').checked=prefs.prisha!==false;
   document.getElementById('notif-next').checked=prefs.next!==false;
+  const h=prefs.notifHour!==undefined?prefs.notifHour:8;
+  const m=prefs.notifMin!==undefined?prefs.notifMin:0;
+  document.getElementById('notif-time').value=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  document.getElementById('notif-hpst-days').value=prefs.hpstDays!==undefined?prefs.hpstDays:0;
+  document.getElementById('notif-sefirah-days').value=prefs.sefirahDays!==undefined?prefs.sefirahDays:0;
+  document.getElementById('notif-tvila-days').value=prefs.tvilaDays!==undefined?prefs.tvilaDays:0;
+  document.getElementById('notif-prisha-days').value=prefs.prishaDays!==undefined?prefs.prishaDays:1;
+  document.getElementById('notif-next-days').value=prefs.nextDays!==undefined?prefs.nextDays:2;
   updateNotifStatus();
 }
 
 function saveNotifPrefs(){
+  const _t=(document.getElementById('notif-time').value||'08:00').split(':').map(Number);
   const prefs={
     enabled:document.getElementById('toggle-notif').checked,
     hpst:document.getElementById('notif-hpst').checked,
@@ -902,6 +915,13 @@ function saveNotifPrefs(){
     tvila:document.getElementById('notif-tvila').checked,
     prisha:document.getElementById('notif-prisha').checked,
     next:document.getElementById('notif-next').checked,
+    notifHour:_t[0]||8,
+    notifMin:_t[1]||0,
+    hpstDays:parseInt(document.getElementById('notif-hpst-days').value)||0,
+    sefirahDays:parseInt(document.getElementById('notif-sefirah-days').value)||0,
+    tvilaDays:parseInt(document.getElementById('notif-tvila-days').value)||0,
+    prishaDays:parseInt(document.getElementById('notif-prisha-days').value)||0,
+    nextDays:parseInt(document.getElementById('notif-next-days').value)||0,
   };
   localStorage.setItem(PKEY,JSON.stringify(prefs));
   checkAndScheduleNotifications();
@@ -953,21 +973,31 @@ async function checkAndScheduleNotifications(){
     const hpstDate=c.hpst?new Date(c.hpst):ad(start,4);
     const sef=ad(hpstDate,1);
     const tvila=ad(sef,7);
-    if(prefs.hpst!==false)    upcoming.push({date:hpstDate,title:'הפסק טהרה היום',body:'זמן להפסק טהרה'});
-    if(prefs.sefirah!==false) upcoming.push({date:sef,title:'תחילת ספירת 7 נקיים',body:'היום מתחילה ספירת 7 ימים נקיים'});
-    if(prefs.tvila!==false)   upcoming.push({date:tvila,title:'ליל הטבילה',body:'הלילה הוא ליל הטבילה. ברכה והצלחה!'});
+    const hpstOff=prefs.hpstDays!==undefined?prefs.hpstDays:0;
+    const sefOff=prefs.sefirahDays!==undefined?prefs.sefirahDays:0;
+    const tvilaOff=prefs.tvilaDays!==undefined?prefs.tvilaDays:0;
+    const prishaOff=prefs.prishaDays!==undefined?prefs.prishaDays:1;
+    const hpstLbl=hpstOff===0?'הפסק טהרה היום':'הפסק טהרה בעוד '+hpstOff+' ימים';
+    const sefLbl=sefOff===0?'תחילת ספירת 7 נקיים':'ספירת 7 נקיים בעוד '+sefOff+' ימים';
+    const tvilaLbl=tvilaOff===0?'ליל הטבילה':'ליל הטבילה בעוד '+tvilaOff+' ימים';
+    const prishaLbl=prishaOff<=1?'עונת פרישה מחר':'עונת פרישה בעוד '+prishaOff+' ימים';
+    if(prefs.hpst!==false)    upcoming.push({date:ad(hpstDate,-hpstOff),title:hpstLbl,body:'זמן להפסק טהרה'});
+    if(prefs.sefirah!==false) upcoming.push({date:ad(sef,-sefOff),title:sefLbl,body:'היום מתחילה ספירת 7 ימים נקיים'});
+    if(prefs.tvila!==false)   upcoming.push({date:ad(tvila,-tvilaOff),title:tvilaLbl,body:'הלילה הוא ליל הטבילה. ברכה והצלחה!'});
     if(prefs.prisha!==false){
-      upcoming.push({date:ad(ad(start,30),-1),title:'עונת פרישה מחר',body:'מחר עונה בינונית (30 יום)'});
-      upcoming.push({date:ad(nextHebSameDay(start),-1),title:'עונת החודש מחר',body:'מחר עונת החודש'});
+      upcoming.push({date:ad(ad(start,30),-prishaOff),title:prishaLbl,body:'עונה בינונית (30 יום)'});
+      upcoming.push({date:ad(nextHebSameDay(start),-prishaOff),title:'עונת החודש',body:'עונת החודש מתקרבת'});
     }
   });
   if(prefs.next!==false){
+    const nextOff=prefs.nextDays!==undefined?prefs.nextDays:2;
+    const nextLbl=nextOff===0?'ווסת צפוי היום':nextOff===1?'ווסת צפוי מחר':'ווסת צפוי בעוד '+nextOff+' ימים';
     const s=computeStats(cycles);
-    if(s) upcoming.push({date:ad(s.nextV,-2),title:'ווסת צפוי בעוד יומיים',body:'ווסת משוער: '+fheb(s.nextV)});
+    if(s) upcoming.push({date:ad(s.nextV,-nextOff),title:nextLbl,body:'ווסת משוער: '+fheb(s.nextV)});
   }
 
   upcoming.forEach(({date,title,body})=>{
-    const fireAt=new Date(date); fireAt.setHours(8,0,0,0);
+    const fireAt=new Date(date); fireAt.setHours(prefs.notifHour!==undefined?prefs.notifHour:8,prefs.notifMin!==undefined?prefs.notifMin:0,0,0);
     const ms=fireAt-now;
     if(ms>0&&ms<HORIZON){
       _timers.push(setTimeout(()=>new Notification(title,{body,lang:'he',dir:'rtl'}),ms));
