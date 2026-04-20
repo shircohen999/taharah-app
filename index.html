@@ -9,114 +9,75 @@
 <title>לוח הטהרה שלי</title>
 <style>
   :root {
-    --pink: #C04570;
-    --pink-light: #FBEAF0;
-    --pink-mid: #F4C0D1;
-    --pink-dark: #72243E;
-    --pink-hover: #A83860;
-    --teal: #1D9E75;
-    --teal-light: #E1F5EE;
-    --teal-dark: #085041;
-    --purple-light: #EEEDFE;
-    --purple-dark: #3C3489;
-    --amber-light: #FAEEDA;
-    --amber-dark: #633806;
-    --green-light: #EAF3DE;
-    --green-dark: #27500A;
-    --bg: #F5F5F0;
-    --card: #FFFFFF;
-    --border: rgba(0,0,0,0.12);
-    --text: #1A1A1A;
-    --muted: #666666;
-    --radius: 12px;
-    --radius-sm: 8px;
+    --pink: #C04570; --pink-light: #FBEAF0; --pink-mid: #F4C0D1; --pink-dark: #72243E; --pink-hover: #A83860;
+    --teal: #1D9E75; --teal-light: #E1F5EE; --teal-dark: #085041;
+    --purple-light: #EEEDFE; --purple-dark: #3C3489;
+    --amber-light: #FAEEDA; --amber-dark: #633806;
+    --green-light: #EAF3DE; --green-dark: #27500A;
+    --bg: #F5F5F0; --card: #FFFFFF; --border: rgba(0,0,0,0.12); --text: #1A1A1A; --muted: #666666;
+    --radius: 12px; --radius-sm: 8px;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #1C1C1E;
-      --card: #2C2C2E;
-      --border: rgba(255,255,255,0.12);
-      --text: #F2F2F7;
-      --muted: #8E8E93;
-      --pink-light: #3A1525;
-      --teal-light: #0A2E22;
-      --purple-light: #1A1840;
-      --amber-light: #2A1E08;
-      --green-light: #0E2408;
+      --bg: #1C1C1E; --card: #2C2C2E; --border: rgba(255,255,255,0.12); --text: #F2F2F7; --muted: #8E8E93;
+      --pink-light: #3A1525; --teal-light: #0A2E22; --purple-light: #1A1840; --amber-light: #2A1E08; --green-light: #0E2408;
     }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { font-family: -apple-system, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); direction: rtl; max-width: 430px; margin: 0 auto; min-height: 100vh; }
 
-  /* TOPBAR */
   .topbar { background: var(--card); border-bottom: 0.5px solid var(--border); padding: 14px 16px 12px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
   .topbar-title { font-size: 17px; font-weight: 600; color: var(--text); }
   .topbar-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
-  .dots { display: flex; gap: 3px; align-items: center; }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
+  .topbar-user-btn { background: var(--pink-light); border: none; color: var(--pink-dark); font-size: 14px; font-weight: 700; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-  /* TABS */
-  .tabs { display: flex; background: var(--card); border-bottom: 0.5px solid var(--border); }
-  .tab { flex: 1; padding: 10px 4px; text-align: center; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: color 0.15s; }
+  .tabs { display: flex; background: var(--card); border-bottom: 0.5px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { flex: 1; min-width: 52px; padding: 10px 4px; text-align: center; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: color 0.15s; white-space: nowrap; }
   .tab.active { color: var(--pink); border-bottom-color: var(--pink); }
 
-  /* PAGES */
   .page { display: none; padding: 16px; }
   .page.active { display: block; }
 
-  /* CARDS */
   .card { background: var(--card); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
   .sec-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
 
-  /* FIELDS */
   .field { padding: 10px 16px; border-bottom: 0.5px solid var(--border); }
   .field:last-child { border-bottom: none; }
   .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
   .field input, .field select { width: 100%; font-size: 15px; background: transparent; border: none; outline: none; color: var(--text); }
 
-  /* BUTTONS */
   .btn-primary { width: 100%; padding: 13px; font-size: 15px; font-weight: 600; background: var(--pink); color: white; border: none; border-radius: var(--radius); cursor: pointer; margin-bottom: 16px; }
   .btn-primary:active { background: var(--pink-hover); }
   .btn-ghost { width: 100%; padding: 12px; font-size: 14px; background: transparent; color: var(--muted); border: 0.5px solid var(--border); border-radius: var(--radius); cursor: pointer; margin-bottom: 16px; }
 
-  /* RESULT ROWS */
   .result-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 0.5px solid var(--border); }
   .result-row:last-child { border-bottom: none; }
   .rl { font-size: 13px; color: var(--muted); line-height: 1.5; }
   .rv { font-size: 13px; font-weight: 500; color: var(--text); text-align: left; line-height: 1.5; }
   .rv.accent { color: var(--pink); font-size: 14px; }
 
-  /* TAGS */
   .tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 20px; background: var(--pink-light); color: var(--pink-dark); margin-top: 3px; }
-  .tag-teal { background: var(--teal-light); color: var(--teal-dark); }
-  .tag-purple { background: var(--purple-light); color: var(--purple-dark); }
-  .tag-amber { background: var(--amber-light); color: var(--amber-dark); }
-  .tag-green { background: var(--green-light); color: var(--green-dark); }
 
-  /* ONOT */
   .onot-header { padding: 9px 16px; background: var(--pink-light); font-size: 12px; font-weight: 600; color: var(--pink-dark); border-bottom: 0.5px solid var(--pink-mid); }
   .onot-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 0.5px solid var(--border); font-size: 13px; }
   .onot-row:last-child { border-bottom: none; }
 
-  /* TIPS */
   .tip { background: var(--pink-light); border: 0.5px solid var(--pink-mid); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; color: var(--pink-dark); margin-bottom: 16px; line-height: 1.7; }
   .tip-teal { background: var(--teal-light); border: 0.5px solid #9FE1CB; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; color: var(--teal-dark); margin-bottom: 16px; line-height: 1.7; }
   .tip-blue { background: var(--purple-light); border: 0.5px solid #CECBF6; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; color: var(--purple-dark); margin-bottom: 16px; line-height: 1.7; }
 
-  /* STATS */
   .stat-row { display: flex; gap: 8px; margin-bottom: 16px; }
   .stat-card { flex: 1; background: var(--bg); border-radius: var(--radius-sm); padding: 10px 12px; }
   .stat-label { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
   .stat-val { font-size: 20px; font-weight: 600; color: var(--text); }
 
-  /* HISTORY */
   .hist-item { padding: 12px 16px; border-bottom: 0.5px solid var(--border); }
   .hist-item:last-child { border-bottom: none; }
   .hist-del { font-size: 12px; color: var(--muted); background: none; border: none; cursor: pointer; padding: 2px 6px; }
   .hist-del:active { color: var(--pink); }
   .empty-msg { text-align: center; padding: 32px 16px; font-size: 14px; color: var(--muted); line-height: 1.7; }
 
-  /* CALENDAR */
   .month-nav { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: var(--card); border-bottom: 0.5px solid var(--border); }
   .mnav-btn { background: none; border: none; cursor: pointer; font-size: 22px; color: var(--muted); padding: 2px 8px; border-radius: var(--radius-sm); }
   .mnav-btn:active { background: var(--bg); }
@@ -147,22 +108,86 @@
   .add-field label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
   .add-field input, .add-field select { width: 100%; font-size: 13px; padding: 8px 10px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); }
 
-  /* PREDICT */
-  .pred-warn { font-size: 11px; color: var(--muted); line-height: 1.6; margin-top: 4px; }
+  /* AUTH */
+  .auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .auth-card { background: var(--card); border-radius: var(--radius); width: 100%; max-width: 380px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+  .auth-header { padding: 24px 24px 16px; text-align: center; }
+  .auth-logo { font-size: 36px; margin-bottom: 6px; }
+  .auth-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .auth-sub { font-size: 12px; color: var(--muted); }
+  .auth-tabs { display: flex; border-bottom: 0.5px solid var(--border); }
+  .auth-tab { flex: 1; padding: 12px; text-align: center; font-size: 14px; font-weight: 500; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; }
+  .auth-tab.active { color: var(--pink); border-bottom-color: var(--pink); }
+  .auth-body { padding: 16px; }
+  .auth-field { margin-bottom: 12px; }
+  .auth-field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+  .auth-field input { width: 100%; font-size: 15px; padding: 11px 14px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); outline: none; }
+  .auth-field input:focus { border-color: var(--pink); }
+  .auth-err { font-size: 12px; color: var(--pink); min-height: 16px; margin-bottom: 10px; }
+  .auth-offline { text-align: center; padding: 8px 0 4px; }
+  .auth-offline-btn { background: none; border: none; color: var(--muted); font-size: 13px; cursor: pointer; text-decoration: underline; }
+
+  /* SETTINGS */
+  .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; border-bottom: 0.5px solid var(--border); }
+  .setting-row:last-child { border-bottom: none; }
+  .setting-label { font-size: 14px; color: var(--text); }
+  .setting-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .toggle { position: relative; width: 44px; height: 26px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; inset: 0; background: #ccc; border-radius: 26px; transition: 0.2s; cursor: pointer; }
+  .toggle-slider:before { content: ''; position: absolute; width: 20px; height: 20px; right: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+  .toggle input:checked + .toggle-slider { background: var(--pink); }
+  .toggle input:checked + .toggle-slider:before { transform: translateX(-18px); }
+  .user-info-row { display: flex; align-items: center; gap: 12px; padding: 16px; border-bottom: 0.5px solid var(--border); }
+  .user-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--pink-light); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--pink-dark); font-weight: 700; flex-shrink: 0; }
+  .user-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  .user-email { font-size: 12px; color: var(--muted); margin-top: 2px; }
 </style>
 </head>
 <body>
+
+<!-- AUTH MODAL -->
+<div id="auth-modal" class="auth-overlay" style="display:none">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">🌸</div>
+      <div class="auth-title">לוח הטהרה שלי</div>
+      <div class="auth-sub">פרטי · מאובטח · נגיש מכל מכשיר</div>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="atab-login" onclick="switchAuthTab('login')">התחברות</div>
+      <div class="auth-tab" id="atab-register" onclick="switchAuthTab('register')">הרשמה</div>
+    </div>
+    <div class="auth-body">
+      <div id="auth-login-form">
+        <div class="auth-field"><label>אימייל</label><input type="email" id="auth-email" dir="ltr" autocomplete="email" placeholder="your@email.com"/></div>
+        <div class="auth-field"><label>סיסמה</label><input type="password" id="auth-pass" dir="ltr" autocomplete="current-password" placeholder="••••••••"/></div>
+        <div class="auth-err" id="login-err"></div>
+        <button class="btn-primary" style="margin-bottom:8px" onclick="doLogin()">התחברי</button>
+      </div>
+      <div id="auth-register-form" style="display:none">
+        <div class="auth-field"><label>שם</label><input type="text" id="reg-name" autocomplete="name" placeholder="שמך"/></div>
+        <div class="auth-field"><label>אימייל</label><input type="email" id="reg-email" dir="ltr" autocomplete="email" placeholder="your@email.com"/></div>
+        <div class="auth-field"><label>סיסמה (לפחות 6 תווים)</label><input type="password" id="reg-pass" dir="ltr" autocomplete="new-password" placeholder="••••••••"/></div>
+        <div class="auth-err" id="reg-err"></div>
+        <button class="btn-primary" style="margin-bottom:8px" onclick="doRegister()">הירשמי</button>
+      </div>
+      <div class="auth-offline">
+        <button class="auth-offline-btn" onclick="showApp(null)">המשיכי ללא חשבון (מקומי בלבד)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
 
 <div class="topbar">
   <div>
     <div class="topbar-title">לוח הטהרה שלי</div>
     <div class="topbar-sub">מנהג אשכנז (רמ"א) · פרטי</div>
   </div>
-  <div class="dots">
-    <span class="dot"></span>
-    <span class="dot" style="opacity:.5"></span>
-    <span class="dot" style="opacity:.25"></span>
-  </div>
+  <button class="topbar-user-btn" id="topbar-user-btn" onclick="showTab('settings')">?</button>
 </div>
 
 <div class="tabs">
@@ -170,9 +195,10 @@
   <div class="tab" onclick="showTab('calendar')">לוח</div>
   <div class="tab" onclick="showTab('predict')">תחזית</div>
   <div class="tab" onclick="showTab('history')">היסטוריה</div>
+  <div class="tab" onclick="showTab('settings')">הגדרות</div>
 </div>
 
-<!-- ===== חישוב ===== -->
+<!-- חישוב -->
 <div id="tab-calc" class="page active">
   <div class="sec-label">פרטי הווסת הנוכחי</div>
   <div class="card">
@@ -186,6 +212,10 @@
         <option value="day">יום (לפני שקיעה)</option>
         <option value="night">לילה (אחרי שקיעה)</option>
       </select>
+    </div>
+    <div class="field">
+      <label>הפסק טהרה בפועל (אופציונלי – אם שונה מיום ה-5)</label>
+      <input type="date" id="inp-hpst" />
     </div>
   </div>
 
@@ -203,7 +233,7 @@
     <div class="sec-label">תאריכי מפתח</div>
     <div class="card">
       <div class="result-row">
-        <div><div class="rl">ליל הטבילה המוקדם</div><span class="tag">5 ימים + 7 נקיים + ליל ה-8</span></div>
+        <div><div class="rl">ליל הטבילה המוקדם</div><span class="tag">הפסק טהרה + 7 נקיים + ליל ה-8</span></div>
         <div class="rv accent" id="r-tvila"></div>
       </div>
       <div class="result-row">
@@ -225,12 +255,11 @@
       <div class="onot-header">להימנע מחיבור · עונת <span id="onot-time-lbl">יום</span></div>
       <div id="onot-rows"></div>
     </div>
-
     <div class="tip">לפי פניני הלכה (פ"ו ה"ה): פרישה בשלוש עונות – הפלגה, עונה בינונית (30 יום), ועונת החודש – כולן באותה עונת יום/לילה.</div>
   </div>
 </div>
 
-<!-- ===== לוח ===== -->
+<!-- לוח -->
 <div id="tab-calendar" class="page" style="padding:0">
   <div class="month-nav">
     <button class="mnav-btn" onclick="chMonth(-1)">›</button>
@@ -245,7 +274,8 @@
   <div class="cal-grid" id="cal-grid"></div>
   <div class="legend">
     <div class="li"><div class="ld" style="background:#C04570"></div>ווסת</div>
-    <div class="li"><div class="ld" style="background:#F4C0D1;border:1px solid #C04570"></div>ספירת 7 נקיים</div>
+    <div class="li"><div class="ld" style="background:#EEEDFE;border:1.5px solid #3C3489"></div>הפסק טהרה</div>
+    <div class="li"><div class="ld" style="background:#F4C0D1;border:1px dashed #C04570"></div>ספירת 7 נקיים</div>
     <div class="li"><div class="ld" style="background:#E1F5EE;border:1px solid #1D9E75"></div>טהורה</div>
     <div class="li"><div class="lb" style="background:#993556"></div>עונת פרישה</div>
     <div class="li"><div class="lb" style="background:#1D9E75"></div>חלון פוריות</div>
@@ -258,16 +288,19 @@
       <div class="add-field"><label>תאריך</label><input type="date" id="cal-nd"/></div>
       <div class="add-field"><label>עונה</label><select id="cal-nt"><option value="day">יום</option><option value="night">לילה</option></select></div>
     </div>
+    <div class="add-row">
+      <div class="add-field"><label>הפסק טהרה בפועל (אופציונלי)</label><input type="date" id="cal-hpst"/></div>
+    </div>
     <button class="btn-primary" style="margin-bottom:0" onclick="addFromCal()">הוסיפי ללוח</button>
   </div>
 </div>
 
-<!-- ===== תחזית ===== -->
+<!-- תחזית -->
 <div id="tab-predict" class="page">
   <div id="predict-content"><div class="empty-msg">הכניסי לפחות 2 מחזורים כדי לקבל תחזית אישית.</div></div>
 </div>
 
-<!-- ===== היסטוריה ===== -->
+<!-- היסטוריה -->
 <div id="tab-history" class="page">
   <div id="stats-row" class="stat-row" style="display:none"></div>
   <div class="sec-label">מחזורים שמורים</div>
@@ -275,76 +308,310 @@
   <button class="btn-ghost" onclick="clearAll()">מחקי את כל ההיסטוריה</button>
 </div>
 
-<script>
+<!-- הגדרות -->
+<div id="tab-settings" class="page">
+  <div class="card">
+    <div class="user-info-row">
+      <div class="user-avatar" id="settings-avatar">?</div>
+      <div>
+        <div class="user-name" id="settings-name">—</div>
+        <div class="user-email" id="settings-email">—</div>
+      </div>
+    </div>
+    <div style="padding:12px 16px">
+      <button class="btn-ghost" style="margin:0" onclick="doLogout()">התנתקי</button>
+    </div>
+  </div>
+
+  <div class="sec-label">התראות</div>
+  <div class="card">
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">התראות פעילות</div>
+        <div class="setting-sub" id="notif-perm-status">לחצי להפעלה</div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="toggle-notif" onchange="toggleNotifications(this.checked)"><span class="toggle-slider"></span></label>
+    </div>
+    <div id="notif-settings" style="display:none">
+      <div class="setting-row">
+        <div><div class="setting-label">הפסק טהרה</div><div class="setting-sub">תזכורת ביום הפסק טהרה</div></div>
+        <label class="toggle"><input type="checkbox" id="notif-hpst" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">תחילת ספירת 7 נקיים</div><div class="setting-sub">תזכורת ביום תחילת הספירה</div></div>
+        <label class="toggle"><input type="checkbox" id="notif-sefirah" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">ליל הטבילה</div><div class="setting-sub">תזכורת ביום הטבילה</div></div>
+        <label class="toggle"><input type="checkbox" id="notif-tvila" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">עונות פרישה</div><div class="setting-sub">תזכורת יום לפני כל עונת פרישה</div></div>
+        <label class="toggle"><input type="checkbox" id="notif-prisha" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">ווסת צפוי</div><div class="setting-sub">תזכורת יומיים לפני הווסת הצפוי</div></div>
+        <label class="toggle"><input type="checkbox" id="notif-next" onchange="saveNotifPrefs()"><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label">נתונים</div>
+  <div class="card">
+    <div class="setting-row">
+      <div><div class="setting-label">סנכרון עם הענן</div><div class="setting-sub" id="sync-status">—</div></div>
+      <span id="sync-icon" style="font-size:18px">—</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script type="module">
+// ════════════════════════════════════════════════════════════
+// FIREBASE CONFIG
+// כדי לאפשר גישה מכל מכשיר עם שם משתמש וסיסמה:
+//
+// 1. עברי ל-  https://console.firebase.google.com
+// 2. צרי פרויקט חדש  (New project)
+// 3. הפעילי Authentication  >  Sign-in method  >  Email/Password
+// 4. צרי Firestore Database  (Production mode)
+// 5. ב-Firestore Rules הכניסי:
+//
+//    rules_version = '2';
+//    service cloud.firestore {
+//      match /databases/{database}/documents {
+//        match /users/{userId}/{document=**} {
+//          allow read, write: if request.auth.uid == userId;
+//        }
+//      }
+//    }
+//
+// 6. Project Settings > Your apps > Web (</>)  > העתיקי את הערכים לכאן:
+// ════════════════════════════════════════════════════════════
+const FIREBASE_CONFIG = {
+  apiKey:            "PASTE_YOUR_API_KEY_HERE",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+
+const FB_READY = !FIREBASE_CONFIG.apiKey.startsWith("PASTE");
+
+import { initializeApp }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+         signOut, onAuthStateChanged, updateProfile }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, collection, getDocs, writeBatch }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+let fbAuth, fbDb, currentUser = null;
+if (FB_READY) {
+  const fbApp = initializeApp(FIREBASE_CONFIG);
+  fbAuth = getAuth(fbApp);
+  fbDb   = getFirestore(fbApp);
+}
+
+// ════════════════════════════════════════════════════════════
+// STORAGE  (Firestore when logged in, localStorage otherwise)
+// ════════════════════════════════════════════════════════════
 const SKEY = 'niddah_v4';
-function lc() { try { return JSON.parse(localStorage.getItem(SKEY)||'[]'); } catch(e) { return []; } }
-function sc(d) { try { localStorage.setItem(SKEY, JSON.stringify(d)); } catch(e) {} }
+const PKEY = 'niddah_notif_v1';
 
+function lcLocal() { try { return JSON.parse(localStorage.getItem(SKEY)||'[]'); } catch(e) { return []; } }
+function scLocal(d) { try { localStorage.setItem(SKEY, JSON.stringify(d)); } catch(e) {} }
+
+async function lc() {
+  if (!FB_READY || !currentUser) return lcLocal();
+  try {
+    const snap = await getDocs(collection(fbDb, 'users', currentUser.uid, 'cycles'));
+    const cycles = snap.docs.map(d => d.data());
+    cycles.sort((a,b) => new Date(b.date) - new Date(a.date));
+    scLocal(cycles);
+    return cycles;
+  } catch(e) { return lcLocal(); }
+}
+
+async function sc(cycles) {
+  scLocal(cycles);
+  if (!FB_READY || !currentUser) { setSyncStatus('מקומי בלבד', '—'); return; }
+  try {
+    const batch = writeBatch(fbDb);
+    const snap = await getDocs(collection(fbDb, 'users', currentUser.uid, 'cycles'));
+    snap.docs.forEach(d => batch.delete(d.ref));
+    cycles.forEach(c => {
+      const ref = doc(fbDb, 'users', currentUser.uid, 'cycles', String(c.id));
+      batch.set(ref, c);
+    });
+    await batch.commit();
+    setSyncStatus('מסונכרן · ' + new Date().toLocaleTimeString('he'), '✓');
+  } catch(e) { setSyncStatus('שגיאת סנכרון', '⚠'); }
+}
+
+function setSyncStatus(txt, icon) {
+  const s = document.getElementById('sync-status');
+  const i = document.getElementById('sync-icon');
+  if (s) s.textContent = txt;
+  if (i) i.textContent = icon;
+}
+
+// ════════════════════════════════════════════════════════════
+// DATE UTILITIES
+// ════════════════════════════════════════════════════════════
 let vy = new Date().getFullYear(), vm = new Date().getMonth();
+function ad(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
+function iso(d){ return d.toISOString().slice(0,10); }
+function diff(a,b){ return Math.round((new Date(a)-new Date(b))/864e5); }
+const GREG_M=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+const DAY_FULL=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 
-function ad(d,n) { const r=new Date(d); r.setDate(r.getDate()+n); return r; }
-function iso(d) { return d.toISOString().slice(0,10); }
-function diff(a,b) { return Math.round((new Date(a)-new Date(b))/864e5); }
-
-const GREG_M = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-const DAY_FULL = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
-
-function fheb(d) {
-  try { return new Intl.DateTimeFormat('he-u-ca-hebrew',{year:'numeric',month:'long',day:'numeric'}).format(d); }
-  catch(e) { return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); }
+function fheb(d){
+  try{ return new Intl.DateTimeFormat('he-u-ca-hebrew',{year:'numeric',month:'long',day:'numeric'}).format(d); }
+  catch(e){ return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); }
 }
-function fhebMonth(d) {
-  try { return new Intl.DateTimeFormat('he-u-ca-hebrew',{year:'numeric',month:'long'}).format(d); }
-  catch(e) { return ''; }
+function fhebMonth(d){
+  try{ return new Intl.DateTimeFormat('he-u-ca-hebrew',{year:'numeric',month:'long'}).format(d); }
+  catch(e){ return ''; }
 }
-function fhebDay(d) {
-  try { const p=new Intl.DateTimeFormat('he-u-ca-hebrew',{day:'numeric'}).formatToParts(d); return (p.find(x=>x.type==='day')||{value:''}).value; }
-  catch(e) { return ''; }
+function fhebDay(d){
+  try{ const p=new Intl.DateTimeFormat('he-u-ca-hebrew',{day:'numeric'}).formatToParts(d); return (p.find(x=>x.type==='day')||{value:''}).value; }
+  catch(e){ return ''; }
 }
-function getHebDayNum(d) {
-  try { const p=new Intl.DateTimeFormat('he-u-ca-hebrew',{day:'numeric'}).formatToParts(d); const x=p.find(q=>q.type==='day'); return x?parseInt(x.value):null; }
-  catch(e) { return null; }
+// FIX: -nu-latn forces Arabic numerals so parseInt() works correctly.
+// Without this, Intl returns Hebrew letter-numerals (e.g. "כ״ג") which parseInt cannot parse,
+// causing nextHebSameDay to always fall back to +29 days instead of finding the correct Hebrew date.
+function getHebDayNum(d){
+  try{
+    const p=new Intl.DateTimeFormat('he-u-ca-hebrew-nu-latn',{day:'numeric'}).formatToParts(d);
+    const x=p.find(q=>q.type==='day');
+    return x?parseInt(x.value):null;
+  }catch(e){ return null; }
 }
-function nextHebSameDay(from) {
+function nextHebSameDay(from){
   const hd=getHebDayNum(from);
   if(!hd) return ad(from,29);
-  for(let i=25;i<=35;i++) { const c=ad(from,i); if(getHebDayNum(c)===hd) return c; }
+  for(let i=25;i<=35;i++){ const c=ad(from,i); if(getHebDayNum(c)===hd) return c; }
   return ad(from,30);
 }
-function fmtBoth(d) {
+function fmtBoth(d){
   return '<div style="font-size:13px">'+fheb(d)+'</div><div style="font-size:11px;color:var(--muted)">'+DAY_FULL[d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1)+'</div>';
 }
 
-/* ===== TAB NAV ===== */
-function showTab(name) {
+// ════════════════════════════════════════════════════════════
+// AUTH
+// ════════════════════════════════════════════════════════════
+function switchAuthTab(tab){
+  document.getElementById('atab-login').classList.toggle('active', tab==='login');
+  document.getElementById('atab-register').classList.toggle('active', tab==='register');
+  document.getElementById('auth-login-form').style.display = tab==='login'?'':'none';
+  document.getElementById('auth-register-form').style.display = tab==='register'?'':'none';
+}
+
+async function doLogin(){
+  if(!FB_READY){ showApp(null); return; }
+  const email=document.getElementById('auth-email').value.trim();
+  const pass=document.getElementById('auth-pass').value;
+  document.getElementById('login-err').textContent='';
+  try{ await signInWithEmailAndPassword(fbAuth,email,pass); }
+  catch(e){ document.getElementById('login-err').textContent=authErrMsg(e.code); }
+}
+
+async function doRegister(){
+  if(!FB_READY){ showApp(null); return; }
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const pass=document.getElementById('reg-pass').value;
+  document.getElementById('reg-err').textContent='';
+  if(!name){ document.getElementById('reg-err').textContent='אנא הכניסי שם'; return; }
+  try{
+    const cred=await createUserWithEmailAndPassword(fbAuth,email,pass);
+    await updateProfile(cred.user,{displayName:name});
+  }catch(e){ document.getElementById('reg-err').textContent=authErrMsg(e.code); }
+}
+
+async function doLogout(){
+  if(!confirm('להתנתק?')) return;
+  if(FB_READY && currentUser){ await signOut(fbAuth); }
+  else { document.getElementById('auth-modal').style.display='flex'; document.getElementById('app').style.display='none'; }
+}
+
+function authErrMsg(code){
+  const m={
+    'auth/invalid-email':'כתובת אימייל לא תקינה',
+    'auth/user-not-found':'משתמש לא נמצא',
+    'auth/wrong-password':'סיסמה שגויה',
+    'auth/invalid-credential':'אימייל או סיסמה שגויים',
+    'auth/email-already-in-use':'האימייל כבר רשום במערכת',
+    'auth/weak-password':'הסיסמה חייבת להכיל לפחות 6 תווים',
+    'auth/too-many-requests':'יותר מדי ניסיונות – נסי שוב מאוחר יותר',
+  };
+  return m[code]||'שגיאה – נסי שוב';
+}
+
+function showApp(user){
+  currentUser=user;
+  document.getElementById('auth-modal').style.display='none';
+  document.getElementById('app').style.display='block';
+  const name=user?(user.displayName||user.email):'אורחת';
+  const initials=name.charAt(0).toUpperCase();
+  document.getElementById('topbar-user-btn').textContent=initials;
+  document.getElementById('settings-avatar').textContent=initials;
+  document.getElementById('settings-name').textContent=user?(user.displayName||'—'):'אורחת';
+  document.getElementById('settings-email').textContent=user?user.email:'נתונים שמורים מקומית בלבד';
+  setSyncStatus(FB_READY&&user?'מסונכרן':'מקומי בלבד', FB_READY&&user?'✓':'—');
+  renderCal();
+  loadNotifPrefs();
+  checkAndScheduleNotifications();
+}
+
+if(FB_READY){
+  onAuthStateChanged(fbAuth, user=>{
+    if(user){ showApp(user); }
+    else{ document.getElementById('auth-modal').style.display='flex'; document.getElementById('app').style.display='none'; }
+  });
+} else {
+  document.getElementById('auth-modal').style.display='flex';
+}
+
+// ════════════════════════════════════════════════════════════
+// TAB NAV
+// ════════════════════════════════════════════════════════════
+const TABS=['calc','calendar','predict','history','settings'];
+function showTab(name){
   document.querySelectorAll('.tab').forEach((t,i)=>{
-    const tabs=['calc','calendar','predict','history'];
-    t.classList.toggle('active',tabs[i]===name);
-    document.getElementById('tab-'+tabs[i]).classList.toggle('active',tabs[i]===name);
+    t.classList.toggle('active',TABS[i]===name);
+    document.getElementById('tab-'+TABS[i]).classList.toggle('active',TABS[i]===name);
   });
   if(name==='history') renderHistory();
   if(name==='predict') renderPredict();
   if(name==='calendar') renderCal();
 }
 
-/* ===== CALC ===== */
-document.getElementById('inp-date').addEventListener('change', ()=>{
-  const c=lc(); if(c.length>=1) document.getElementById('inp-prev').value=c[0].date;
+// ════════════════════════════════════════════════════════════
+// CALC
+// ════════════════════════════════════════════════════════════
+document.getElementById('inp-date').addEventListener('change', async ()=>{
+  const c=await lc(); if(c.length>=1) document.getElementById('inp-prev').value=c[0].date;
 });
 
-function calculate() {
+async function calculate(){
   const dv=document.getElementById('inp-date').value;
   if(!dv){alert('אנא בחרי תאריך');return;}
   const vDate=new Date(dv);
   const isNight=document.getElementById('inp-time').value==='night';
   const prevDV=document.getElementById('inp-prev').value;
+  const hpstCustomVal=document.getElementById('inp-hpst').value;
 
-  const hpst=ad(vDate,4);
+  const hpst=hpstCustomVal?new Date(hpstCustomVal):ad(vDate,4);
   const sef=ad(hpst,1);
   const tvila=ad(sef,7);
 
+  const customBadge=hpstCustomVal?'<div style="font-size:10px;color:var(--purple-dark);margin-top:2px">✎ תאריך מותאם אישית</div>':'';
   document.getElementById('r-tvila').innerHTML=fmtBoth(tvila);
-  document.getElementById('r-hpst').innerHTML=fmtBoth(hpst);
+  document.getElementById('r-hpst').innerHTML=fmtBoth(hpst)+customBadge;
   document.getElementById('r-sefirah').innerHTML=fmtBoth(sef);
   document.getElementById('r-bedikot').innerHTML='<div style="font-size:12px">יום 1: '+fheb(sef)+'</div><div style="font-size:12px">יום 7: '+fheb(ad(sef,6))+'</div>';
   document.getElementById('onot-time-lbl').textContent=isNight?'לילה':'יום';
@@ -365,20 +632,24 @@ function calculate() {
   }).join('');
 
   document.getElementById('res-block').style.display='block';
-  saveCycle(dv, isNight, tvila);
+  await saveCycle(dv,isNight,tvila,hpstCustomVal||null);
+  checkAndScheduleNotifications();
 }
 
-function saveCycle(dv, isNight, tvila) {
-  const cycles=lc();
+async function saveCycle(dv,isNight,tvila,hpstCustom){
+  const cycles=await lc();
   const entry={id:Date.now(),date:dv,time:isNight?'night':'day',tvila:iso(tvila)};
+  if(hpstCustom) entry.hpst=hpstCustom;
   const ei=cycles.findIndex(c=>c.date===dv);
-  if(ei>=0) cycles[ei]=entry; else cycles.unshift(entry);
+  if(ei>=0){ entry.id=cycles[ei].id; cycles[ei]=entry; } else cycles.unshift(entry);
   if(cycles.length>24) cycles.length=24;
-  sc(cycles);
+  await sc(cycles);
 }
 
-/* ===== CALENDAR ===== */
-function buildMap(cycles) {
+// ════════════════════════════════════════════════════════════
+// CALENDAR
+// ════════════════════════════════════════════════════════════
+function buildMap(cycles){
   const map={};
   function mark(date,type){ const k=iso(date); if(!map[k])map[k]={types:new Set(),labels:[]}; map[k].types.add(type); }
   function label(date,txt,color,bg){ const k=iso(date); if(!map[k])map[k]={types:new Set(),labels:[]}; if(!map[k].labels.find(l=>l.txt===txt))map[k].labels.push({txt,color,bg}); }
@@ -386,11 +657,14 @@ function buildMap(cycles) {
   const sorted=[...cycles].sort((a,b)=>new Date(a.date)-new Date(b.date));
   sorted.forEach((c,idx)=>{
     const start=new Date(c.date);
-    const isNight=c.time==='night';
     mark(start,'veset'); label(start,'תחילת ווסת','#72243E','#FBEAF0');
     for(let i=1;i<=4;i++) mark(ad(start,i),'dam');
-    const hpst=ad(start,4); label(hpst,'הפסק טהרה','#3C3489','#EEEDFE');
-    const sef=ad(start,5);
+
+    const hpstDate=c.hpst?new Date(c.hpst):ad(start,4);
+    mark(hpstDate,'hpst');
+    label(hpstDate,'הפסק טהרה'+(c.hpst?' (מותאם)':''),'#3C3489','#EEEDFE');
+
+    const sef=ad(hpstDate,1);
     for(let i=0;i<7;i++) mark(ad(sef,i),'sefirah');
     label(sef,'תחילת ספירת 7 נקיים','#085041','#E1F5EE');
     const tvila=ad(sef,7); mark(tvila,'tvila'); label(tvila,'ליל הטבילה','#633806','#FAEEDA');
@@ -414,15 +688,17 @@ function getDayStyle(types){
   if(types.has('veset'))return{dot:{bg:'#C04570',fg:'white'},bar:null};
   if(types.has('dam'))return{dot:{bg:'#F4C0D1',fg:'#72243E',brd:'#C04570'},bar:null};
   if(types.has('tvila'))return{dot:{bg:'#FAEEDA',fg:'#633806',brd:'#BA7517'},bar:null};
+  if(types.has('hpst')){ const bar=types.has('prisha')?'#993556':null; return{dot:{bg:'#EEEDFE',fg:'#3C3489',brd:'#3C3489'},bar}; }
   if(types.has('sefirah')){ const b=types.has('prisha')?'#993556':null; return{dot:{bg:'#F4C0D1',fg:'#72243E',brd:'#C04570',dash:true},bar:b}; }
   const bar=types.has('prisha')?'#993556':types.has('fertile')?'#1D9E75':null;
   if(types.has('tahora'))return{dot:{bg:'#E1F5EE',fg:'#085041',brd:'#1D9E75'},bar};
   return{dot:null,bar};
 }
 
-function renderCal(){
+async function renderCal(){
   const today=new Date(); today.setHours(0,0,0,0);
-  const map=buildMap(lc());
+  const cycles=await lc();
+  const map=buildMap(cycles);
   document.getElementById('mlabel').textContent=GREG_M[vm]+' '+vy;
   document.getElementById('mlabel2').textContent=fhebMonth(new Date(vy,vm,1));
   const first=new Date(vy,vm,1); const last=new Date(vy,vm+1,0);
@@ -455,13 +731,14 @@ function showDayDetail(date,info){
   if(!info||(!info.types.size&&!info.labels.length)){ panel.innerHTML+='<div class="d-empty">אין אירועים מיוחדים</div>'; return; }
   const tags=document.createElement('div'); tags.className='d-tags';
   const all=[];
-  if(info.types.has('veset'))all.push({txt:'ווסת',color:'#72243E',bg:'#FBEAF0'});
-  if(info.types.has('dam'))all.push({txt:'ימי דם',color:'#72243E',bg:'#FBEAF0'});
-  if(info.types.has('sefirah'))all.push({txt:'ספירת 7 נקיים',color:'#085041',bg:'#E1F5EE'});
-  if(info.types.has('tvila'))all.push({txt:'ליל טבילה',color:'#633806',bg:'#FAEEDA'});
-  if(info.types.has('tahora'))all.push({txt:'טהורה',color:'#085041',bg:'#E1F5EE'});
-  if(info.types.has('prisha'))all.push({txt:'עונת פרישה',color:'#3C3489',bg:'#EEEDFE'});
-  if(info.types.has('fertile'))all.push({txt:'חלון פוריות',color:'#27500A',bg:'#EAF3DE'});
+  if(info.types.has('veset'))   all.push({txt:'ווסת',color:'#72243E',bg:'#FBEAF0'});
+  if(info.types.has('dam'))     all.push({txt:'ימי דם',color:'#72243E',bg:'#FBEAF0'});
+  if(info.types.has('hpst'))    all.push({txt:'הפסק טהרה',color:'#3C3489',bg:'#EEEDFE'});
+  if(info.types.has('sefirah')) all.push({txt:'ספירת 7 נקיים',color:'#085041',bg:'#E1F5EE'});
+  if(info.types.has('tvila'))   all.push({txt:'ליל טבילה',color:'#633806',bg:'#FAEEDA'});
+  if(info.types.has('tahora'))  all.push({txt:'טהורה',color:'#085041',bg:'#E1F5EE'});
+  if(info.types.has('prisha'))  all.push({txt:'עונת פרישה',color:'#3C3489',bg:'#EEEDFE'});
+  if(info.types.has('fertile')) all.push({txt:'חלון פוריות',color:'#27500A',bg:'#EAF3DE'});
   info.labels.forEach(l=>all.push(l));
   const seen=new Set();
   all.forEach(item=>{ if(seen.has(item.txt))return; seen.add(item.txt); const t=document.createElement('span'); t.className='dtag'; t.textContent=item.txt; t.style.background=item.bg; t.style.color=item.color; tags.appendChild(t); });
@@ -470,17 +747,22 @@ function showDayDetail(date,info){
 
 function chMonth(d){ vm+=d; if(vm>11){vm=0;vy++;} if(vm<0){vm=11;vy--;} renderCal(); }
 
-function addFromCal(){
+async function addFromCal(){
   const dv=document.getElementById('cal-nd').value;
   if(!dv){alert('אנא בחרי תאריך');return;}
   const isNight=document.getElementById('cal-nt').value==='night';
-  const sef=ad(new Date(dv),5); const tvila=ad(sef,7);
-  saveCycle(dv,isNight,tvila);
+  const hpstCustom=document.getElementById('cal-hpst').value||null;
+  const hpstDate=hpstCustom?new Date(hpstCustom):ad(new Date(dv),4);
+  const sef=ad(hpstDate,1); const tvila=ad(sef,7);
+  await saveCycle(dv,isNight,tvila,hpstCustom);
   const nd=new Date(dv); vy=nd.getFullYear(); vm=nd.getMonth();
   renderCal();
+  checkAndScheduleNotifications();
 }
 
-/* ===== PREDICT ===== */
+// ════════════════════════════════════════════════════════════
+// PREDICT
+// ════════════════════════════════════════════════════════════
 function computeStats(cycles){
   if(cycles.length<2)return null;
   const sorted=[...cycles].sort((a,b)=>new Date(a.date)-new Date(b.date));
@@ -492,8 +774,7 @@ function computeStats(cycles){
   let ws=0,wt=0; gaps.forEach((g,i)=>{const w=i+1;ws+=g*w;wt+=w;});
   const wavg=ws/wt;
   const last=sorted[sorted.length-1];
-  const lastDate=new Date(last.date);
-  const nextV=ad(lastDate,Math.round(wavg));
+  const nextV=ad(new Date(last.date),Math.round(wavg));
   const ov=ad(nextV,-14);
   const today=new Date(); today.setHours(0,0,0,0);
   const daysUntil=diff(nextV,today);
@@ -504,8 +785,8 @@ function computeStats(cycles){
   return{avg:Math.round(avg*10)/10,wavg:Math.round(wavg*10)/10,stddev:Math.round(stddev*10)/10,min:Math.min(...gaps),max:Math.max(...gaps),count:gaps.length,nextV,ov,fertStart:ad(ov,-4),fertEnd:ad(ov,1),reg,regLabel,daysUntil};
 }
 
-function renderPredict(){
-  const cycles=lc(); const el=document.getElementById('predict-content');
+async function renderPredict(){
+  const cycles=await lc(); const el=document.getElementById('predict-content');
   if(cycles.length<2){ el.innerHTML='<div class="empty-msg">הכניסי לפחות 2 מחזורים כדי לקבל תחזית אישית.</div>'; return; }
   const s=computeStats(cycles); if(!s){ el.innerHTML='<div class="empty-msg">לא ניתן לחשב תחזית.</div>'; return; }
   const confC=s.reg==='high'?'#085041':s.reg==='mid'?'#633806':'#72243E';
@@ -532,9 +813,11 @@ function renderPredict(){
   `;
 }
 
-/* ===== HISTORY ===== */
-function renderHistory(){
-  const cycles=lc(); const list=document.getElementById('hist-list'); const statsRow=document.getElementById('stats-row');
+// ════════════════════════════════════════════════════════════
+// HISTORY
+// ════════════════════════════════════════════════════════════
+async function renderHistory(){
+  const cycles=await lc(); const list=document.getElementById('hist-list'); const statsRow=document.getElementById('stats-row');
   if(!cycles.length){ list.innerHTML='<div class="empty-msg">עדיין אין היסטוריה.</div>'; statsRow.style.display='none'; return; }
   const s=computeStats(cycles);
   statsRow.style.display='flex';
@@ -543,14 +826,135 @@ function renderHistory(){
   list.innerHTML=sorted.map((c,i)=>{
     const d=new Date(c.date); const tv=new Date(c.tvila);
     const prev=sorted[i+1]; const gap=prev?diff(c.date,prev.date):null;
-    return '<div class="hist-item"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:14px;font-weight:500">'+DAY_FULL[d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+'</div><div style="font-size:12px;color:var(--muted);margin-top:2px">'+fheb(d)+' · '+(c.time==='night'?'לילה':'יום')+(gap?' · מחזור: '+gap+' ימים':'')+'</div><div style="font-size:12px;color:var(--pink);margin-top:3px">טבילה: '+fheb(tv)+'</div></div><button class="hist-del" onclick="delCycle('+c.id+',event)">מחקי</button></div></div>';
+    const hpstLine=c.hpst?'<div style="font-size:12px;color:var(--purple-dark);margin-top:2px">הפסק טהרה: '+fheb(new Date(c.hpst))+'</div>':'';
+    return '<div class="hist-item"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:14px;font-weight:500">'+DAY_FULL[d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear()+'</div><div style="font-size:12px;color:var(--muted);margin-top:2px">'+fheb(d)+' · '+(c.time==='night'?'לילה':'יום')+(gap?' · מחזור: '+gap+' ימים':'')+'</div>'+hpstLine+'<div style="font-size:12px;color:var(--pink);margin-top:3px">טבילה: '+fheb(tv)+'</div></div><button class="hist-del" onclick="window._del('+c.id+',event)">מחקי</button></div></div>';
   }).join('');
 }
 
-function delCycle(id,e){ e.stopPropagation(); sc(lc().filter(c=>c.id!==id)); renderHistory(); }
-function clearAll(){ if(confirm('למחוק את כל ההיסטוריה?')){ sc([]); renderHistory(); } }
+async function delCycle(id,e){
+  e.stopPropagation();
+  const cycles=await lc();
+  await sc(cycles.filter(c=>c.id!==id));
+  renderHistory();
+}
 
-renderCal();
+async function clearAll(){
+  if(confirm('למחוק את כל ההיסטוריה?')){ await sc([]); renderHistory(); }
+}
+
+// ════════════════════════════════════════════════════════════
+// NOTIFICATIONS
+// ════════════════════════════════════════════════════════════
+function loadNotifPrefs(){
+  const prefs=JSON.parse(localStorage.getItem(PKEY)||'{}');
+  const enabled=prefs.enabled||false;
+  document.getElementById('toggle-notif').checked=enabled;
+  document.getElementById('notif-settings').style.display=enabled?'':'none';
+  document.getElementById('notif-hpst').checked=prefs.hpst!==false;
+  document.getElementById('notif-sefirah').checked=prefs.sefirah!==false;
+  document.getElementById('notif-tvila').checked=prefs.tvila!==false;
+  document.getElementById('notif-prisha').checked=prefs.prisha!==false;
+  document.getElementById('notif-next').checked=prefs.next!==false;
+  updateNotifStatus();
+}
+
+function saveNotifPrefs(){
+  const prefs={
+    enabled:document.getElementById('toggle-notif').checked,
+    hpst:document.getElementById('notif-hpst').checked,
+    sefirah:document.getElementById('notif-sefirah').checked,
+    tvila:document.getElementById('notif-tvila').checked,
+    prisha:document.getElementById('notif-prisha').checked,
+    next:document.getElementById('notif-next').checked,
+  };
+  localStorage.setItem(PKEY,JSON.stringify(prefs));
+  checkAndScheduleNotifications();
+}
+
+async function toggleNotifications(enabled){
+  document.getElementById('notif-settings').style.display=enabled?'':'none';
+  if(enabled){
+    if(!('Notification' in window)){
+      alert('הדפדפן אינו תומך בהתראות');
+      document.getElementById('toggle-notif').checked=false;
+      document.getElementById('notif-settings').style.display='none';
+      return;
+    }
+    const perm=await Notification.requestPermission();
+    if(perm!=='granted'){
+      document.getElementById('toggle-notif').checked=false;
+      document.getElementById('notif-settings').style.display='none';
+      alert('יש לאשר התראות בהגדרות הדפדפן כדי לקבל תזכורות.');
+      return;
+    }
+  }
+  saveNotifPrefs();
+  updateNotifStatus();
+}
+
+function updateNotifStatus(){
+  const el=document.getElementById('notif-perm-status');
+  if(!('Notification' in window)){el.textContent='הדפדפן אינו תומך בהתראות';return;}
+  if(Notification.permission==='granted') el.textContent='התראות מאושרות';
+  else if(Notification.permission==='denied') el.textContent='חסומות – שני בהגדרות הדפדפן';
+  else el.textContent='לחצי להפעלה';
+}
+
+let _timers=[];
+async function checkAndScheduleNotifications(){
+  _timers.forEach(t=>clearTimeout(t)); _timers=[];
+  if(!('Notification' in window)||Notification.permission!=='granted') return;
+  const prefs=JSON.parse(localStorage.getItem(PKEY)||'{}');
+  if(!prefs.enabled) return;
+
+  const cycles=await lc();
+  const now=new Date();
+  const HORIZON=14*24*60*60*1000;
+  const upcoming=[];
+
+  cycles.forEach(c=>{
+    const start=new Date(c.date);
+    const hpstDate=c.hpst?new Date(c.hpst):ad(start,4);
+    const sef=ad(hpstDate,1);
+    const tvila=ad(sef,7);
+    if(prefs.hpst!==false)    upcoming.push({date:hpstDate,title:'הפסק טהרה היום',body:'זמן להפסק טהרה'});
+    if(prefs.sefirah!==false) upcoming.push({date:sef,title:'תחילת ספירת 7 נקיים',body:'היום מתחילה ספירת 7 ימים נקיים'});
+    if(prefs.tvila!==false)   upcoming.push({date:tvila,title:'ליל הטבילה',body:'הלילה הוא ליל הטבילה. ברכה והצלחה!'});
+    if(prefs.prisha!==false){
+      upcoming.push({date:ad(ad(start,30),-1),title:'עונת פרישה מחר',body:'מחר עונה בינונית (30 יום)'});
+      upcoming.push({date:ad(nextHebSameDay(start),-1),title:'עונת החודש מחר',body:'מחר עונת החודש'});
+    }
+  });
+  if(prefs.next!==false){
+    const s=computeStats(cycles);
+    if(s) upcoming.push({date:ad(s.nextV,-2),title:'ווסת צפוי בעוד יומיים',body:'ווסת משוער: '+fheb(s.nextV)});
+  }
+
+  upcoming.forEach(({date,title,body})=>{
+    const fireAt=new Date(date); fireAt.setHours(8,0,0,0);
+    const ms=fireAt-now;
+    if(ms>0&&ms<HORIZON){
+      _timers.push(setTimeout(()=>new Notification(title,{body,lang:'he',dir:'rtl'}),ms));
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+// EXPOSE TO HTML onclick (required because script type="module" is scoped)
+// ════════════════════════════════════════════════════════════
+window.showTab=showTab;
+window.showApp=showApp;
+window.calculate=calculate;
+window.addFromCal=addFromCal;
+window.chMonth=chMonth;
+window.doLogin=doLogin;
+window.doRegister=doRegister;
+window.doLogout=doLogout;
+window.switchAuthTab=switchAuthTab;
+window.toggleNotifications=toggleNotifications;
+window.saveNotifPrefs=saveNotifPrefs;
+window.clearAll=clearAll;
+window._del=(id,e)=>delCycle(id,e);
 </script>
 </body>
 </html>
