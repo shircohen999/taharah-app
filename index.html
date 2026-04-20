@@ -735,7 +735,7 @@ function Calendar({cycles, onAddCycle}) {
               className={`cal-day${c.other?' other':''}${isToday?' today':''}${isSelected?' selected':''}`}
               data-phase={phase||undefined}
               style={{animationDelay:`${Math.min(i,35)*12}ms`}}
-              onClick={()=>setSelected(c.other?null:c.date)}
+              onClick={()=>{ if(!c.other){setSelected(c.date);setAddDate(iso(c.date));} }}
             >
               <div className="d-dot">
                 <div className="d-greg">{c.date.getDate()}</div>
