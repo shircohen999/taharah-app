@@ -21,7 +21,7 @@ const labelPhase = (lbl) => {
   if (k === 'hpst')     return 'hpst';
   if (k === 'sefirah')  return 'sefirah';
   if (k === 'tvila')    return 'tvila';
-  if (k === 'ovulation') return 'fertile';
+  if (k === 'ovulation' || k === 'fertile') return 'fertile';
   if (k === 'haflagah' || k === 'avg_onah' || k === 'month_onah') return 'prisha';
   return null;
 };
@@ -35,6 +35,7 @@ const renderLabel = (lbl) => {
     case 'hpst':       return t('phaseHpst');
     case 'sefirah':    return t('phaseSefirah', lbl.n);
     case 'tvila':      return t('phaseTvila');
+    case 'fertile':    return t('phaseFertile');
     case 'ovulation':  return t('phaseOvulation');
     case 'avg_onah':   return t('phaseAvgOnah');
     case 'haflagah':   return t('phaseHaflagah', lbl.n);

@@ -154,7 +154,7 @@ function buildMap(cycles) {
     else if(sorted.length>=2) nextV=ad(new Date(sorted[sorted.length-1].date),diff(sorted[sorted.length-1].date,sorted[sorted.length-2].date));
     else nextV=ad(start,30);
     const ov=ad(nextV,-14);
-    for(let i=-4;i<=1;i++){const fd=ad(ov,i);if(!map[iso(fd)]?.types.has('veset'))mark(fd,'fertile');}
+    for(let i=-4;i<=1;i++){const fd=ad(ov,i);if(!map[iso(fd)]?.types.has('veset')){mark(fd,'fertile');if(i!==0)label(fd,{key:'fertile'});}}
     label(ov,{key:'ovulation'});
   });
   return map;

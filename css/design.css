@@ -20,14 +20,14 @@
   --phase-sefirah: #6B8E4E;
   --phase-tvila:   #4A86A8;
   --phase-tahora:  #C49455;
-  --phase-fertile: #8BAD65;
+  --phase-fertile: #E0893A;
   --phase-prisha:  #8E3A5E;
   --veset-soft:   #FBE7EE;
   --hpst-soft:    #F3EEE4;
   --sefirah-soft: #EEF1E4;
   --tvila-soft:   #DBE7F0;
   --tahora-soft:  #F5E9D4;
-  --fertile-soft: #EDF3E0;
+  --fertile-soft: #FDEEDE;
   --r-card: 20px;
   --r-cell: 14px;
   --r-pill: 999px;
@@ -48,9 +48,9 @@
   --primary:#9A6B7F; --primary-ink:#3F2632; --primary-soft:#EFE3E8; --primary-mid:#D5BBC5;
   --phase-veset:#9A6B7F; --phase-dam:#C29FAE; --phase-hpst:#A69680; --phase-hpst-ink:#6A5D4A;
   --phase-sefirah:#7C9065; --phase-tvila:#5C8099; --phase-tahora:#B88850;
-  --phase-fertile:#8EA76C; --phase-prisha:#7C5C6F;
+  --phase-fertile:#C8832A; --phase-prisha:#7C5C6F;
   --veset-soft:#EFE0E6; --hpst-soft:#EFE9DE; --sefirah-soft:#E8EDDE;
-  --tvila-soft:#DDE6ED; --tahora-soft:#F0E4D1; --fertile-soft:#E9EFD8;
+  --tvila-soft:#DDE6ED; --tahora-soft:#F0E4D1; --fertile-soft:#FAF0E4;
 }
 [data-palette="wine"] {
   --bg:#1A1014; --bg-soft:#241519; --card:#2A1820; --text:#F4EAE2; --muted:#B39AA2;
@@ -58,9 +58,9 @@
   --primary:#C69B5D; --primary-ink:#F4EAE2; --primary-soft:#3B2A20; --primary-mid:#8A6339;
   --phase-veset:#B8456A; --phase-dam:#8A3652; --phase-hpst:#CDBFAE; --phase-hpst-ink:#1A1014;
   --phase-sefirah:#A5BA6A; --phase-tvila:#7AB4D4; --phase-tahora:#6FC4A5;
-  --phase-fertile:#A5BA6A; --phase-prisha:#9C4066;
+  --phase-fertile:#D4942A; --phase-prisha:#9C4066;
   --veset-soft:#3B1A26; --hpst-soft:#2C251C; --sefirah-soft:#1E2915;
-  --tvila-soft:#122A38; --tahora-soft:#102820; --fertile-soft:#1E2915;
+  --tvila-soft:#122A38; --tahora-soft:#102820; --fertile-soft:#271A08;
 }
 [data-palette="plum"] {
   --bg:#ECEBEE; --bg-soft:#DFDDE3; --card:#F7F6F8; --text:#1F1C24; --muted:#6B6675;
@@ -68,9 +68,9 @@
   --primary:#6B3B6F; --primary-ink:#2A1830; --primary-soft:#E8DEEB; --primary-mid:#B598BC;
   --phase-veset:#6B3B6F; --phase-dam:#A582A8; --phase-hpst:#A49A8C; --phase-hpst-ink:#4A4238;
   --phase-sefirah:#5E8480; --phase-tvila:#4A6D8C; --phase-tahora:#6E9A96;
-  --phase-fertile:#8AA69F; --phase-prisha:#5A2E5E;
+  --phase-fertile:#C8852A; --phase-prisha:#5A2E5E;
   --veset-soft:#EADFEB; --hpst-soft:#E8E4DC; --sefirah-soft:#DFE9E7;
-  --tvila-soft:#DBE3ED; --tahora-soft:#DFEBE8; --fertile-soft:#E5ECE8;
+  --tvila-soft:#DBE3ED; --tahora-soft:#DFEBE8; --fertile-soft:#FAF0E4;
 }
 
 * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
