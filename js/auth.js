@@ -95,7 +95,7 @@ function LegalModal({doc, onClose}) {
             </div>
           ))}
           <div style={{marginTop:28,fontSize:11,color:'var(--muted)',textAlign:'center',lineHeight:1.6}}>
-            © 2025 שיר וגילה כהן — כל הזכויות שמורות<br/>
+            © 2026 שיר וגילה כהן — כל הזכויות שמורות<br/>
             לשאלות: <span dir="ltr" style={{unicodeBidi:'plaintext'}}>054-464-1746</span>
           </div>
         </div>

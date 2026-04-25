@@ -170,7 +170,7 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
         ⚠️ <strong>הסתייגות:</strong> האפליקציה הינה כלי עזר אישי בלבד. אינה מהווה תחליף להוראת הלכה של רב מוסמך או לייעוץ רפואי. ההוראות, תאריכי הפרישה והחישובים מבוססים על נוסחאות סטטיסטיות ועלולים לשגות. בכל ספק — יש לפנות לרב הקהילה או לרופא/ה.
       </div>
       <div style={{margin:'0 16px 32px',padding:'14px 16px',borderRadius:'var(--r-cell)',fontSize:11,lineHeight:1.9,color:'var(--muted)',textAlign:'center'}}>
-        © 2025 שיר וגילה כהן — כל הזכויות שמורות<br/>
+        © 2026 שיר וגילה כהן — כל הזכויות שמורות<br/>
         לשאלות והערות: <span dir="ltr" style={{unicodeBidi:'plaintext',fontWeight:600,color:'var(--primary)'}}>054-464-1746</span>
       </div>
     </div>
