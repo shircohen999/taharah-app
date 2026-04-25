@@ -190,6 +190,12 @@ function App() {
         {tab==='predict'  && <PredictScreen cycles={cycles}/>}
         {tab==='history'  && <HistoryScreen cycles={cycles} onClear={clearAll} onDelete={deleteCycle}/>}
         {tab==='settings' && <SettingsScreen user={user} onLogout={handleLogout} palette={palette} setPalette={setPalette} syncStatus={syncStatus} minhag={minhag} setMinhag={setMinhag}/>}
+        {tab!=='settings' && (
+          <div style={{padding:'24px 20px 40px',textAlign:'center',fontSize:10.5,color:'var(--muted)',lineHeight:1.8,borderTop:'0.5px solid var(--border)',marginTop:8}}>
+            <div>⚠️ כלי עזר אישי בלבד — אינו תחליף לייעוץ הלכתי או רפואי</div>
+            <div style={{marginTop:4}}>© 2026 שיר וגילה כהן · <span dir="ltr" style={{unicodeBidi:'plaintext'}}>054-464-1746</span></div>
+          </div>
+        )}
       </div>
     </div>
   );
