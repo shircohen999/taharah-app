@@ -166,8 +166,12 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
         {user?'התנתקי':'חזרה למסך ההתחברות'}
       </button>
 
-      <div style={{margin:'24px 16px 32px',padding:'14px 16px',background:'var(--bg-soft)',borderRadius:'var(--r-cell)',fontSize:11,lineHeight:1.7,color:'var(--muted)',textAlign:'center'}}>
+      <div style={{margin:'24px 16px 8px',padding:'14px 16px',background:'var(--bg-soft)',borderRadius:'var(--r-cell)',fontSize:11,lineHeight:1.7,color:'var(--muted)',textAlign:'center'}}>
         ⚠️ <strong>הסתייגות:</strong> האפליקציה הינה כלי עזר אישי בלבד. אינה מהווה תחליף להוראת הלכה של רב מוסמך או לייעוץ רפואי. ההוראות, תאריכי הפרישה והחישובים מבוססים על נוסחאות סטטיסטיות ועלולים לשגות. בכל ספק — יש לפנות לרב הקהילה או לרופא/ה.
+      </div>
+      <div style={{margin:'0 16px 32px',padding:'14px 16px',borderRadius:'var(--r-cell)',fontSize:11,lineHeight:1.9,color:'var(--muted)',textAlign:'center'}}>
+        © 2025 שיר וגילה כהן — כל הזכויות שמורות<br/>
+        לשאלות והערות: <span dir="ltr" style={{unicodeBidi:'plaintext',fontWeight:600,color:'var(--primary)'}}>054-464-1746</span>
       </div>
     </div>
   );

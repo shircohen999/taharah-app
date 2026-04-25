@@ -419,6 +419,10 @@ body {
 .palette-swatch.active { border-color:var(--text); }
 .palette-swatch:hover { transform:translateY(-2px); }
 
+/* ── LEGAL MODAL ── */
+@keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+
 /* ── LOADING ── */
 .loading-screen { position:fixed; inset:0; max-width:430px; margin:0 auto; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:999; }
 .loading-moon { width:48px; height:48px; border-radius:50%; background:var(--primary); animation:moonBreathe 1.8s ease-in-out infinite; }
