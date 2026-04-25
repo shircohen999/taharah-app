@@ -15,8 +15,9 @@ const MoonIcon = ({phase='full',size=18,color='currentColor'}) => {
 const labelPhase = (txt) => {
   if (!txt) return null;
   if (txt === 'תחילת ווסת') return 'veset';
+  if (txt.startsWith('ימי ראייה')) return 'dam';
   if (txt === 'הפסק טהרה') return 'hpst';
-  if (txt === 'תחילת ספירת 7 נקיים') return 'sefirah';
+  if (txt.startsWith('ספירת')) return 'sefirah';
   if (txt === 'ליל הטבילה') return 'tvila';
   if (txt === 'ביוץ משוער') return 'fertile';
   if (txt.startsWith('עונת') || txt === 'עונה בינונית') return 'prisha';
@@ -101,10 +102,10 @@ function Calendar({cycles, onAddCycle}) {
 
       <div className="legend">
         <div className="li"><div className="ld" style={{background:'var(--phase-veset)'}}/>תחילת ווסת</div>
+        <div className="li"><div className="ld" style={{background:'var(--veset-soft)'}}/>ימי ראייה</div>
         <div className="li"><div className="ld" style={{background:'#FFFFFF',border:'1.5px solid var(--phase-hpst)'}}/>הפסק טהרה</div>
         <div className="li"><div className="ld" style={{background:'var(--sefirah-soft)',border:'1.5px dashed var(--phase-sefirah)'}}/>7 נקיים</div>
         <div className="li"><div className="ld" style={{background:'var(--tvila-soft)',border:'1.5px solid var(--phase-tvila)'}}/>ליל הטבילה</div>
-        <div className="li"><div className="ld" style={{background:'var(--tahora-soft)'}}/>טהורה</div>
         <div className="li"><div className="lb" style={{background:'var(--phase-prisha)'}}/>עונת פרישה</div>
         <div className="li"><div className="lb" style={{background:'var(--phase-fertile)'}}/>חלון פוריות</div>
       </div>

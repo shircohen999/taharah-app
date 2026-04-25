@@ -118,7 +118,12 @@ function PredictScreen({cycles}) {
         <div className="result-row"><div className="rl">טווח</div><div className="rv">{s.min}–{s.max} ימים</div></div>
         <div className="result-row"><div className="rl">רגולריות</div><div className="rv"><span style={{fontSize:11,padding:'3px 10px',borderRadius:999,color:'var(--phase-tahora)',background:'var(--tahora-soft)'}}>{s.regLabel}</span></div></div>
       </div>
-      <div className="tip"><strong>חישוב ביוץ:</strong> שיטת Ogino-Knaus — שלב לוטיאלי קבוע של כ-14 יום. התחזית מתייחסת ל-{s.count} מחזורים שמורים.</div>
+      {s.count<3 && (
+        <div className="tip" style={{background:'var(--hpst-soft)',color:'var(--phase-hpst-ink)'}}>
+          <strong>שימי לב:</strong> החישוב מבוסס על {s.count===1?'מרווח אחד בלבד':`${s.count} מרווחים`} בין מחזורים — לא מספיק לחישוב מהימן. הוסיפי עוד 2–3 מחזורים כדי לקבל ממוצע יציב.
+        </div>
+      )}
+      <div className="tip"><strong>חישוב ביוץ:</strong> שיטת Ogino-Knaus — שלב לוטיאלי קבוע של כ-14 יום. התחזית מתייחסת ל-{s.count+1} מחזורים שמורים ({s.count} מרווחים).</div>
     </div>
   );
 }

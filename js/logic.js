@@ -9,6 +9,20 @@ const GREG_M   = ['ינואר','פברואר','מרץ','אפריל','מאי','י
 const DAY_FULL = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 
 const PKEY = 'niddah_notif_v1';
+const MKEY = 'tahara_minhag_v1';
+
+const MINHAGIM = [
+  {id:'ashkenaz',      label:'אשכנז (רמ״א)',           sub:'מנהג רוב יוצאי אשכנז'},
+  {id:'sefard',        label:'ספרד / עדות המזרח (מרן)', sub:'בית יוסף · רוב הספרדים'},
+  {id:'chabad',        label:'חב״ד',                   sub:'מנהג חסידי חב״ד'},
+  {id:'teiman_baladi', label:'תימן — בלאדי',           sub:'מנהג בני תימן (רמב״ם)'},
+  {id:'teiman_shami',  label:'תימן — שאמי',            sub:'מנהג השאמי'},
+];
+const getMinhag = () => {
+  try { return localStorage.getItem(MKEY) || 'ashkenaz'; }
+  catch { return 'ashkenaz'; }
+};
+const minhagLabel = (id) => (MINHAGIM.find(m=>m.id===id)||MINHAGIM[0]).label;
 
 const GEMATRIA_TABLE = [
   [400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],
@@ -79,7 +93,6 @@ function buildMap(cycles) {
     const k=iso(date);
     if(!map[k]) map[k]={types:new Set(),labels:[]};
     map[k].types.add(type);
-    if(type!=='tahora'&&type!=='prisha'&&type!=='fertile') map[k].types.delete('tahora');
   };
   const label=(date,txt)=>{
     const k=iso(date);
@@ -90,19 +103,19 @@ function buildMap(cycles) {
   sorted.forEach((c,idx)=>{
     const start=new Date(c.date);
     mark(start,'veset'); label(start,'תחילת ווסת');
-    for(let i=1;i<=4;i++) mark(ad(start,i),'dam');
+    for(let i=1;i<=4;i++){
+      mark(ad(start,i),'dam');
+      label(ad(start,i),`ימי ראייה — יום ${i+1}`);
+    }
     const hpstDate=c.hpst?new Date(c.hpst):ad(start,4);
     const sef=ad(hpstDate,1);
     const tvila=ad(hpstDate,7);
     mark(hpstDate,'hpst'); label(hpstDate,'הפסק טהרה');
-    label(sef,'תחילת ספירת 7 נקיים');
-    for(let i=0;i<7;i++) mark(ad(sef,i),'sefirah');
-    mark(tvila,'tvila'); label(tvila,'ליל הטבילה');
-    for(let i=1;i<=45;i++){
-      const td=ad(tvila,i),k=iso(td);
-      if(map[k]?.types.has('veset')||map[k]?.types.has('dam')||map[k]?.types.has('sefirah')) break;
-      mark(td,'tahora');
+    for(let i=0;i<7;i++){
+      mark(ad(sef,i),'sefirah');
+      label(ad(sef,i),`ספירת ${i+1} מתוך 7 נקיים`);
     }
+    mark(tvila,'tvila'); label(tvila,'ליל הטבילה');
     if(idx>0){
       const gap=diff(c.date,sorted[idx-1].date);
       mark(ad(start,gap),'prisha'); label(ad(start,gap),`עונת הפלגה (${gap} ימים)`);
@@ -127,7 +140,6 @@ function getDayPhase(types) {
   if(types.has('tvila'))   return 'tvila';
   if(types.has('hpst'))    return 'hpst';
   if(types.has('sefirah')) return 'sefirah';
-  if(types.has('tahora'))  return 'tahora';
   if(types.has('fertile')) return 'fertile';
   return null;
 }

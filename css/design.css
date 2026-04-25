@@ -259,7 +259,6 @@ body {
 .cal-day[data-phase="hpst"]    .d-dot { background:#FFFFFF; color:var(--phase-hpst-ink); border:1.5px solid var(--phase-hpst); }
 .cal-day[data-phase="sefirah"] .d-dot { background:var(--sefirah-soft); color:var(--phase-sefirah); border:1.5px dashed var(--phase-sefirah); }
 .cal-day[data-phase="tvila"]   .d-dot { background:var(--tvila-soft); color:var(--phase-tvila); border:1.5px solid var(--phase-tvila); }
-.cal-day[data-phase="tahora"]  .d-dot { background:var(--tahora-soft); color:var(--phase-tahora); }
 .cal-day[data-phase="fertile"] .d-dot { background:var(--fertile-soft); color:var(--phase-fertile); }
 
 .d-bar { position:absolute; bottom:-3px; left:18%; right:18%; height:3px; border-radius:2px; transition:background-color var(--t-med) var(--ease-out); }
@@ -284,6 +283,7 @@ body {
   animation:tagPop 320ms var(--ease-spring) both;
 }
 .dtag.dtag-veset   { background:var(--phase-veset);   color:#fff; }
+.dtag.dtag-dam     { background:var(--veset-soft);    color:var(--phase-veset); }
 .dtag.dtag-hpst    { background:#FFFFFF;              color:var(--phase-hpst-ink); border:1.5px solid var(--phase-hpst); padding:1.5px 8.5px; }
 .dtag.dtag-sefirah { background:var(--sefirah-soft);  color:var(--phase-sefirah);  border:1.5px dashed var(--phase-sefirah); padding:1.5px 8.5px; }
 .dtag.dtag-tvila   { background:var(--tvila-soft);    color:var(--phase-tvila);    border:1.5px solid var(--phase-tvila);   padding:1.5px 8.5px; }

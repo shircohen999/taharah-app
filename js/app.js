@@ -19,6 +19,7 @@ const TABS=[
 
 function App() {
   const [palette,setPaletteState]=React.useState(()=>localStorage.getItem('tahara_palette')||'rose');
+  const [minhag,setMinhagState]=React.useState(()=>getMinhag());
   const [tab,setTab]=React.useState('calendar');
   const [stage,setStage]=React.useState(initialStage);
   const [user,setUser]=React.useState(null);
@@ -27,6 +28,7 @@ function App() {
   const [syncStatus,setSyncStatus]=React.useState('מסונכרן');
 
   const setPalette=(p)=>{setPaletteState(p);localStorage.setItem('tahara_palette',p);};
+  const setMinhag=(m)=>{setMinhagState(m);localStorage.setItem(MKEY,m);};
 
   React.useEffect(()=>{
     document.documentElement.setAttribute('data-palette',palette);
@@ -66,7 +68,7 @@ function App() {
     if(!('Notification' in window)||Notification.permission!=='granted') return;
     const prefs=JSON.parse(localStorage.getItem(PKEY)||'{}');
     if(!prefs.enabled) return;
-    const ND={hpstDays:0,sefirahDays:0,tvilaDays:0,prishaDays:1,nextDays:2};
+    const ND={hpstDays:0,sefirahDays:0,tvilaDays:0,prishaDays:1,nextDays:2,bedikaDays:0};
     const off=t=>prefs[`${t}Days`]!==undefined?prefs[`${t}Days`]:ND[`${t}Days`];
     const upcoming=[];
     cycles.forEach(c=>{
@@ -74,9 +76,19 @@ function App() {
       const hpstDate=c.hpst?new Date(c.hpst):ad(start,4);
       const sef=ad(hpstDate,1);
       const tvila=ad(sef,7);
-      const hO=off('hpst'),sO=off('sefirah'),tO=off('tvila'),pO=off('prisha');
+      const hO=off('hpst'),sO=off('sefirah'),tO=off('tvila'),pO=off('prisha'),bO=off('bedika');
       if(prefs.hpst!==false) upcoming.push({date:ad(hpstDate,-hO),title:hO===0?'הפסק טהרה היום':`הפסק טהרה בעוד ${hO} ימים`,body:'זמן להפסק טהרה'});
       if(prefs.sefirah!==false) upcoming.push({date:ad(sef,-sO),title:sO===0?'תחילת ספירת 7 נקיים':`ספירת 7 נקיים בעוד ${sO} ימים`,body:'היום מתחילה ספירת 7 ימים נקיים'});
+      if(prefs.bedika!==false){
+        for(let i=0;i<7;i++){
+          upcoming.push({
+            date:ad(ad(sef,i),-bO),
+            title:`בדיקה — יום ${i+1} מתוך 7`,
+            body:`היום בדיקה של יום ${i+1} בספירת 7 הנקיים`
+          });
+        }
+        upcoming.push({date:ad(tvila,-bO),title:'בדיקה — ליל הטבילה',body:'הלילה ליל הטבילה — לזכור בדיקה אחרונה'});
+      }
       if(prefs.tvila!==false) upcoming.push({date:ad(tvila,-tO),title:tO===0?'ליל הטבילה':`ליל הטבילה בעוד ${tO} ימים`,body:'הלילה הוא ליל הטבילה. ברכה והצלחה!'});
       if(prefs.prisha!==false){
         upcoming.push({date:ad(ad(start,30),-pO),title:'עונת פרישה',body:'עונה בינונית (30 יום)'});
@@ -156,7 +168,7 @@ function App() {
       <div className="topbar">
         <div>
           <div className="topbar-title display">לוח הטהרה</div>
-          <div className="topbar-sub">מנהג אשכנז · רמ״א</div>
+          <div className="topbar-sub">{minhagLabel(minhag)}</div>
         </div>
         <button className="topbar-avatar" onClick={()=>setTab('settings')}>
           {(user?.displayName||user?.email||'א').charAt(0).toUpperCase()}
@@ -177,7 +189,7 @@ function App() {
         {tab==='calendar' && <Calendar cycles={cycles} onAddCycle={saveCycle}/>}
         {tab==='predict'  && <PredictScreen cycles={cycles}/>}
         {tab==='history'  && <HistoryScreen cycles={cycles} onClear={clearAll} onDelete={deleteCycle}/>}
-        {tab==='settings' && <SettingsScreen user={user} onLogout={handleLogout} palette={palette} setPalette={setPalette} syncStatus={syncStatus}/>}
+        {tab==='settings' && <SettingsScreen user={user} onLogout={handleLogout} palette={palette} setPalette={setPalette} syncStatus={syncStatus} minhag={minhag} setMinhag={setMinhag}/>}
       </div>
     </div>
   );
