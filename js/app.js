@@ -5,10 +5,8 @@ const SKEY = 'niddah_v4';
 const ONB_KEY = 'tahara_onb_v1'; // 'done' once onboarding has been completed
 
 function initialStage() {
-  // Logged-in user → straight to app
   try { if(JSON.parse(localStorage.getItem('tahara_user_v1')||'null')) return 'app'; } catch {}
-  // Not logged in: show onboarding unless they've completed it before
-  return localStorage.getItem(ONB_KEY)==='done' ? 'auth' : 'intro';
+  return 'intro';
 }
 
 function App() {
@@ -46,8 +44,8 @@ function App() {
         } else {
           localStorage.removeItem('tahara_user_v1');
           setUser(null);
-          if(localStorage.getItem(ONB_KEY)!=='done') setStage('intro');
-          else setStage('auth');
+          // Only redirect if currently in-app (logout); don't interrupt onboarding/auth
+          setStage(prev=>prev==='app'?'intro':prev);
         }
       });
       return unsub;
@@ -56,7 +54,6 @@ function App() {
     return ()=>{ clearTimeout(safety); if(typeof cleanup==='function') cleanup(); };
   },[]);
 
-  const guestModeRef=React.useRef(false);
   const notifTimers=React.useRef([]);
   const scheduleNotifications=React.useCallback(()=>{
     notifTimers.current.forEach(tid=>clearTimeout(tid));
@@ -137,13 +134,13 @@ function App() {
     localStorage.setItem('tahara_user_v1',JSON.stringify({email:u.email,name:u.displayName}));
     setStage('app');
   };
-  const handleGuest=()=>{ guestModeRef.current=true; setStage('intro'); };
+  const handleGuest=()=>setStage('app');
   const handleLogout=async()=>{
     if(!confirm(t('confirmLogout'))) return;
     if(user&&window.__fb) { await window.__fb.logout(); }
     localStorage.removeItem('tahara_user_v1');
     setUser(null);
-    setStage('auth');
+    setStage('intro');
   };
 
   if(authLoading) return (
@@ -152,13 +149,9 @@ function App() {
     </div>
   );
 
-  const completeOnboarding=()=>{
-    localStorage.setItem(ONB_KEY,'done');
-    if(guestModeRef.current){ guestModeRef.current=false; setStage('app'); }
-    else setStage('auth');
-  };
+  const completeOnboarding=()=>{ localStorage.setItem(ONB_KEY,'done'); setStage('auth'); };
   if(stage==='intro') return <Onboarding onDone={completeOnboarding} lang={lang}/>;
-  if(stage==='auth')  return <AuthScreen onLogin={handleLogin} onGuest={handleGuest} setMinhag={setMinhag} lang={lang}/>;
+  if(stage==='auth')  return <AuthScreen onLogin={handleLogin} onGuest={handleGuest} setMinhag={setMinhag} lang={lang} changeLang={changeLang}/>;
 
   const TABS=[
     {id:'calc',     labelKey:'tabCalc'},

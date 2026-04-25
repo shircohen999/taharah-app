@@ -385,6 +385,10 @@ body {
 .auth-legal { text-align:center; font-size:10.5px; color:var(--muted); margin-top:28px; letter-spacing:0.06em; }
 .auth-legal a { color:var(--muted); cursor:pointer; text-decoration:underline; text-decoration-thickness:0.5px; text-underline-offset:3px; }
 .auth-legal-dot { margin:0 10px; opacity:0.5; }
+.auth-lang-bar { display:flex; justify-content:flex-end; padding:8px 16px 0; gap:2px; }
+[dir="ltr"] .auth-lang-bar { justify-content:flex-start; }
+.auth-lang-btn { padding:5px 13px; border-radius:999px; border:none; cursor:pointer; font-size:12px; font-weight:400; font-family:inherit; background:transparent; color:var(--muted); transition:all var(--t-fast) var(--ease-out); }
+.auth-lang-btn.active { background:var(--primary-soft); color:var(--primary-ink); font-weight:600; }
 
 /* ── ACCOUNT SCREEN ── */
 .account-hero { text-align:center; padding:12px 20px 20px; margin-bottom:10px; }

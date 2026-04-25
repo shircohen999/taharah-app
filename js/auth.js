@@ -60,7 +60,7 @@ function LegalModal({doc, onClose}) {
   );
 }
 
-function AuthScreen({onLogin, onGuest, setMinhag, lang}) {
+function AuthScreen({onLogin, onGuest, setMinhag, lang, changeLang}) {
   const [mode,setMode]=React.useState('login');
   const [email,setEmail]=React.useState('');
   const [pass,setPass]=React.useState('');
@@ -119,6 +119,13 @@ function AuthScreen({onLogin, onGuest, setMinhag, lang}) {
         <span style={{background:'var(--phase-sefirah)'}}/>
         <span style={{background:'var(--phase-tvila)'}}/>
         <span style={{background:'var(--phase-tahora)'}}/>
+      </div>
+      <div className="auth-lang-bar">
+        {['he','en'].map(l=>(
+          <button key={l} className={`auth-lang-btn${lang===l?' active':''}`} onClick={()=>changeLang(l)}>
+            {l==='he'?'עב':'EN'}
+          </button>
+        ))}
       </div>
       <div className="auth-wrap">
         <div className="auth-head">
