@@ -6,7 +6,7 @@
 
 const { initializeApp, getApps, cert } = require('firebase-admin/app');
 const { getFirestore }                  = require('firebase-admin/firestore');
-const { Resend }                        = require('resend');
+const nodemailer                        = require('nodemailer');
 
 // ── Date helpers ─────────────────────────────────────────────────────────
 const ad   = (d, n) => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
@@ -29,6 +29,17 @@ function getDb() {
     initializeApp({ credential: cert(sa) });
   }
   return getFirestore();
+}
+
+// ── Gmail transporter ────────────────────────────────────────────────────
+function getTransporter() {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  });
 }
 
 // ── Calculate which events fire today for a user ─────────────────────────
@@ -147,10 +158,10 @@ module.exports = async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
 
   try {
-    const db     = getDb();
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const today  = new Date(); today.setHours(0, 0, 0, 0);
-    const from   = process.env.EMAIL_FROM || 'Tahara Calendar <onboarding@resend.dev>';
+    const db          = getDb();
+    const transporter = getTransporter();
+    const today       = new Date(); today.setHours(0, 0, 0, 0);
+    const from        = `לוח הטהרה <${process.env.GMAIL_USER}>`;
 
     const snap = await db.collection('notif_users')
       .where('notifEmail', '==', true)
@@ -179,7 +190,12 @@ module.exports = async function handler(req, res) {
         : isHe ? `${events.length} תזכורות להיום` : `${events.length} reminders today`;
 
       try {
-        await resend.emails.send({ from, to: prefs.email, subject, html: buildHtml(events, lang) });
+        await transporter.sendMail({
+          from,
+          to: prefs.email,
+          subject,
+          html: buildHtml(events, lang),
+        });
         results.push({ uid, email: prefs.email, sent: true, events: events.length });
       } catch (e) {
         results.push({ uid, email: prefs.email, sent: false, error: e.message });
