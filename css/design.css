@@ -126,7 +126,7 @@ body {
   transition:background-color var(--t-med) var(--ease-out);
 }
 .tab {
-  flex:1; padding:9px 6px; font-size:12px; font-weight:500;
+  flex:1; padding:9px 4px; font-size:11px; font-weight:500;
   text-align:center; color:var(--muted); background:transparent;
   border:none; border-radius:var(--r-pill); cursor:pointer;
   position:relative; transition:color var(--t-fast) var(--ease-out);

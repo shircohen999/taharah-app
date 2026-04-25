@@ -12,7 +12,9 @@ const _T = {
     phone: '054-464-1746',
     // Tabs
     tabCalc: 'חישוב', tabCalendar: 'לוח', tabPredict: 'תחזית',
-    tabHistory: 'היסטוריה', tabSettings: 'הגדרות',
+    tabHistory: 'היסטוריה', tabSettings: 'הגדרות', tabGlossary: 'מילון',
+    glossaryCycle: 'מחזור הטהרה', glossaryPrisha: 'עונות פרישה',
+    glossaryFertility: 'פוריות', glossaryGeneral: 'כללי',
     // Phase labels
     phaseVeset: 'תחילת ווסת',
     phaseDam: n => `ימי ראייה — יום ${n}`,
@@ -175,7 +177,9 @@ const _T = {
     phone: '054-464-1746',
     // Tabs
     tabCalc: 'Calculate', tabCalendar: 'Calendar', tabPredict: 'Predict',
-    tabHistory: 'History', tabSettings: 'Settings',
+    tabHistory: 'History', tabSettings: 'Settings', tabGlossary: 'Glossary',
+    glossaryCycle: 'Tahara Cycle', glossaryPrisha: 'Separation Periods',
+    glossaryFertility: 'Fertility', glossaryGeneral: 'General',
     // Phase labels
     phaseVeset: 'Period Start',
     phaseDam: n => `Period — Day ${n}`,

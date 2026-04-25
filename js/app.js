@@ -158,6 +158,7 @@ function App() {
     {id:'calendar', labelKey:'tabCalendar'},
     {id:'predict',  labelKey:'tabPredict'},
     {id:'history',  labelKey:'tabHistory'},
+    {id:'glossary', labelKey:'tabGlossary'},
     {id:'settings', labelKey:'tabSettings'},
   ];
 
@@ -190,6 +191,7 @@ function App() {
         {tab==='calendar' && <Calendar cycles={cycles} onAddCycle={saveCycle} lang={lang}/>}
         {tab==='predict'  && <PredictScreen cycles={cycles}/>}
         {tab==='history'  && <HistoryScreen cycles={cycles} onClear={clearAll} onDelete={deleteCycle}/>}
+        {tab==='glossary' && <GlossaryScreen lang={lang}/>}
         {tab==='settings' && <SettingsScreen user={user} onLogout={handleLogout} palette={palette} setPalette={setPalette} syncStatus={syncStatus} minhag={minhag} setMinhag={setMinhag} lang={lang} changeLang={changeLang}/>}
         {tab!=='settings' && (
           <div style={{padding:'24px 20px 40px',textAlign:'center',fontSize:10.5,color:'var(--muted)',lineHeight:1.8,borderTop:'0.5px solid var(--border)',marginTop:8}}>
