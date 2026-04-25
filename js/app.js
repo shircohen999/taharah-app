@@ -145,7 +145,7 @@ function App() {
 
   if(authLoading) return (
     <div className="loading-screen">
-      <div className="loading-moon"/>
+      <AppLogo size={64} className="loading-logo"/>
     </div>
   );
 
@@ -164,9 +164,12 @@ function App() {
   return (
     <div>
       <div className="topbar">
-        <div>
-          <div className="topbar-title display">{t('appTitle')}</div>
-          <div className="topbar-sub">{minhagLabel(minhag)}</div>
+        <div className="topbar-brand">
+          <AppLogo size={30} className="topbar-logo"/>
+          <div>
+            <div className="topbar-title display">{t('appTitle')}</div>
+            <div className="topbar-sub">{minhagLabel(minhag)}</div>
+          </div>
         </div>
         <button className="topbar-avatar" onClick={()=>setTab('settings')}>
           {(user?.displayName||user?.email||'א').charAt(0).toUpperCase()}

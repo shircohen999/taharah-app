@@ -1,6 +1,29 @@
 // ═══════════════════════════════════════════════════════
 // ONBOARDING — splash screens shown on first visit
 // ═══════════════════════════════════════════════════════
+
+// Shared logo component — calendar icon with house+heart, adapts to all 4 palettes via CSS vars
+function AppLogo({size=44, className=''}) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true" className={className}>
+      <rect x="8" y="18" width="84" height="74" rx="13" fill="var(--bg-soft)"/>
+      <rect x="8" y="18" width="84" height="28" rx="13" fill="var(--primary)"/>
+      <rect x="8" y="32" width="84" height="14" fill="var(--primary)"/>
+      <rect x="26" y="7" width="14" height="22" rx="7" fill="var(--primary)"/>
+      <rect x="60" y="7" width="14" height="22" rx="7" fill="var(--primary)"/>
+      <circle cx="11" cy="25" r="2.2" fill="rgba(255,255,255,0.4)"/>
+      <circle cx="17" cy="25" r="2.2" fill="rgba(255,255,255,0.4)"/>
+      <circle cx="23" cy="25" r="2.2" fill="rgba(255,255,255,0.4)"/>
+      <circle cx="77" cy="25" r="2.2" fill="rgba(255,255,255,0.4)"/>
+      <circle cx="83" cy="25" r="2.2" fill="rgba(255,255,255,0.4)"/>
+      <circle cx="89" cy="25" r="2.2" fill="rgba(255,255,255,0.4)"/>
+      <polygon points="50,45 26,64 74,64" fill="var(--primary)"/>
+      <rect x="29" y="62" width="42" height="26" rx="3" fill="var(--primary)"/>
+      <path d="M50,69 C50,67 44,65 42,68 C40,71 42,75 50,81 C58,75 60,71 58,68 C56,65 50,67 50,69 Z" fill="var(--card)"/>
+    </svg>
+  );
+}
+
 function MoonArt() {
   return (
     <div className="onb-mandala">
@@ -57,6 +80,10 @@ function Onboarding({onDone, lang}) {
   const next=()=>{if(step<steps.length-1)setStep(step+1);else onDone();};
   return (
     <div className="onb-overlay">
+      <div className="onb-logo-header">
+        <AppLogo size={62} className="onb-logo"/>
+        <div className="onb-brand display">{t('appTitle')}</div>
+      </div>
       <div className="onb-stage">
         <div className="onb-content" key={step} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:14}}>
           {steps[step].art}

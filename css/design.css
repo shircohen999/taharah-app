@@ -105,6 +105,8 @@ body {
   position:sticky; top:0; z-index:10;
   transition:background-color var(--t-med) var(--ease-out);
 }
+.topbar-brand { display:flex; align-items:center; gap:10px; }
+.topbar-logo { flex-shrink:0; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.08)); }
 .topbar-title { font-family:var(--font-display); font-size:28px; font-weight:700; line-height:1; letter-spacing:-0.015em; }
 .topbar-sub { font-size:11px; color:var(--muted); margin-top:6px; letter-spacing:0.04em; }
 .topbar-avatar {
@@ -313,8 +315,11 @@ body {
   width:100%; min-height:100vh; min-height:100svh;
   background:var(--bg);
   display:flex; flex-direction:column;
-  padding:60px 28px 40px;
+  padding:36px 28px 40px;
 }
+.onb-logo-header { display:flex; flex-direction:column; align-items:center; gap:10px; padding-bottom:8px; }
+.onb-logo { animation:moonBreathe 4s ease-in-out infinite; filter:drop-shadow(0 4px 20px rgba(0,0,0,0.1)); }
+.onb-brand { font-size:22px; font-weight:700; color:var(--primary); letter-spacing:-0.01em; }
 .onb-stage { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:20px; }
 .onb-mandala { width:160px; height:160px; position:relative; margin-bottom:16px; }
 .onb-ring {
@@ -363,7 +368,7 @@ body {
 .auth-hairline span:nth-child(3){flex:1.6}
 .auth-wrap { padding:70px 28px 36px; max-width:430px; margin:0 auto; flex:1; width:100%; box-sizing:border-box; }
 .auth-head { text-align:center; margin-bottom:28px; }
-.auth-glyph { width:44px; height:44px; margin:0 auto 18px; display:block; animation:breathe 4.5s ease-in-out infinite; }
+.auth-glyph { width:64px; height:64px; margin:0 auto 18px; display:block; animation:breathe 4.5s ease-in-out infinite; filter:drop-shadow(0 4px 20px rgba(0,0,0,0.1)); }
 .auth-eyebrow { font-size:10.5px; letter-spacing:0.24em; color:var(--muted); margin-bottom:10px; }
 .auth-greet { font-family:var(--font-display); font-size:42px; font-weight:700; line-height:1.15; letter-spacing:-0.02em; color:var(--text); margin-bottom:6px; }
 .auth-lede { font-size:13.5px; color:var(--muted); line-height:1.5; max-width:240px; margin:0 auto; }
@@ -432,4 +437,4 @@ body {
 
 /* ── LOADING ── */
 .loading-screen { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:999; }
-.loading-moon { width:48px; height:48px; border-radius:50%; background:var(--primary); animation:moonBreathe 1.8s ease-in-out infinite; }
+.loading-logo { animation:moonBreathe 1.8s ease-in-out infinite; filter:drop-shadow(0 4px 16px rgba(0,0,0,0.12)); }

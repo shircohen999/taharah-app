@@ -129,11 +129,7 @@ function AuthScreen({onLogin, onGuest, setMinhag, lang, changeLang}) {
       </div>
       <div className="auth-wrap">
         <div className="auth-head">
-          <svg className="auth-glyph" viewBox="0 0 44 44" aria-hidden="true">
-            <circle cx="22" cy="22" r="16" fill="none" stroke="var(--border-mid)" strokeWidth="0.5"/>
-            <circle cx="22" cy="22" r="10" fill="var(--primary-soft)"/>
-            <path d="M 22 12 a 10 10 0 0 1 0 20 a 7 10 0 0 0 0 -20 z" fill="var(--primary)"/>
-          </svg>
+          <AppLogo size={64} className="auth-glyph"/>
           <div className="auth-eyebrow">{t('appTitle')}</div>
           {!forgotMode && (
             <>
