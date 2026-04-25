@@ -3,27 +3,31 @@
 // ═══════════════════════════════════════════════════════
 const NOTIF_DEFAULTS = {hpstDays:0, sefirahDays:0, tvilaDays:0, prishaDays:1, nextDays:2, bedikaDays:0};
 
-function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag, setMinhag}) {
+function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag, setMinhag, lang, changeLang}) {
   const [prefs,setPrefs]=React.useState(()=>{try{return JSON.parse(localStorage.getItem(PKEY)||'{}')}catch{return {};}});
 
   const save=(p)=>{setPrefs(p);localStorage.setItem(PKEY,JSON.stringify(p));};
   const toggleEnabled=async(v)=>{
     if(v){
-      if(!('Notification' in window)){alert('הדפדפן אינו תומך בהתראות');return;}
+      if(!('Notification' in window)){alert(t('alertNotifsUnsupported'));return;}
       const perm=await Notification.requestPermission();
-      if(perm!=='granted'){alert('יש לאשר התראות בהגדרות הדפדפן');return;}
+      if(perm!=='granted'){alert(t('alertNotifsBlocked'));return;}
     }
     save({...prefs,enabled:v});
   };
 
   const PALETTES=[
-    {id:'rose',label:'ורד',colors:['#F7F2EE','#B14068','#6B8E4E','#4A86A8']},
-    {id:'sage',label:'מרווה',colors:['#F2EFE8','#9A6B7F','#7C9065','#5C8099']},
-    {id:'wine',label:'יין',colors:['#1A1014','#C69B5D','#B8456A','#7AB4D4']},
-    {id:'plum',label:'שזיף',colors:['#ECEBEE','#6B3B6F','#5E8480','#4A6D8C']},
+    {id:'rose',  labelKey:'paletteRose',  colors:['#F7F2EE','#B14068','#6B8E4E','#4A86A8']},
+    {id:'sage',  labelKey:'paletteSage',  colors:['#F2EFE8','#9A6B7F','#7C9065','#5C8099']},
+    {id:'wine',  labelKey:'paletteWine',  colors:['#1A1014','#C69B5D','#B8456A','#7AB4D4']},
+    {id:'plum',  labelKey:'palettePlum',  colors:['#ECEBEE','#6B3B6F','#5E8480','#4A6D8C']},
   ];
 
   const initials=(user?.displayName||user?.email||'א').charAt(0).toUpperCase();
+
+  const notifDaysSub=(days)=>days===0?t('settingsOnEvent'):days===1?t('settingsOneDayBefore'):t('settingsDaysBefore',days);
+
+  const syncLabel = syncStatus==='synced'?t('accSynced'):syncStatus==='sync_error'?t('accSyncErr'):syncStatus;
 
   return (
     <div className="reveal">
@@ -32,24 +36,45 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
           <div className="account-avatar-ring"/>
           <span>{initials}</span>
         </div>
-        <div className="account-name display">{user?.displayName||'אורחת'}</div>
-        <div className="account-email">{user?.email||'נתונים שמורים במכשיר'}</div>
+        <div className="account-name display">{user?.displayName||t('accGuest')}</div>
+        <div className="account-email">{user?.email||t('accLocalData')}</div>
         <div className="account-badges">
           {user?(
-            <span className="acc-badge acc-badge-ok"><span className="acc-dot"/> {syncStatus}</span>
+            <span className="acc-badge acc-badge-ok"><span className="acc-dot"/> {syncLabel}</span>
           ):(
-            <span className="acc-badge acc-badge-warn"><span className="acc-dot"/> מקומי</span>
+            <span className="acc-badge acc-badge-warn"><span className="acc-dot"/> {t('accLocal')}</span>
           )}
         </div>
       </div>
 
-      <div className="sec-label">מראה</div>
+      <div className="sec-label">{t('settingsLang')}</div>
+      <div className="card">
+        <div style={{display:'flex',justifyContent:'center',gap:12,padding:'14px 18px'}}>
+          {['he','en'].map(l=>(
+            <button
+              key={l}
+              onClick={()=>changeLang(l)}
+              style={{
+                padding:'8px 24px',borderRadius:999,border:'none',cursor:'pointer',
+                fontSize:14,fontWeight:lang===l?600:400,
+                background:lang===l?'var(--primary)':'var(--bg-soft)',
+                color:lang===l?'#fff':'var(--text)',
+                transition:'background var(--t-fast) var(--ease-out)',
+              }}
+            >
+              {l==='he'?t('settingsLangHe'):t('settingsLangEn')}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="sec-label">{t('settingsAppearance')}</div>
       <div className="card">
         <div style={{padding:'14px 18px 8px'}}>
-          <div style={{fontSize:12,color:'var(--muted)',marginBottom:10}}>פלטת צבעים</div>
+          <div style={{fontSize:12,color:'var(--muted)',marginBottom:10}}>{t('settingsPaletteLabel')}</div>
           <div className="palette-row" style={{padding:0}}>
             {PALETTES.map(p=>(
-              <div key={p.id} className={`palette-swatch${palette===p.id?' active':''}`} onClick={()=>setPalette(p.id)} title={p.label}>
+              <div key={p.id} className={`palette-swatch${palette===p.id?' active':''}`} onClick={()=>setPalette(p.id)} title={t(p.labelKey)}>
                 <div style={{position:'absolute',inset:0,display:'flex'}}>
                   {p.colors.map((c,i)=><div key={i} style={{flex:1,background:c}}/>)}
                 </div>
@@ -57,29 +82,38 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
             ))}
           </div>
           <div style={{display:'flex',justifyContent:'center',gap:20,marginTop:8,fontSize:10,color:'var(--muted)'}}>
-            {PALETTES.map(p=><span key={p.id} style={{color:palette===p.id?'var(--primary)':'inherit',fontWeight:palette===p.id?600:400}}>{p.label}</span>)}
+            {PALETTES.map(p=><span key={p.id} style={{color:palette===p.id?'var(--primary)':'inherit',fontWeight:palette===p.id?600:400}}>{t(p.labelKey)}</span>)}
           </div>
         </div>
       </div>
 
-      <div className="sec-label">התראות</div>
+      <div className="sec-label">{t('settingsNotifs')}</div>
       <div className="card">
         <div className="notif-row">
-          <div><div style={{fontSize:14}}>הפעלת התראות</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{'Notification' in window?Notification.permission==='granted'?'מאושרות ✓':Notification.permission==='denied'?'חסומות — שנ״י בדפדפן':'לחצי להפעלה':'לא נתמך'}</div></div>
+          <div>
+            <div style={{fontSize:14}}>{t('settingsNotifsEnabled')}</div>
+            <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>
+              {'Notification' in window
+                ? Notification.permission==='granted' ? t('settingsNotifsGranted')
+                  : Notification.permission==='denied'  ? t('settingsNotifsDenied')
+                  : t('settingsNotifsRequest')
+                : t('settingsNotifsUnsupported')}
+            </div>
+          </div>
           <Toggle value={!!prefs.enabled} onChange={toggleEnabled}/>
         </div>
         {prefs.enabled&&(<>
           <div className="notif-row" style={{alignItems:'flex-start'}}>
             <div style={{flex:1}}>
-              <div style={{fontSize:14}}>אופן ההתראה</div>
+              <div style={{fontSize:14}}>{t('settingsNotifsType')}</div>
               <div style={{fontSize:11,color:'var(--muted)',marginTop:2,lineHeight:1.5}}>
-                כרגע: התראות דפדפן (פעילות רק כשהאפליקציה פתוחה).<br/>
-                <span style={{color:'var(--phase-hpst)'}}>תזכורות במייל — בקרוב (דורש שרת)</span>
+                {t('settingsNotifsTypeDesc')}<br/>
+                <span style={{color:'var(--phase-hpst)'}}>{t('settingsNotifsComingSoon')}</span>
               </div>
             </div>
           </div>
           <div className="notif-row">
-            <div><div style={{fontSize:14}}>שעת ההתראה</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>השעה שבה תישלח כל תזכורת</div></div>
+            <div><div style={{fontSize:14}}>{t('settingsNotifsTime')}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{t('settingsNotifsTimeSub')}</div></div>
             <input
               type="time"
               value={`${String(prefs.notifHour??8).padStart(2,'0')}:${String(prefs.notifMin??0).padStart(2,'0')}`}
@@ -88,22 +122,21 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
             />
           </div>
           {[
-            {key:'hpst',   label:'הפסק טהרה',         dkey:'hpstDays',    def:NOTIF_DEFAULTS.hpstDays},
-            {key:'sefirah',label:'תחילת ספירה',        dkey:'sefirahDays', def:NOTIF_DEFAULTS.sefirahDays},
-            {key:'bedika', label:'בדיקה יומית (7 נקיים + ליל טבילה)', dkey:'bedikaDays', def:NOTIF_DEFAULTS.bedikaDays},
-            {key:'tvila',  label:'ליל הטבילה',         dkey:'tvilaDays',   def:NOTIF_DEFAULTS.tvilaDays},
-            {key:'prisha', label:'עונות פרישה',        dkey:'prishaDays',  def:NOTIF_DEFAULTS.prishaDays},
-            {key:'next',   label:'ווסת צפוי',          dkey:'nextDays',    def:NOTIF_DEFAULTS.nextDays},
-          ].map(({key:k,label,dkey,def})=>{
+            {key:'hpst',    labelKey:'settingsHpstLabel',    dkey:'hpstDays',    def:NOTIF_DEFAULTS.hpstDays},
+            {key:'sefirah', labelKey:'settingsSefirahLabel',  dkey:'sefirahDays', def:NOTIF_DEFAULTS.sefirahDays},
+            {key:'bedika',  labelKey:'settingsBedikaLabel',   dkey:'bedikaDays',  def:NOTIF_DEFAULTS.bedikaDays},
+            {key:'tvila',   labelKey:'settingsTvilaLabel',    dkey:'tvilaDays',   def:NOTIF_DEFAULTS.tvilaDays},
+            {key:'prisha',  labelKey:'settingsPrishaLabel',   dkey:'prishaDays',  def:NOTIF_DEFAULTS.prishaDays},
+            {key:'next',    labelKey:'settingsNextLabel',     dkey:'nextDays',    def:NOTIF_DEFAULTS.nextDays},
+          ].map(({key:k,labelKey,dkey,def})=>{
             const on=prefs[k]!==false;
             const days=prefs[dkey]??def;
             const setDays=v=>save({...prefs,[dkey]:Math.max(0,Math.min(14,v))});
-            const sub=days===0?'ביום האירוע':days===1?'יום אחד לפני':`${days} ימים לפני`;
             return (
               <div key={k} className="notif-row" style={{alignItems:'flex-start',paddingTop:14,paddingBottom:14}}>
                 <div style={{flex:1}}>
-                  <div style={{fontSize:14}}>{label}</div>
-                  <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{on?sub:'כבוי'}</div>
+                  <div style={{fontSize:14}}>{t(labelKey)}</div>
+                  <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{on?notifDaysSub(days):t('settingsOff')}</div>
                 </div>
                 <div style={{display:'flex',alignItems:'center',gap:8}}>
                   {on&&(
@@ -121,7 +154,7 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
         </>)}
       </div>
 
-      <div className="sec-label">מנהג הלכתי</div>
+      <div className="sec-label">{t('settingsMinhag')}</div>
       <div className="card">
         <div style={{padding:'10px 18px'}}>
           {MINHAGIM.map((m,i)=>(
@@ -135,8 +168,8 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
               }}
             >
               <div style={{flex:1}}>
-                <div style={{fontSize:14,fontWeight:minhag===m.id?600:400}}>{m.label}</div>
-                <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{m.sub}</div>
+                <div style={{fontSize:14,fontWeight:minhag===m.id?600:400}}>{t(m.labelKey)}</div>
+                <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{t(m.subKey)}</div>
               </div>
               <div style={{
                 width:20,height:20,borderRadius:'50%',
@@ -150,28 +183,27 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
           ))}
         </div>
         <div style={{padding:'10px 18px',borderTop:'0.5px solid var(--border)',fontSize:11,color:'var(--muted)',lineHeight:1.5}}>
-          ההבדלים בין המנהגים יחולו על החישוב בעדכון הבא. כעת השמירה היא לבחירה בלבד.
+          {t('settingsMinhagNote')}
         </div>
       </div>
 
-      <div className="sec-label">חשבון</div>
+      <div className="sec-label">{t('settingsAccount')}</div>
       <div className="card">
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'14px 18px'}}>
-          <div><div style={{fontSize:14}}>סנכרון ענן</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{user?syncStatus:'לא פעיל'}</div></div>
+          <div><div style={{fontSize:14}}>{t('settingsSync')}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{user?syncLabel:t('settingsSyncOff')}</div></div>
           <span style={{fontSize:18}}>{user?'✓':'—'}</span>
         </div>
       </div>
 
       <button className="btn-ghost" onClick={onLogout} style={{marginTop:12}}>
-        {user?'התנתקי':'חזרה למסך ההתחברות'}
+        {user?t('settingsLogout'):t('settingsGuestLogout')}
       </button>
 
-      <div style={{margin:'24px 16px 8px',padding:'14px 16px',background:'var(--bg-soft)',borderRadius:'var(--r-cell)',fontSize:11,lineHeight:1.7,color:'var(--muted)',textAlign:'center'}}>
-        ⚠️ <strong>הסתייגות:</strong> האפליקציה הינה כלי עזר אישי בלבד. אינה מהווה תחליף להוראת הלכה של רב מוסמך או לייעוץ רפואי. ההוראות, תאריכי הפרישה והחישובים מבוססים על נוסחאות סטטיסטיות ועלולים לשגות. בכל ספק — יש לפנות לרב הקהילה או לרופא/ה.
-      </div>
+      <div style={{margin:'24px 16px 8px',padding:'14px 16px',background:'var(--bg-soft)',borderRadius:'var(--r-cell)',fontSize:11,lineHeight:1.7,color:'var(--muted)',textAlign:'center'}}
+        dangerouslySetInnerHTML={{__html:t('settingsDisclaimer')}}/>
       <div style={{margin:'0 16px 32px',padding:'14px 16px',borderRadius:'var(--r-cell)',fontSize:11,lineHeight:1.9,color:'var(--muted)',textAlign:'center'}}>
-        © 2026 שיר וגילה כהן — כל הזכויות שמורות<br/>
-        לשאלות והערות: <span dir="ltr" style={{unicodeBidi:'plaintext',fontWeight:600,color:'var(--primary)'}}>054-464-1746</span>
+        {t('copyright')}<br/>
+        <span dir="ltr" style={{unicodeBidi:'plaintext',fontWeight:600,color:'var(--primary)'}}>{t('phone')}</span>
       </div>
     </div>
   );

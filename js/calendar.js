@@ -12,19 +12,38 @@ const MoonIcon = ({phase='full',size=18,color='currentColor'}) => {
   return <svg width={size} height={size} viewBox="0 0 18 18" className="moon-svg">{shapes[phase]}</svg>;
 };
 
-const labelPhase = (txt) => {
-  if (!txt) return null;
-  if (txt === 'תחילת ווסת') return 'veset';
-  if (txt.startsWith('ימי ראייה')) return 'dam';
-  if (txt === 'הפסק טהרה') return 'hpst';
-  if (txt.startsWith('ספירת')) return 'sefirah';
-  if (txt === 'ליל הטבילה') return 'tvila';
-  if (txt === 'ביוץ משוער') return 'fertile';
-  if (txt.startsWith('עונת') || txt === 'עונה בינונית') return 'prisha';
+// labelPhase: maps a label object {key, n?} → CSS phase class
+const labelPhase = (lbl) => {
+  if (!lbl) return null;
+  const k = lbl.key;
+  if (k === 'veset')    return 'veset';
+  if (k === 'dam')      return 'dam';
+  if (k === 'hpst')     return 'hpst';
+  if (k === 'sefirah')  return 'sefirah';
+  if (k === 'tvila')    return 'tvila';
+  if (k === 'ovulation') return 'fertile';
+  if (k === 'haflagah' || k === 'avg_onah' || k === 'month_onah') return 'prisha';
   return null;
 };
 
-function Calendar({cycles, onAddCycle}) {
+// renderLabel: translates a label object to display text
+const renderLabel = (lbl) => {
+  if (!lbl) return '';
+  switch (lbl.key) {
+    case 'veset':      return t('phaseVeset');
+    case 'dam':        return t('phaseDam', lbl.n);
+    case 'hpst':       return t('phaseHpst');
+    case 'sefirah':    return t('phaseSefirah', lbl.n);
+    case 'tvila':      return t('phaseTvila');
+    case 'ovulation':  return t('phaseOvulation');
+    case 'avg_onah':   return t('phaseAvgOnah');
+    case 'haflagah':   return t('phaseHaflagah', lbl.n);
+    case 'month_onah': return t('phaseMonthOnah');
+    default:           return lbl.key;
+  }
+};
+
+function Calendar({cycles, onAddCycle, lang}) {
   const [viewDate, setViewDate] = React.useState(()=>new Date());
   const [selected, setSelected] = React.useState(null);
   const [key, setKey] = React.useState(0);
@@ -51,7 +70,7 @@ function Calendar({cycles, onAddCycle}) {
   const [addTime,setAddTime]=React.useState('');
   const [addHpst,setAddHpst]=React.useState('');
   const handleAdd=()=>{
-    if(!addDate||!addTime){alert('אנא בחרי תאריך ועונה');return;}
+    if(!addDate||!addTime){alert(t('alertNoDateOnah'));return;}
     onAddCycle({date:addDate,time:addTime,hpst:addHpst||null});
     setAddDate('');setAddTime('');setAddHpst('');
   };
@@ -61,17 +80,17 @@ function Calendar({cycles, onAddCycle}) {
       <div className="month-nav">
         <button className="mnav-btn" onClick={()=>changeMonth(-1)}>‹</button>
         <div style={{textAlign:'center'}}>
-          <div className="mlabel">{GREG_M[vm]} {vy}</div>
+          <div className="mlabel">{gregM(vm)} {vy}</div>
           <div className="mlabel2">{fhebMonth(first)}</div>
         </div>
         <div style={{display:'flex',alignItems:'center',gap:4}}>
-          <button className="today-chip" onClick={goToday}>היום</button>
+          <button className="today-chip" onClick={goToday}>{t('calToday')}</button>
           <button className="mnav-btn" onClick={()=>changeMonth(1)}>›</button>
         </div>
       </div>
 
       <div className="dow-row">
-        {['א','ב','ג','ד','ה','ו','ש'].map(d=><div key={d} className="dow-cell">{d}</div>)}
+        {t('dayHeaders').map((d,i)=><div key={i} className="dow-cell">{d}</div>)}
       </div>
 
       <div className="cal-grid" key={key}>
@@ -108,52 +127,52 @@ function Calendar({cycles, onAddCycle}) {
       </div>
 
       <div className="legend">
-        <div className="li"><div className="ld" style={{background:'var(--phase-veset)'}}/>תחילת ווסת</div>
-        <div className="li"><div className="ld" style={{background:'var(--veset-soft)'}}/>ימי ראייה</div>
-        <div className="li"><div className="ld" style={{background:'#FFFFFF',border:'1.5px solid var(--phase-hpst)'}}/>הפסק טהרה</div>
-        <div className="li"><div className="ld" style={{background:'var(--sefirah-soft)',border:'1.5px dashed var(--phase-sefirah)'}}/>7 נקיים</div>
-        <div className="li"><div className="ld" style={{background:'var(--tvila-soft)',border:'1.5px solid var(--phase-tvila)'}}/>ליל הטבילה</div>
-        <div className="li"><div className="lb" style={{background:'var(--phase-prisha)'}}/>עונת פרישה</div>
-        <div className="li"><div className="lb" style={{background:'var(--phase-fertile)'}}/>חלון פוריות</div>
+        <div className="li"><div className="ld" style={{background:'var(--phase-veset)'}}/>{ t('legendVeset')}</div>
+        <div className="li"><div className="ld" style={{background:'var(--veset-soft)'}}/>{ t('legendDam')}</div>
+        <div className="li"><div className="ld" style={{background:'#FFFFFF',border:'1.5px solid var(--phase-hpst)'}}/>{ t('legendHpst')}</div>
+        <div className="li"><div className="ld" style={{background:'var(--sefirah-soft)',border:'1.5px dashed var(--phase-sefirah)'}}/>{ t('legendSefirah')}</div>
+        <div className="li"><div className="ld" style={{background:'var(--tvila-soft)',border:'1.5px solid var(--phase-tvila)'}}/>{ t('legendTvila')}</div>
+        <div className="li"><div className="lb" style={{background:'var(--phase-prisha)'}}/>{ t('legendPrisha')}</div>
+        <div className="li"><div className="lb" style={{background:'var(--phase-fertile)'}}/>{ t('legendFertile')}</div>
       </div>
 
       {selected ? (
         <div className="detail-panel" key={iso(selected)}>
-          <div className="d-date">{DAY_FULL[selected.getDay()]}, {selected.getDate()}/{selected.getMonth()+1} · {fheb(selected)}</div>
+          <div className="d-date">{dayFull(selected.getDay())}, {selected.getDate()}/{selected.getMonth()+1} · {fheb(selected)}</div>
           {selectedInfo?.labels?.length ? (
             <div className="d-tags">
-              {selectedInfo.labels.map((l,i)=>{
-                const ph=labelPhase(l);
-                return <span key={i} className={`dtag${ph?` dtag-${ph}`:''}`}>{l}</span>;
+              {selectedInfo.labels.map((lbl,i)=>{
+                const ph=labelPhase(lbl);
+                return <span key={i} className={`dtag${ph?` dtag-${ph}`:''}`}>{renderLabel(lbl)}</span>;
               })}
             </div>
-          ) : <div className="d-empty">אין אירועים ביום זה</div>}
+          ) : <div className="d-empty">{t('calNoEvents')}</div>}
         </div>
       ) : (
-        <div className="detail-panel"><div className="d-empty">לחצי על יום לפרטים</div></div>
+        <div className="detail-panel"><div className="d-empty">{t('calClickInfo')}</div></div>
       )}
 
       <div style={{padding:'0 16px 40px'}}>
-        <div className="sec-label">הוסיפי ווסת חדש</div>
+        <div className="sec-label">{t('calAddTitle')}</div>
         <div className="card">
           <div className="field">
-            <label>תאריך</label>
+            <label>{t('calDateLabel')}</label>
             <input type="date" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
           </div>
           <div className="field">
-            <label>עונה</label>
+            <label>{t('calOnahLabel')}</label>
             <select value={addTime} onChange={e=>setAddTime(e.target.value)}>
-              <option value="">— בחרי עונה —</option>
-              <option value="day">🌞 יום (לפני שקיעה)</option>
-              <option value="night">🌙 לילה (אחרי שקיעה)</option>
+              <option value="">{t('calOnahPlaceholder')}</option>
+              <option value="day">{t('calOnahDay')}</option>
+              <option value="night">{t('calOnahNight')}</option>
             </select>
           </div>
           <div className="field">
-            <label>הפסק טהרה בפועל (אופציונלי)</label>
+            <label>{t('calHpstLabel')}</label>
             <input type="date" value={addHpst} onChange={e=>setAddHpst(e.target.value)}/>
           </div>
         </div>
-        <button className="btn-primary" onClick={handleAdd}>הוסיפי ללוח</button>
+        <button className="btn-primary" onClick={handleAdd}>{t('calAddBtn')}</button>
       </div>
     </div>
   );

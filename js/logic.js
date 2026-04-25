@@ -5,24 +5,32 @@ const ad   = (d,n) => { const r=new Date(d); r.setDate(r.getDate()+n); return r;
 const iso  = d => { const y=d.getFullYear(),mo=String(d.getMonth()+1).padStart(2,'0'),dy=String(d.getDate()).padStart(2,'0'); return `${y}-${mo}-${dy}`; };
 const diff = (a,b) => Math.round((new Date(a)-new Date(b))/864e5);
 
-const GREG_M   = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-const DAY_FULL = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+// i18n-aware month / day helpers (read from translation at render time)
+const gregM   = i => (t('months')||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])[i];
+const dayFull = i => (t('days')||['Sun','Mon','Tue','Wed','Thu','Fri','Sat'])[i];
 
 const PKEY = 'niddah_notif_v1';
 const MKEY = 'tahara_minhag_v1';
 
 const MINHAGIM = [
-  {id:'ashkenaz',      label:'אשכנז (רמ״א)',           sub:'מנהג רוב יוצאי אשכנז'},
-  {id:'sefard',        label:'ספרד / עדות המזרח (מרן)', sub:'בית יוסף · רוב הספרדים'},
-  {id:'chabad',        label:'חב״ד',                   sub:'מנהג חסידי חב״ד'},
-  {id:'teiman_baladi', label:'תימן — בלאדי',           sub:'מנהג בני תימן (רמב״ם)'},
-  {id:'teiman_shami',  label:'תימן — שאמי',            sub:'מנהג השאמי'},
+  {id:'ashkenaz',      labelKey:'minhagAshkenaz',      subKey:'minhagAshkenazSub'},
+  {id:'sefard',        labelKey:'minhagSefard',         subKey:'minhagSefardSub'},
+  {id:'chabad',        labelKey:'minhagChabad',         subKey:'minhagChabadSub'},
+  {id:'teiman_baladi', labelKey:'minhagTeimanBaladi',   subKey:'minhagTeimanBaladiSub'},
+  {id:'teiman_shami',  labelKey:'minhagTeimanShami',    subKey:'minhagTeimanShamiSub'},
 ];
 const getMinhag = () => {
   try { return localStorage.getItem(MKEY) || 'ashkenaz'; }
   catch { return 'ashkenaz'; }
 };
-const minhagLabel = (id) => (MINHAGIM.find(m=>m.id===id)||MINHAGIM[0]).label;
+const minhagLabel = (id) => {
+  const m = MINHAGIM.find(m=>m.id===id)||MINHAGIM[0];
+  return t(m.labelKey);
+};
+const minhagSub = (id) => {
+  const m = MINHAGIM.find(m=>m.id===id)||MINHAGIM[0];
+  return t(m.subKey);
+};
 
 const GEMATRIA_TABLE = [
   [400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],
@@ -87,6 +95,8 @@ function nextHebSameDay(from) {
   return ad(from,30);
 }
 
+// Labels stored as structured objects so calendar.js can translate them
+// at render time via renderLabel(). Format: {key, n?}
 function buildMap(cycles) {
   const map={};
   const mark=(date,type)=>{
@@ -94,19 +104,19 @@ function buildMap(cycles) {
     if(!map[k]) map[k]={types:new Set(),labels:[]};
     map[k].types.add(type);
   };
-  const label=(date,txt)=>{
+  const label=(date,obj)=>{
     const k=iso(date);
     if(!map[k]) map[k]={types:new Set(),labels:[]};
-    if(!map[k].labels.includes(txt)) map[k].labels.push(txt);
+    const dup=map[k].labels.some(l=>l.key===obj.key&&l.n===obj.n);
+    if(!dup) map[k].labels.push(obj);
   };
   const sorted=[...cycles].sort((a,b)=>new Date(a.date)-new Date(b.date));
   const today=new Date(); today.setHours(0,0,0,0);
   sorted.forEach((c,idx)=>{
     const start=new Date(c.date);
-    mark(start,'veset'); label(start,'תחילת ווסת');
+    mark(start,'veset'); label(start,{key:'veset'});
 
     // ימי ראייה — open-ended until hpst is entered, next cycle, or today.
-    // Capped at 60 days to prevent runaway labelling on stale data.
     const nextCycleStart=idx<sorted.length-1?new Date(sorted[idx+1].date):null;
     let damEnd;
     if(c.hpst) damEnd=ad(new Date(c.hpst),-1);
@@ -117,37 +127,35 @@ function buildMap(cycles) {
     let dayNum=2;
     for(let d=ad(start,1); d<=damEnd && dayNum<=61; d=ad(d,1)){
       mark(d,'dam');
-      label(d,`ימי ראייה — יום ${dayNum}`);
+      label(d,{key:'dam',n:dayNum});
       dayNum++;
     }
 
-    // Hefsek / sefirah / tvila are only drawn after the user explicitly
-    // marks a hefsek tahara. Without it, the cycle is treated as ongoing.
     if(c.hpst){
       const hpstDate=new Date(c.hpst);
       const sef=ad(hpstDate,1);
       const tvila=ad(hpstDate,7);
-      mark(hpstDate,'hpst'); label(hpstDate,'הפסק טהרה');
+      mark(hpstDate,'hpst'); label(hpstDate,{key:'hpst'});
       for(let i=0;i<7;i++){
         mark(ad(sef,i),'sefirah');
-        label(ad(sef,i),`ספירת ${i+1} מתוך 7 נקיים`);
+        label(ad(sef,i),{key:'sefirah',n:i+1});
       }
-      mark(tvila,'tvila'); label(tvila,'ליל הטבילה');
+      mark(tvila,'tvila'); label(tvila,{key:'tvila'});
     }
 
     if(idx>0){
       const gap=diff(c.date,sorted[idx-1].date);
-      mark(ad(start,gap),'prisha'); label(ad(start,gap),`עונת הפלגה (${gap} ימים)`);
+      mark(ad(start,gap),'prisha'); label(ad(start,gap),{key:'haflagah',n:gap});
     }
-    mark(ad(start,30),'prisha'); label(ad(start,30),'עונה בינונית');
-    mark(nextHebSameDay(start),'prisha'); label(nextHebSameDay(start),'עונת החודש');
+    mark(ad(start,30),'prisha'); label(ad(start,30),{key:'avg_onah'});
+    mark(nextHebSameDay(start),'prisha'); label(nextHebSameDay(start),{key:'month_onah'});
     let nextV;
     if(idx<sorted.length-1) nextV=new Date(sorted[idx+1].date);
     else if(sorted.length>=2) nextV=ad(new Date(sorted[sorted.length-1].date),diff(sorted[sorted.length-1].date,sorted[sorted.length-2].date));
     else nextV=ad(start,30);
     const ov=ad(nextV,-14);
     for(let i=-4;i<=1;i++){const fd=ad(ov,i);if(!map[iso(fd)]?.types.has('veset'))mark(fd,'fertile');}
-    label(ov,'ביוץ משוער');
+    label(ov,{key:'ovulation'});
   });
   return map;
 }
@@ -179,7 +187,8 @@ function computeStats(cycles) {
     avg:Math.round(avg*10)/10, wavg:Math.round(wavg*10)/10, stddev:stdR,
     min:Math.min(...gaps), max:Math.max(...gaps), count:gaps.length,
     nextV, ov, fertStart:ad(ov,-4), fertEnd:ad(ov,1),
-    reg, regLabel:reg==='high'?'מאוד סדיר':reg==='mid'?'בינוני':'לא סדיר',
+    reg, regKey:reg,
+    get regLabel() { return t(reg==='high'?'predictRegHigh':reg==='mid'?'predictRegMid':'predictRegLow'); },
     daysUntil:diff(nextV,today),
   };
 }

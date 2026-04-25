@@ -12,11 +12,11 @@ function MoonArt() {
 
 function PhaseArt() {
   const phases=[
-    {color:'var(--phase-veset)',label:'ווסת',fill:'var(--phase-veset)',strong:null},
-    {color:'var(--phase-hpst)',label:'הפסק',fill:'#FFFFFF',strong:'var(--phase-hpst)'},
-    {color:'var(--phase-sefirah)',label:'7 נקיים',fill:'var(--phase-sefirah)',strong:null},
-    {color:'var(--phase-tvila)',label:'טבילה',fill:'var(--phase-tvila)',strong:null},
-    {color:'var(--phase-tahora)',label:'טהורה',fill:'var(--phase-tahora)',strong:null},
+    {color:'var(--phase-veset)',fill:'var(--phase-veset)',strong:null},
+    {color:'var(--phase-hpst)',fill:'#FFFFFF',strong:'var(--phase-hpst)'},
+    {color:'var(--phase-sefirah)',fill:'var(--phase-sefirah)',strong:null},
+    {color:'var(--phase-tvila)',fill:'var(--phase-tvila)',strong:null},
+    {color:'var(--phase-tahora)',fill:'var(--phase-tahora)',strong:null},
   ];
   const [fill,setFill]=React.useState(0);
   React.useEffect(()=>{const id=setInterval(()=>setFill(f=>(f+1)%(phases.length+2)),700);return()=>clearInterval(id);},[]);
@@ -27,7 +27,6 @@ function PhaseArt() {
         return (
           <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:6}}>
             <div style={{width:28,height:28,borderRadius:14,background:isFilled?p.fill:'transparent',border:`2px solid ${p.strong||p.color}`,boxShadow:isFilled&&p.fill==='#FFFFFF'?'0 1px 3px rgba(0,0,0,0.08)':'none',transition:'background-color 400ms cubic-bezier(0.34,1.56,0.64,1),transform 400ms cubic-bezier(0.34,1.56,0.64,1)',transform:isFilled?'scale(1)':'scale(0.85)'}}/>
-            <div style={{fontSize:9,color:'var(--muted)'}}>{p.label}</div>
           </div>
         );
       })}
@@ -48,12 +47,12 @@ function DayNightArt() {
   );
 }
 
-function Onboarding({onDone}) {
+function Onboarding({onDone, lang}) {
   const [step,setStep]=React.useState(0);
   const steps=[
-    {title:'ברוכה הבאה',sub:'לוח הטהרה האישי שלך — פרטי, שקט, מדויק.',art:<MoonArt/>},
-    {title:'הלוח מבין הכל',sub:'הפסק טהרה, שבעה נקיים, ליל הטבילה ושלוש עונות הפרישה — מחושבים אוטומטית.',art:<PhaseArt/>},
-    {title:'יום ולילה — לפי ההלכה',sub:'הלוח זוכר אם הווסת נראתה ביום או בלילה, ומתאים את עונות הפרישה בלי להסתבך.',art:<DayNightArt/>},
+    {titleKey:'onbTitle1', subKey:'onbSub1', art:<MoonArt/>},
+    {titleKey:'onbTitle2', subKey:'onbSub2', art:<PhaseArt/>},
+    {titleKey:'onbTitle3', subKey:'onbSub3', art:<DayNightArt/>},
   ];
   const next=()=>{if(step<steps.length-1)setStep(step+1);else onDone();};
   return (
@@ -61,17 +60,17 @@ function Onboarding({onDone}) {
       <div className="onb-stage">
         <div className="onb-content" key={step} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:14}}>
           {steps[step].art}
-          <div className="onb-title display">{steps[step].title}</div>
-          <div className="onb-sub">{steps[step].sub}</div>
+          <div className="onb-title display">{t(steps[step].titleKey)}</div>
+          <div className="onb-sub">{t(steps[step].subKey)}</div>
         </div>
       </div>
       <div className="onb-dots">
         {steps.map((_,i)=><div key={i} className={`onb-dot${i===step?' active':''}`}/>)}
       </div>
       <button className="btn-primary" style={{marginBottom:0}} onClick={next}>
-        {step<steps.length-1?'המשיכי':'בואי נתחיל'}
+        {step<steps.length-1?t('onbNext'):t('onbStart')}
       </button>
-      <button className="btn-ghost" style={{marginTop:8,border:'none'}} onClick={onDone}>דלגי</button>
+      <button className="btn-ghost" style={{marginTop:8,border:'none'}} onClick={onDone}>{t('onbSkip')}</button>
     </div>
   );
 }

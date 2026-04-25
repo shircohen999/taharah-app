@@ -1,8 +1,10 @@
 import { initializeApp }                                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword,
          signInWithEmailAndPassword, signOut,
-         onAuthStateChanged, updateProfile }                      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, collection, getDocs, writeBatch }    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+         onAuthStateChanged, updateProfile,
+         sendPasswordResetEmail, sendEmailVerification }          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, collection, getDocs,
+         writeBatch, setDoc, getDoc }                            from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const cfg = {
   apiKey:           "AIzaSyAMaJ0aFJhaMF7HEUmDdPKpAGfAt7I4CAE",
@@ -21,7 +23,7 @@ const SKEY = 'niddah_v4';
 function lcLocal() { try { return JSON.parse(localStorage.getItem(SKEY)||'[]'); } catch { return []; } }
 function scLocal(d) { try { localStorage.setItem(SKEY,JSON.stringify(d)); } catch {} }
 
-const AUTH_ERRORS = {
+const AUTH_ERRORS_HE = {
   'auth/invalid-email':        'כתובת אימייל לא תקינה',
   'auth/user-not-found':       'משתמש לא נמצא',
   'auth/wrong-password':       'סיסמה שגויה',
@@ -29,6 +31,15 @@ const AUTH_ERRORS = {
   'auth/email-already-in-use': 'האימייל כבר רשום במערכת',
   'auth/weak-password':        'הסיסמה חייבת להכיל לפחות 6 תווים',
   'auth/too-many-requests':    'יותר מדי ניסיונות – נסי שוב מאוחר יותר',
+};
+const AUTH_ERRORS_EN = {
+  'auth/invalid-email':        'Invalid email address',
+  'auth/user-not-found':       'User not found',
+  'auth/wrong-password':       'Wrong password',
+  'auth/invalid-credential':   'Invalid email or password',
+  'auth/email-already-in-use': 'Email is already registered',
+  'auth/weak-password':        'Password must be at least 6 characters',
+  'auth/too-many-requests':    'Too many attempts — please try again later',
 };
 
 window.__fb = {
@@ -42,7 +53,25 @@ window.__fb = {
     return cred.user;
   },
   async logout() { await signOut(auth); },
-  authErrMsg(code) { return AUTH_ERRORS[code] || 'שגיאה – נסי שוב'; },
+  async resetPassword(email) {
+    await sendPasswordResetEmail(auth, email, { url: window.location.origin });
+  },
+  async verifyEmail(user) {
+    await sendEmailVerification(user, { url: window.location.origin });
+  },
+  // Save user profile / notification preferences to Firestore
+  async saveProfile(uid, data) {
+    await setDoc(doc(db, 'notif_users', uid), data, { merge: true });
+  },
+  async loadProfile(uid) {
+    try { const s = await getDoc(doc(db,'notif_users',uid)); return s.exists()?s.data():{}; }
+    catch { return {}; }
+  },
+  authErrMsg(code) {
+    const lang = (() => { try { return localStorage.getItem('tahara_lang_v1')||'he'; } catch { return 'he'; } })();
+    const errors = lang === 'en' ? AUTH_ERRORS_EN : AUTH_ERRORS_HE;
+    return errors[code] || (lang === 'en' ? 'Error — please try again' : 'שגיאה – נסי שוב');
+  },
   async loadCycles(uid) {
     try {
       const snap = await getDocs(collection(db,'users',uid,'cycles'));

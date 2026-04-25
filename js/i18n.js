@@ -1,0 +1,356 @@
+// ═══════════════════════════════════════════════════════
+// i18n — translation strings for Hebrew + English
+// ═══════════════════════════════════════════════════════
+const LANG_KEY = 'tahara_lang_v1';
+
+const _T = {
+  he: {
+    // App
+    appTitle: 'לוח הטהרה',
+    disclaimer: 'כלי עזר אישי בלבד — אינו תחליף לייעוץ הלכתי או רפואי',
+    copyright: '© 2026 שיר וגילה כהן',
+    phone: '054-464-1746',
+    // Tabs
+    tabCalc: 'חישוב', tabCalendar: 'לוח', tabPredict: 'תחזית',
+    tabHistory: 'היסטוריה', tabSettings: 'הגדרות',
+    // Phase labels
+    phaseVeset: 'תחילת ווסת',
+    phaseDam: n => `ימי ראייה — יום ${n}`,
+    phaseHpst: 'הפסק טהרה',
+    phaseSefirah: n => `ספירת ${n} מתוך 7 נקיים`,
+    phaseTvila: 'ליל הטבילה',
+    phaseOvulation: 'ביוץ משוער',
+    phaseAvgOnah: 'עונה בינונית',
+    phaseHaflagah: n => `עונת הפלגה (${n} ימים)`,
+    phaseMonthOnah: 'עונת החודש',
+    // Date / time
+    months: ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'],
+    days: ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'],
+    dayHeaders: ['א','ב','ג','ד','ה','ו','ש'],
+    // Calendar
+    calToday: 'היום', calNoEvents: 'אין אירועים ביום זה',
+    calClickInfo: 'לחצי על יום לפרטים', calAddTitle: 'הוסיפי ווסת חדש',
+    calAddBtn: 'הוסיפי ללוח', calDateLabel: 'תאריך', calOnahLabel: 'עונה',
+    calHpstLabel: 'הפסק טהרה בפועל (אופציונלי)',
+    calOnahDay: '🌞 יום (לפני שקיעה)', calOnahNight: '🌙 לילה (אחרי שקיעה)',
+    calOnahPlaceholder: '— בחרי עונה —',
+    // Legend
+    legendVeset: 'תחילת ווסת', legendDam: 'ימי ראייה', legendHpst: 'הפסק טהרה',
+    legendSefirah: '7 נקיים', legendTvila: 'ליל הטבילה',
+    legendPrisha: 'עונת פרישה', legendFertile: 'חלון פוריות',
+    // Calc
+    calcTitle: 'פרטי הווסת הנוכחי', calcDateLabel: 'תאריך תחילת הווסת',
+    calcPrevTitle: 'ווסת קודם', calcPrevLabel: 'תאריך ווסת קודם (לחישוב הפלגה)',
+    calcBtn: 'חשבי תאריכים ושמרי', calcResultsTitle: 'תאריכי מפתח',
+    calcTvilaLabel: 'ליל הטבילה המוקדם',
+    calcTvilaSub: n => `הפסק טהרה + 7 נקיים · עונת ${n}`,
+    calcTvilaNight: 'לילה', calcTvilaDay: 'יום',
+    calcHpstLabel: 'הפסק טהרה', calcHpstCustom: '✎ תאריך מותאם',
+    calcSefirahLabel: 'תחילת ספירת 7 נקיים', calcBedikotLabel: 'בדיקות',
+    calcBedikotDay1: n => `יום א׳: ${n}`, calcBedikotDay7: n => `יום ז׳: ${n}`,
+    calcOnahTitle: 'שלוש עונות הפרישה',
+    calcTip: 'פ״ו ה״ה: פרישה בשלוש עונות — הפלגה, עונה בינונית (30 יום), ועונת החודש — כולן באותה עונת יום/לילה כווסת.',
+    calcHaflagahSub: n => `${n} ימים מהווסת הקודם`,
+    calcHaflagahNoSub: 'הכניסי ווסת קודם',
+    calcMiddleSub: '30 יום מהווסת הנוכחי',
+    calcMonthSub: 'תאריך עברי זהה בחודש הבא', calcUnknown: 'לא ידוע',
+    // Predict
+    predictMinCycles: 'הכניסי לפחות 2 מחזורים כדי לקבל תחזית אישית.',
+    predictTitle: 'תחזית אישית', predictNextLabel: 'ווסת הבא המשוער',
+    predictDaysUntil: n => `בעוד ${n} ימים`, predictDaysAgo: n => `לפני ${n} ימים`,
+    predictToday: 'היום', predictOvLabel: 'ביוץ משוער',
+    predictOvSub: '14 ימים לפני הווסת', predictFertLabel: 'חלון פוריות',
+    predictFertTo: d => `עד ${d}`, predictStatsTitle: 'סטטיסטיקת מחזור',
+    predictAvg: 'ממוצע אורך מחזור', predictWavg: 'ממוצע משוקלל',
+    predictStddev: 'סטיית תקן', predictRange: 'טווח', predictReg: 'רגולריות',
+    predictRegHigh: 'מאוד סדיר', predictRegMid: 'בינוני', predictRegLow: 'לא סדיר',
+    predictDaysUnit: 'ימים',
+    predictWarnSmall: cnt => `<strong>שימי לב:</strong> החישוב מבוסס על ${cnt===1?'מרווח אחד בלבד':`${cnt} מרווחים`} בין מחזורים — לא מספיק לחישוב מהימן. הוסיפי עוד 2–3 מחזורים כדי לקבל ממוצע יציב.`,
+    predictTip: (cnt,gaps) => `<strong>חישוב ביוץ:</strong> שיטת Ogino-Knaus — שלב לוטיאלי קבוע של כ-14 יום. התחזית מתייחסת ל-${cnt} מחזורים שמורים (${gaps} מרווחים).`,
+    // History
+    histNoCycles: 'עדיין אין היסטוריה.\nהוסיפי את הווסת הראשון מהמסך חישוב.',
+    histNoCyclesStrong: 'חישוב',
+    histCyclesLabel: 'מחזורים', histAvgLabel: 'ממוצע מחזור',
+    histDamLabel: 'אורך ראייה', histStddevLabel: 'סטיית מחזור',
+    histDamSamplesLabel: 'דגימות ראייה', histSavedTitle: 'מחזורים שמורים',
+    histDamOpen: 'ראייה פתוחה', histDamDays: n => `ראייה ${n} ימים`,
+    histCycleLen: n => ` · מחזור ${n} ימים`,
+    histClearBtn: 'מחקי את כל ההיסטוריה', histDaysUnit: "י'",
+    // Settings
+    settingsAppearance: 'מראה', settingsPaletteLabel: 'פלטת צבעים',
+    settingsNotifs: 'התראות', settingsNotifsEnabled: 'הפעלת התראות',
+    settingsNotifsGranted: 'מאושרות ✓', settingsNotifsDenied: 'חסומות — שנ״י בדפדפן',
+    settingsNotifsRequest: 'לחצי להפעלה', settingsNotifsUnsupported: 'לא נתמך',
+    settingsNotifsType: 'אופן ההתראה',
+    settingsNotifsTypeDesc: 'כרגע: התראות דפדפן (פעילות רק כשהאפליקציה פתוחה).',
+    settingsNotifsComingSoon: 'תזכורות במייל — בקרוב (דורש שרת)',
+    settingsNotifsTime: 'שעת ההתראה', settingsNotifsTimeSub: 'השעה שבה תישלח כל תזכורת',
+    settingsHpstLabel: 'הפסק טהרה', settingsSefirahLabel: 'תחילת ספירה',
+    settingsBedikaLabel: 'בדיקה יומית (7 נקיים + ליל טבילה)',
+    settingsTvilaLabel: 'ליל הטבילה', settingsPrishaLabel: 'עונות פרישה',
+    settingsNextLabel: 'ווסת צפוי',
+    settingsOnEvent: 'ביום האירוע', settingsOneDayBefore: 'יום אחד לפני',
+    settingsDaysBefore: n => `${n} ימים לפני`, settingsOff: 'כבוי',
+    settingsMinhag: 'מנהג הלכתי',
+    settingsMinhagNote: 'ההבדלים בין המנהגים יחולו על החישוב בעדכון הבא. כעת השמירה היא לבחירה בלבד.',
+    settingsAccount: 'חשבון', settingsSync: 'סנכרון ענן', settingsSyncOff: 'לא פעיל',
+    settingsLogout: 'התנתקי', settingsGuestLogout: 'חזרה למסך ההתחברות',
+    settingsDisclaimer: '⚠️ <strong>הסתייגות:</strong> האפליקציה הינה כלי עזר אישי בלבד. אינה מהווה תחליף להוראת הלכה של רב מוסמך או לייעוץ רפואי. ההוראות, תאריכי הפרישה והחישובים מבוססים על נוסחאות סטטיסטיות ועלולים לשגות. בכל ספק — יש לפנות לרב הקהילה או לרופא/ה.',
+    settingsLang: 'שפה', settingsLangHe: 'עברית', settingsLangEn: 'English',
+    // Palette names
+    paletteRose: 'ורד', paletteSage: 'מרווה', paletteWine: 'יין', palettePlum: 'שזיף',
+    // Account
+    accLocal: 'מקומי', accSynced: 'מסונכרן', accSyncErr: 'שגיאת סנכרון',
+    accGuest: 'אורחת', accLocalData: 'נתונים שמורים במכשיר',
+    // Auth
+    authWelcomeBack: 'ברוכה השבה', authWelcome: 'ברוכה הבאה',
+    authLoginLede: 'המשיכי מאיפה שעצרת',
+    authRegisterLede: 'בואי נפתח לך מקום שקט לעקוב',
+    authNameLabel: 'שם', authNamePlaceholder: 'איך לקרוא לך?',
+    authMinhagLabel: 'מנהג הלכתי', authEmailLabel: 'אימייל',
+    authPassLabel: 'סיסמה', authForgot: 'שכחתי',
+    authLoginBtn: 'כניסה', authRegisterBtn: 'פתיחת חשבון',
+    authSwitchToRegister: 'אין לך עדיין חשבון?', authOpenAccount: 'פתחי חשבון',
+    authSwitchToLogin: 'כבר יש לך חשבון?', authLoginLink: 'התחברי',
+    authOr: 'או', authGuest: 'המשיכי בלי חשבון',
+    authGuestSub: 'הנתונים יישמרו במכשיר בלבד',
+    authTerms: 'תנאי שימוש', authPrivacy: 'פרטיות',
+    authErrName: 'אנא הכניסי שם', authErrEmail: 'אימייל לא תקין',
+    authErrPass: 'סיסמה צריכה לפחות 6 תווים',
+    // Forgot password
+    authForgotTitle: 'איפוס סיסמה',
+    authForgotLede: 'נשלח לך קישור לאיפוס הסיסמה',
+    authForgotSendBtn: 'שלחי קישור', authForgotBack: 'חזרה',
+    authForgotSuccess: '✓ נשלח! בדקי את תיבת הדואר שלך.',
+    // Onboarding
+    onbTitle1: 'ברוכה הבאה', onbSub1: 'לוח הטהרה האישי שלך — פרטי, שקט, מדויק.',
+    onbTitle2: 'הלוח מבין הכל',
+    onbSub2: 'הפסק טהרה, שבעה נקיים, ליל הטבילה ושלוש עונות הפרישה — מחושבים אוטומטית.',
+    onbTitle3: 'יום ולילה — לפי ההלכה',
+    onbSub3: 'הלוח זוכר אם הווסת נראתה ביום או בלילה, ומתאים את עונות הפרישה בלי להסתבך.',
+    onbNext: 'המשיכי', onbStart: 'בואי נתחיל', onbSkip: 'דלגי',
+    // Confirm / alert
+    confirmClearHistory: 'למחוק את כל ההיסטוריה?',
+    confirmLogout: 'להתנתק?',
+    alertNoDate: 'אנא בחרי תאריך', alertNoOnah: 'אנא בחרי עונה',
+    alertNoDateOnah: 'אנא בחרי תאריך ועונה',
+    alertNotifsUnsupported: 'הדפדפן אינו תומך בהתראות',
+    alertNotifsBlocked: 'יש לאשר התראות בהגדרות הדפדפן',
+    // Notifications
+    notifHpstToday: 'הפסק טהרה היום',
+    notifHpstDays: n => `הפסק טהרה בעוד ${n} ימים`,
+    notifHpstBody: 'זמן להפסק טהרה',
+    notifSefirahToday: 'תחילת ספירת 7 נקיים',
+    notifSefirahDays: n => `ספירת 7 נקיים בעוד ${n} ימים`,
+    notifSefirahBody: 'היום מתחילה ספירת 7 ימים נקיים',
+    notifBedikaDay: i => `בדיקה — יום ${i} מתוך 7`,
+    notifBedikaBody: i => `היום בדיקה של יום ${i} בספירת 7 הנקיים`,
+    notifBedikaTvila: 'בדיקה — ליל הטבילה',
+    notifBedikaTvilaBody: 'הלילה ליל הטבילה — לזכור בדיקה אחרונה',
+    notifTvilaToday: 'ליל הטבילה',
+    notifTvilaDays: n => `ליל הטבילה בעוד ${n} ימים`,
+    notifTvilaBody: 'הלילה הוא ליל הטבילה. ברכה והצלחה!',
+    notifPrishaTitle: 'עונת פרישה', notifPrishaBody: 'עונה בינונית (30 יום)',
+    notifMonthTitle: 'עונת החודש', notifMonthBody: 'עונת החודש מתקרבת',
+    notifNextToday: 'ווסת צפוי היום', notifNextTomorrow: 'ווסת צפוי מחר',
+    notifNextDays: n => `ווסת צפוי בעוד ${n} ימים`,
+    notifNextBody: d => `ווסת משוער: ${d}`,
+    // Minhag top label
+    minhagAshkenaz: 'אשכנז (רמ״א)', minhagSefard: 'ספרד / עדות המזרח (מרן)',
+    minhagChabad: 'חב״ד', minhagTeimanBaladi: 'תימן — בלאדי', minhagTeimanShami: 'תימן — שאמי',
+    minhagAshkenazSub: 'מנהג רוב יוצאי אשכנז',
+    minhagSefardSub: 'בית יוסף · רוב הספרדים',
+    minhagChabadSub: 'מנהג חסידי חב״ד',
+    minhagTeimanBaladiSub: 'מנהג בני תימן (רמב״ם)',
+    minhagTeimanShamiSub: 'מנהג השאמי',
+  },
+  en: {
+    // App
+    appTitle: 'Tahara Calendar',
+    disclaimer: 'Personal reference tool only — not a substitute for halachic or medical guidance',
+    copyright: '© 2026 Shir & Gila Cohen',
+    phone: '054-464-1746',
+    // Tabs
+    tabCalc: 'Calculate', tabCalendar: 'Calendar', tabPredict: 'Predict',
+    tabHistory: 'History', tabSettings: 'Settings',
+    // Phase labels
+    phaseVeset: 'Period Start',
+    phaseDam: n => `Period — Day ${n}`,
+    phaseHpst: 'Hefsek Tahara',
+    phaseSefirah: n => `Day ${n} of 7 Clean Days`,
+    phaseTvila: 'Mikveh Night',
+    phaseOvulation: 'Est. Ovulation',
+    phaseAvgOnah: 'Average Onah',
+    phaseHaflagah: n => `Interval Onah (${n} days)`,
+    phaseMonthOnah: 'Monthly Onah',
+    // Date / time
+    months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+    dayHeaders: ['S','M','T','W','T','F','S'],
+    // Calendar
+    calToday: 'Today', calNoEvents: 'No events on this day',
+    calClickInfo: 'Tap a day for details', calAddTitle: 'Add a new cycle',
+    calAddBtn: 'Add to Calendar', calDateLabel: 'Date', calOnahLabel: 'Time of Day',
+    calHpstLabel: 'Hefsek Tahara date (optional)',
+    calOnahDay: '🌞 Day (before sunset)', calOnahNight: '🌙 Night (after sunset)',
+    calOnahPlaceholder: '— Select time —',
+    // Legend
+    legendVeset: 'Period Start', legendDam: 'Period Days', legendHpst: 'Hefsek Tahara',
+    legendSefirah: '7 Clean Days', legendTvila: 'Mikveh Night',
+    legendPrisha: 'Onah (Prisha)', legendFertile: 'Fertile Window',
+    // Calc
+    calcTitle: 'Current Cycle Details', calcDateLabel: 'Period start date',
+    calcPrevTitle: 'Previous Period', calcPrevLabel: 'Previous period date (for interval)',
+    calcBtn: 'Calculate & Save', calcResultsTitle: 'Key Dates',
+    calcTvilaLabel: 'Earliest Mikveh Night',
+    calcTvilaSub: n => `Hefsek Tahara + 7 clean days · ${n} onah`,
+    calcTvilaNight: 'Night', calcTvilaDay: 'Day',
+    calcHpstLabel: 'Hefsek Tahara', calcHpstCustom: '✎ Custom date',
+    calcSefirahLabel: 'Start of 7 Clean Days', calcBedikotLabel: 'Bedikot',
+    calcBedikotDay1: n => `Day 1: ${n}`, calcBedikotDay7: n => `Day 7: ${n}`,
+    calcOnahTitle: 'Three Onot (Prisha)',
+    calcTip: 'Prisha is required on three onot: interval (haflagah), average (30-day), and monthly (same Hebrew date) — all matching the original day/night onah.',
+    calcHaflagahSub: n => `${n} days from previous period`,
+    calcHaflagahNoSub: 'Enter previous period date',
+    calcMiddleSub: '30 days from current period',
+    calcMonthSub: 'Same Hebrew date next month', calcUnknown: 'Unknown',
+    // Predict
+    predictMinCycles: 'Enter at least 2 cycles to get a personal forecast.',
+    predictTitle: 'Personal Forecast', predictNextLabel: 'Expected Next Period',
+    predictDaysUntil: n => `In ${n} days`, predictDaysAgo: n => `${n} days ago`,
+    predictToday: 'Today', predictOvLabel: 'Estimated Ovulation',
+    predictOvSub: '14 days before period', predictFertLabel: 'Fertile Window',
+    predictFertTo: d => `Until ${d}`, predictStatsTitle: 'Cycle Statistics',
+    predictAvg: 'Average cycle length', predictWavg: 'Weighted average',
+    predictStddev: 'Std deviation', predictRange: 'Range', predictReg: 'Regularity',
+    predictRegHigh: 'Very Regular', predictRegMid: 'Moderate', predictRegLow: 'Irregular',
+    predictDaysUnit: 'days',
+    predictWarnSmall: cnt => `<strong>Note:</strong> Calculation based on ${cnt===1?'only 1 interval':`${cnt} intervals`} — not enough for a reliable prediction. Add 2–3 more cycles for a stable average.`,
+    predictTip: (cnt,gaps) => `<strong>Ovulation estimate:</strong> Ogino-Knaus method — fixed luteal phase of ~14 days. Forecast based on ${cnt} saved cycles (${gaps} intervals).`,
+    // History
+    histNoCycles: 'No history yet.\nAdd your first period from the Calculate screen.',
+    histNoCyclesStrong: 'Calculate',
+    histCyclesLabel: 'Cycles', histAvgLabel: 'Avg Cycle',
+    histDamLabel: 'Period Length', histStddevLabel: 'Cycle Deviation',
+    histDamSamplesLabel: 'Period Samples', histSavedTitle: 'Saved Cycles',
+    histDamOpen: 'Period ongoing', histDamDays: n => `Period: ${n} days`,
+    histCycleLen: n => ` · Cycle: ${n} days`,
+    histClearBtn: 'Clear all history', histDaysUnit: 'd',
+    // Settings
+    settingsAppearance: 'Appearance', settingsPaletteLabel: 'Color palette',
+    settingsNotifs: 'Reminders', settingsNotifsEnabled: 'Enable reminders',
+    settingsNotifsGranted: 'Allowed ✓', settingsNotifsDenied: 'Blocked — enable in browser settings',
+    settingsNotifsRequest: 'Tap to enable', settingsNotifsUnsupported: 'Not supported',
+    settingsNotifsType: 'Reminder type',
+    settingsNotifsTypeDesc: 'Currently: browser notifications (only when app is open).',
+    settingsNotifsComingSoon: 'Email reminders — coming soon (requires server)',
+    settingsNotifsTime: 'Reminder time', settingsNotifsTimeSub: 'Time to send daily reminders',
+    settingsHpstLabel: 'Hefsek Tahara', settingsSefirahLabel: 'Start of counting',
+    settingsBedikaLabel: 'Daily bedikah (7 clean days + mikveh night)',
+    settingsTvilaLabel: 'Mikveh night', settingsPrishaLabel: 'Onot (Prisha)',
+    settingsNextLabel: 'Expected period',
+    settingsOnEvent: 'On the day', settingsOneDayBefore: '1 day before',
+    settingsDaysBefore: n => `${n} days before`, settingsOff: 'Off',
+    settingsMinhag: 'Halachic practice',
+    settingsMinhagNote: 'Differences between practices will apply on the next calculation.',
+    settingsAccount: 'Account', settingsSync: 'Cloud sync', settingsSyncOff: 'Not active',
+    settingsLogout: 'Log out', settingsGuestLogout: 'Back to login',
+    settingsDisclaimer: '⚠️ <strong>Disclaimer:</strong> This app is a personal reference tool only. It is not a substitute for rabbinic halachic guidance or medical advice. Dates and calculations are based on statistical formulas and may contain errors. When in doubt — consult your rabbi or doctor.',
+    settingsLang: 'Language', settingsLangHe: 'עברית', settingsLangEn: 'English',
+    // Palette names
+    paletteRose: 'Rose', paletteSage: 'Sage', paletteWine: 'Wine', palettePlum: 'Plum',
+    // Account
+    accLocal: 'Local', accSynced: 'Synced', accSyncErr: 'Sync error',
+    accGuest: 'Guest', accLocalData: 'Data stored on device',
+    // Auth
+    authWelcomeBack: 'Welcome Back', authWelcome: 'Welcome',
+    authLoginLede: 'Continue where you left off',
+    authRegisterLede: 'Create your private space',
+    authNameLabel: 'Name', authNamePlaceholder: 'What should we call you?',
+    authMinhagLabel: 'Halachic practice', authEmailLabel: 'Email',
+    authPassLabel: 'Password', authForgot: 'Forgot?',
+    authLoginBtn: 'Log in', authRegisterBtn: 'Create account',
+    authSwitchToRegister: "Don't have an account yet?", authOpenAccount: 'Sign up',
+    authSwitchToLogin: 'Already have an account?', authLoginLink: 'Log in',
+    authOr: 'or', authGuest: 'Continue without account',
+    authGuestSub: 'Data saved on device only',
+    authTerms: 'Terms of Use', authPrivacy: 'Privacy',
+    authErrName: 'Please enter your name', authErrEmail: 'Invalid email address',
+    authErrPass: 'Password must be at least 6 characters',
+    // Forgot password
+    authForgotTitle: 'Reset Password',
+    authForgotLede: "We'll send a reset link to your email",
+    authForgotSendBtn: 'Send link', authForgotBack: 'Back',
+    authForgotSuccess: '✓ Sent! Check your inbox.',
+    // Onboarding
+    onbTitle1: 'Welcome', onbSub1: 'Your personal tahara calendar — private, calm, precise.',
+    onbTitle2: 'Everything calculated',
+    onbSub2: 'Hefsek tahara, seven clean days, mikveh night, and three onot — all calculated automatically.',
+    onbTitle3: 'Day or night — by halacha',
+    onbSub3: 'The calendar remembers whether the period started by day or night, and adjusts the onot automatically.',
+    onbNext: 'Next', onbStart: "Let's begin", onbSkip: 'Skip',
+    // Confirm / alert
+    confirmClearHistory: 'Delete all history?',
+    confirmLogout: 'Log out?',
+    alertNoDate: 'Please select a date', alertNoOnah: 'Please select a time of day',
+    alertNoDateOnah: 'Please select a date and time',
+    alertNotifsUnsupported: 'Your browser does not support notifications',
+    alertNotifsBlocked: 'Please allow notifications in browser settings',
+    // Notifications
+    notifHpstToday: 'Hefsek Tahara today',
+    notifHpstDays: n => `Hefsek Tahara in ${n} days`,
+    notifHpstBody: 'Time for Hefsek Tahara',
+    notifSefirahToday: 'Starting 7 Clean Days',
+    notifSefirahDays: n => `7 Clean Days start in ${n} days`,
+    notifSefirahBody: 'Today begins the 7 clean days count',
+    notifBedikaDay: i => `Bedikah — Day ${i} of 7`,
+    notifBedikaBody: i => `Today is bedikah day ${i} of 7 clean days`,
+    notifBedikaTvila: 'Bedikah — Mikveh Night',
+    notifBedikaTvilaBody: 'Tonight is mikveh night — remember the final bedikah',
+    notifTvilaToday: 'Mikveh Night',
+    notifTvilaDays: n => `Mikveh night in ${n} days`,
+    notifTvilaBody: 'Tonight is mikveh night. Best wishes!',
+    notifPrishaTitle: 'Onah (Prisha)', notifPrishaBody: 'Average onah (30 days)',
+    notifMonthTitle: 'Monthly Onah', notifMonthBody: 'Monthly onah approaching',
+    notifNextToday: 'Expected period today', notifNextTomorrow: 'Expected period tomorrow',
+    notifNextDays: n => `Expected period in ${n} days`,
+    notifNextBody: d => `Expected period: ${d}`,
+    // Minhag
+    minhagAshkenaz: 'Ashkenaz (Rema)', minhagSefard: 'Sephardic / Mizrachi',
+    minhagChabad: 'Chabad', minhagTeimanBaladi: 'Yemenite — Baladi', minhagTeimanShami: 'Yemenite — Shami',
+    minhagAshkenazSub: 'Custom of most Ashkenazic Jewry',
+    minhagSefardSub: 'Bet Yosef · Most Sephardim',
+    minhagChabadSub: 'Chabad-Lubavitch custom',
+    minhagTeimanBaladiSub: 'Yemenite custom (Rambam)',
+    minhagTeimanShamiSub: 'Shami custom',
+  },
+};
+
+// ── core API ──────────────────────────────────────────
+let _lang = (()=>{ try { return localStorage.getItem(LANG_KEY)||'he'; } catch { return 'he'; } })();
+
+function setLang(l) {
+  _lang = l;
+  window.__lang = l;
+  try { localStorage.setItem(LANG_KEY, l); } catch {}
+  document.documentElement.setAttribute('lang', l==='en'?'en':'he');
+  document.documentElement.setAttribute('dir', l==='en'?'ltr':'rtl');
+}
+
+function getLang() { return _lang; }
+
+function t(key, ...args) {
+  const val = (_T[_lang]||_T.he)[key] ?? _T.he[key];
+  if (val === undefined) return key;
+  if (typeof val === 'function') return val(...args);
+  return val;
+}
+
+// Apply on load
+setLang(_lang);
+
+// Expose globally (both as window.t for convenience and window.__t for namespacing)
+window.t         = t;
+window.__t       = t;
+window.__setLang = setLang;
+window.__getLang = getLang;
