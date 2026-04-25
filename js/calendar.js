@@ -12,6 +12,17 @@ const MoonIcon = ({phase='full',size=18,color='currentColor'}) => {
   return <svg width={size} height={size} viewBox="0 0 18 18" className="moon-svg">{shapes[phase]}</svg>;
 };
 
+const labelPhase = (txt) => {
+  if (!txt) return null;
+  if (txt === 'תחילת ווסת') return 'veset';
+  if (txt === 'הפסק טהרה') return 'hpst';
+  if (txt === 'תחילת ספירת 7 נקיים') return 'sefirah';
+  if (txt === 'ליל הטבילה') return 'tvila';
+  if (txt === 'ביוץ משוער') return 'fertile';
+  if (txt.startsWith('עונת') || txt === 'עונה בינונית') return 'prisha';
+  return null;
+};
+
 function Calendar({cycles, onAddCycle}) {
   const [viewDate, setViewDate] = React.useState(()=>new Date());
   const [selected, setSelected] = React.useState(null);
@@ -90,7 +101,7 @@ function Calendar({cycles, onAddCycle}) {
 
       <div className="legend">
         <div className="li"><div className="ld" style={{background:'var(--phase-veset)'}}/>תחילת ווסת</div>
-        <div className="li"><div className="ld" style={{background:'var(--hpst-soft)',border:'1.5px solid var(--phase-hpst)'}}/>הפסק טהרה</div>
+        <div className="li"><div className="ld" style={{background:'#FFFFFF',border:'1.5px solid var(--phase-hpst)'}}/>הפסק טהרה</div>
         <div className="li"><div className="ld" style={{background:'var(--sefirah-soft)',border:'1.5px dashed var(--phase-sefirah)'}}/>7 נקיים</div>
         <div className="li"><div className="ld" style={{background:'var(--tvila-soft)',border:'1.5px solid var(--phase-tvila)'}}/>ליל הטבילה</div>
         <div className="li"><div className="ld" style={{background:'var(--tahora-soft)'}}/>טהורה</div>
@@ -103,9 +114,10 @@ function Calendar({cycles, onAddCycle}) {
           <div className="d-date">{DAY_FULL[selected.getDay()]}, {selected.getDate()}/{selected.getMonth()+1} · {fheb(selected)}</div>
           {selectedInfo?.labels?.length ? (
             <div className="d-tags">
-              {selectedInfo.labels.map((l,i)=>(
-                <span key={i} className="dtag" style={{background:'var(--primary-soft)',color:'var(--primary-ink)'}}>{l}</span>
-              ))}
+              {selectedInfo.labels.map((l,i)=>{
+                const ph=labelPhase(l);
+                return <span key={i} className={`dtag${ph?` dtag-${ph}`:''}`}>{l}</span>;
+              })}
             </div>
           ) : <div className="d-empty">אין אירועים ביום זה</div>}
         </div>
