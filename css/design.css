@@ -319,9 +319,9 @@ body {
   padding:36px 28px 40px;
 }
 .onb-logo-header { text-align:center; padding-bottom:8px; }
-.onb-logo { display:inline-block; animation:moonBreathe 4s ease-in-out infinite; filter:drop-shadow(0 4px 20px rgba(0,0,0,0.1)); }
+.onb-logo { display:inline-block; animation:logoBreathe 4s ease-in-out infinite; filter:drop-shadow(0 4px 20px rgba(0,0,0,0.1)); }
 .onb-brand { font-size:22px; font-weight:700; color:var(--primary); letter-spacing:-0.01em; }
-.onb-center-logo { display:block; margin:0 auto; animation:moonBreathe 3.5s ease-in-out infinite; filter:drop-shadow(0 8px 32px rgba(0,0,0,0.12)); }
+.onb-center-logo { display:block; margin:0 auto; animation:logoBreathe 3.5s ease-in-out infinite; filter:drop-shadow(0 8px 32px rgba(0,0,0,0.12)); }
 .onb-stage { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:20px; }
 .onb-mandala { width:160px; height:160px; position:relative; margin-bottom:16px; }
 .onb-ring {
