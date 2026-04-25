@@ -73,7 +73,7 @@ function DayNightArt() {
 function Onboarding({onDone, lang}) {
   const [step,setStep]=React.useState(0);
   const steps=[
-    {titleKey:'onbTitle1', subKey:'onbSub1', art:<MoonArt/>},
+    {titleKey:'onbTitle1', subKey:'onbSub1', art:<AppLogo size={160} className="onb-center-logo"/>},
     {titleKey:'onbTitle2', subKey:'onbSub2', art:<PhaseArt/>},
     {titleKey:'onbTitle3', subKey:'onbSub3', art:<DayNightArt/>},
   ];

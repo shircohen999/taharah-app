@@ -103,15 +103,17 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
           <div style={{fontSize:12,color:'var(--muted)',marginBottom:10}}>{t('settingsPaletteLabel')}</div>
           <div className="palette-row" style={{padding:0}}>
             {PALETTES.map(p=>(
-              <div key={p.id} className={`palette-swatch${palette===p.id?' active':''}`} onClick={()=>setPalette(p.id)} title={t(p.labelKey)}>
-                <div style={{position:'absolute',inset:0,display:'flex'}}>
-                  {p.colors.map((c,i)=><div key={i} style={{flex:1,background:c}}/>)}
+              <div key={p.id} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:5}}>
+                <div className={`palette-swatch${palette===p.id?' active':''}`} onClick={()=>setPalette(p.id)} title={t(p.labelKey)} style={{width:'100%',flex:'none'}}>
+                  <div style={{position:'absolute',inset:0,display:'flex'}}>
+                    {p.colors.map((c,i)=><div key={i} style={{flex:1,background:c}}/>)}
+                  </div>
                 </div>
+                <span style={{fontSize:10,color:palette===p.id?'var(--primary)':'var(--muted)',fontWeight:palette===p.id?600:400}}>
+                  {t(p.labelKey)}
+                </span>
               </div>
             ))}
-          </div>
-          <div style={{display:'flex',justifyContent:'center',gap:20,marginTop:8,fontSize:10,color:'var(--muted)'}}>
-            {PALETTES.map(p=><span key={p.id} style={{color:palette===p.id?'var(--primary)':'inherit',fontWeight:palette===p.id?600:400}}>{t(p.labelKey)}</span>)}
           </div>
         </div>
       </div>
