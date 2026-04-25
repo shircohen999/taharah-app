@@ -7,7 +7,35 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
   const [prefs,setPrefs]=React.useState(()=>{try{return JSON.parse(localStorage.getItem(PKEY)||'{}')}catch{return {};}});
   const [legalDoc,setLegalDoc]=React.useState(null);
 
-  const save=(p)=>{setPrefs(p);localStorage.setItem(PKEY,JSON.stringify(p));};
+  const save=(p)=>{
+    setPrefs(p);
+    localStorage.setItem(PKEY,JSON.stringify(p));
+    if(p.notifEmail && user?.uid && window.__fb){
+      const nd=NOTIF_DEFAULTS;
+      window.__fb.saveProfile(user.uid,{
+        notifEmail:true, email:user.email||'',
+        lang:window.__getLang?window.__getLang():'he',
+        hpstDays:   p.hpstDays   ??nd.hpstDays,
+        sefirahDays:p.sefirahDays??nd.sefirahDays,
+        tvilaDays:  p.tvilaDays  ??nd.tvilaDays,
+        prishaDays: p.prishaDays ??nd.prishaDays,
+        nextDays:   p.nextDays   ??nd.nextDays,
+        bedikaDays: p.bedikaDays ??nd.bedikaDays,
+        hpst:   p.hpst   !==false,
+        sefirah:p.sefirah!==false,
+        bedika: p.bedika !==false,
+        tvila:  p.tvila  !==false,
+        prisha: p.prisha !==false,
+        next:   p.next   !==false,
+      }).catch(e=>console.error('[email notif sync]',e));
+    }
+  };
+  const toggleEmailNotif=async(v)=>{
+    save({...prefs,notifEmail:v});
+    if(!v&&user?.uid&&window.__fb){
+      window.__fb.saveProfile(user.uid,{notifEmail:false}).catch(()=>{});
+    }
+  };
   const toggleEnabled=async(v)=>{
     if(v){
       if(!('Notification' in window)){alert(t('alertNotifsUnsupported'));return;}
@@ -103,16 +131,21 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
           </div>
           <Toggle value={!!prefs.enabled} onChange={toggleEnabled}/>
         </div>
-        {prefs.enabled&&(<>
-          <div className="notif-row" style={{alignItems:'flex-start'}}>
-            <div style={{flex:1}}>
-              <div style={{fontSize:14}}>{t('settingsNotifsType')}</div>
-              <div style={{fontSize:11,color:'var(--muted)',marginTop:2,lineHeight:1.5}}>
-                {t('settingsNotifsTypeDesc')}<br/>
-                <span style={{color:'var(--phase-hpst)'}}>{t('settingsNotifsComingSoon')}</span>
-              </div>
+        {/* Email notifications row — always visible */}
+        <div className="notif-row" style={{borderTop:'0.5px solid var(--border)'}}>
+          <div style={{flex:1}}>
+            <div style={{fontSize:14}}>{t('settingsNotifsEmail')}</div>
+            <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>
+              {!user
+                ? t('settingsNotifsEmailNoAuth')
+                : prefs.notifEmail
+                  ? t('settingsNotifsEmailSub')
+                  : t('settingsOff')}
             </div>
           </div>
+          <Toggle value={!!prefs.notifEmail} onChange={user?toggleEmailNotif:()=>{}}/>
+        </div>
+        {prefs.enabled&&(<>
           <div className="notif-row">
             <div><div style={{fontSize:14}}>{t('settingsNotifsTime')}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{t('settingsNotifsTimeSub')}</div></div>
             <input
