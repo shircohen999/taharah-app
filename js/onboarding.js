@@ -80,10 +80,12 @@ function Onboarding({onDone, lang}) {
   const next=()=>{if(step<steps.length-1)setStep(step+1);else onDone();};
   return (
     <div className="onb-overlay">
-      <div className="onb-logo-header">
-        <AppLogo size={62} className="onb-logo"/>
-        <div className="onb-brand display">{t('appTitle')}</div>
-      </div>
+      {step > 0 && (
+        <div className="onb-logo-header">
+          <AppLogo size={62} className="onb-logo"/>
+          <div className="onb-brand display">{t('appTitle')}</div>
+        </div>
+      )}
       <div className="onb-stage">
         <div className="onb-content" key={step} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:14}}>
           {steps[step].art}
