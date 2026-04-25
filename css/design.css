@@ -37,6 +37,10 @@
   --t-fast: 160ms;
   --t-med:  280ms;
   --t-slow: 560ms;
+
+  /* fonts — Suez One leads, David Libre + Frank Ruhl Libre as fallbacks */
+  --font-display: 'Suez One', 'David Libre', 'Frank Ruhl Libre', 'Heebo', serif;
+  --font-body:    'Heebo', system-ui, sans-serif;
 }
 [data-palette="sage"] {
   --bg:#F2EFE8; --bg-soft:#E8E3D9; --card:#FBF9F4; --text:#1F2420; --muted:#6E756C;
@@ -72,7 +76,7 @@
 * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 html, body { height:100%; }
 body {
-  font-family:'Heebo',-apple-system,'Segoe UI',sans-serif;
+  font-family:var(--font-body),-apple-system,'Segoe UI',sans-serif;
   background:var(--bg-soft);
   color:var(--text);
   direction:rtl;
@@ -88,7 +92,7 @@ body {
   overflow-x:hidden;
   transition:background-color var(--t-med) var(--ease-out);
 }
-.display { font-family:'Frank Ruhl Libre','Heebo',serif; font-weight:500; letter-spacing:-0.01em; }
+.display { font-family:var(--font-display); font-weight:400; letter-spacing:-0.015em; }
 
 /* ── TOPBAR ── */
 .topbar {
@@ -98,13 +102,14 @@ body {
   position:sticky; top:0; z-index:10;
   transition:background-color var(--t-med) var(--ease-out);
 }
-.topbar-title { font-family:'Frank Ruhl Libre',serif; font-size:22px; font-weight:500; line-height:1; letter-spacing:-0.01em; }
+.topbar-title { font-family:var(--font-display); font-size:22px; font-weight:400; line-height:1; letter-spacing:-0.015em; }
 .topbar-sub { font-size:11px; color:var(--muted); margin-top:6px; letter-spacing:0.04em; }
 .topbar-avatar {
   width:36px; height:36px; border-radius:50%;
   background:var(--primary-soft); color:var(--primary-ink);
   display:flex; align-items:center; justify-content:center;
-  font-weight:600; font-size:14px; border:none; cursor:pointer;
+  font-weight:400; font-size:14px; border:none; cursor:pointer;
+  font-family:var(--font-display);
   transition:transform var(--t-fast) var(--ease-spring), background-color var(--t-med) var(--ease-out);
 }
 .topbar-avatar:active { transform:scale(0.92); }
@@ -203,8 +208,8 @@ body {
 }
 .mnav-btn:hover { background:var(--bg-soft); color:var(--text); }
 .mnav-btn:active { transform:scale(0.9); }
-.mlabel { font-family:'Frank Ruhl Libre',serif; font-size:19px; font-weight:500; line-height:1.1; letter-spacing:-0.01em; }
-.mlabel2 { font-family:'Frank Ruhl Libre',serif; font-size:13px; color:var(--muted); margin-top:3px; letter-spacing:0.02em; }
+.mlabel { font-family:var(--font-display); font-size:19px; font-weight:400; line-height:1.1; letter-spacing:-0.015em; }
+.mlabel2 { font-family:var(--font-display); font-size:13px; color:var(--muted); margin-top:3px; letter-spacing:0.02em; font-weight:400; }
 .today-chip {
   font-size:11px; font-weight:600; color:var(--primary);
   background:var(--primary-soft); border:none;
@@ -236,7 +241,7 @@ body {
   transition:background-color var(--t-med) var(--ease-out), border-color var(--t-med) var(--ease-out);
 }
 .d-greg { font-size:13px; font-weight:500; line-height:1; }
-.d-heb  { font-size:9px; line-height:1; opacity:0.7; margin-top:2px; font-family:'Frank Ruhl Libre',serif; }
+.d-heb  { font-size:9px; line-height:1; opacity:0.7; margin-top:2px; font-family:var(--font-display); font-weight:400; }
 
 .cal-day.today .d-greg { font-weight:700; }
 .cal-day.today .d-dot::before {
@@ -287,7 +292,7 @@ body {
 .stat-row { display:flex; gap:10px; margin-bottom:14px; }
 .stat-card { flex:1; background:var(--card); border-radius:var(--r-cell); padding:12px 14px; }
 .stat-label { font-size:11px; color:var(--muted); margin-bottom:4px; letter-spacing:0.04em; }
-.stat-val { font-size:22px; font-weight:600; font-family:'Frank Ruhl Libre',serif; }
+.stat-val { font-size:22px; font-weight:400; font-family:var(--font-display); }
 
 /* ── HISTORY ── */
 .hist-item { padding:14px 18px; border-bottom:0.5px solid var(--border); animation:revealIn 420ms var(--ease-out) both; }
@@ -325,7 +330,7 @@ body {
   0%,100%{transform:translate(-50%,-50%) scale(1);box-shadow:0 0 30px var(--primary)}
   50%{transform:translate(-50%,-50%) scale(1.08);box-shadow:0 0 60px var(--primary)}
 }
-.onb-title { font-family:'Frank Ruhl Libre',serif; font-size:30px; font-weight:500; line-height:1.2; letter-spacing:-0.01em; max-width:300px; }
+.onb-title { font-family:var(--font-display); font-size:32px; font-weight:400; line-height:1.2; letter-spacing:-0.015em; max-width:300px; }
 .onb-sub { font-size:14px; color:var(--muted); line-height:1.6; max-width:280px; }
 .onb-dots { display:flex; gap:8px; justify-content:center; margin:20px 0; }
 .onb-dot { width:7px; height:7px; border-radius:50%; background:var(--border-mid); transition:all var(--t-med) var(--ease-spring); }
@@ -350,12 +355,12 @@ body {
 .auth-head { text-align:center; margin-bottom:28px; }
 .auth-glyph { width:44px; height:44px; margin:0 auto 18px; display:block; animation:breathe 4.5s ease-in-out infinite; }
 .auth-eyebrow { font-size:10.5px; letter-spacing:0.24em; color:var(--muted); margin-bottom:10px; }
-.auth-greet { font-family:'Frank Ruhl Libre',serif; font-size:34px; font-weight:500; line-height:1.15; letter-spacing:-0.015em; color:var(--text); margin-bottom:6px; }
+.auth-greet { font-family:var(--font-display); font-size:34px; font-weight:400; line-height:1.15; letter-spacing:-0.02em; color:var(--text); margin-bottom:6px; }
 .auth-lede { font-size:13.5px; color:var(--muted); line-height:1.5; max-width:240px; margin:0 auto; }
 .auth-fields { background:var(--card); border-radius:var(--r-card); padding:6px 4px; margin-bottom:4px; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
 .auth-fields .auth-f label { display:flex; justify-content:space-between; align-items:baseline; font-size:10.5px; letter-spacing:0.06em; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
 .auth-fields .auth-f input { font-size:16px; font-weight:400; padding:0 0 2px; }
-.auth-fields .auth-f input::placeholder { color:var(--muted); opacity:0.55; font-family:'Frank Ruhl Libre',serif; font-size:15px; }
+.auth-fields .auth-f input::placeholder { color:var(--muted); opacity:0.55; font-family:var(--font-display); font-size:15px; font-weight:400; }
 .auth-forgot { background:transparent; border:none; color:var(--primary); font-size:10.5px; font-weight:500; letter-spacing:0.04em; cursor:pointer; font-family:inherit; padding:0; }
 .auth-err { font-size:12px; color:var(--phase-veset); min-height:20px; margin:10px 4px 2px; text-align:center; opacity:0; transform:translateY(-4px); transition:opacity var(--t-fast) var(--ease-out),transform var(--t-fast) var(--ease-out); }
 .auth-err.visible { opacity:1; transform:none; }
@@ -377,9 +382,9 @@ body {
 
 /* ── ACCOUNT SCREEN ── */
 .account-hero { text-align:center; padding:12px 20px 20px; margin-bottom:10px; }
-.account-avatar { width:88px; height:88px; border-radius:50%; background:var(--primary-soft); color:var(--primary-ink); display:inline-flex; align-items:center; justify-content:center; font-size:32px; font-weight:600; font-family:'Frank Ruhl Libre',serif; position:relative; margin-bottom:12px; }
+.account-avatar { width:88px; height:88px; border-radius:50%; background:var(--primary-soft); color:var(--primary-ink); display:inline-flex; align-items:center; justify-content:center; font-size:32px; font-weight:400; font-family:var(--font-display); position:relative; margin-bottom:12px; }
 .account-avatar-ring { position:absolute; inset:-6px; border-radius:50%; border:1.5px solid var(--primary); opacity:0.3; animation:breathe 3s ease-in-out infinite; }
-.account-name { font-family:'Frank Ruhl Libre',serif; font-size:22px; font-weight:500; line-height:1.2; margin-bottom:3px; }
+.account-name { font-family:var(--font-display); font-size:22px; font-weight:400; line-height:1.2; margin-bottom:3px; letter-spacing:-0.015em; }
 .account-email { font-size:12px; color:var(--muted); direction:ltr; }
 .account-badges { display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-top:12px; }
 .acc-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; font-size:10.5px; font-weight:500; color:var(--muted); background:var(--bg-soft); border-radius:var(--r-pill); letter-spacing:0.02em; }
@@ -388,7 +393,7 @@ body {
 .acc-dot { width:6px; height:6px; border-radius:50%; background:currentColor; animation:breathe 2s ease-in-out infinite; }
 .account-stats { display:flex; gap:8px; margin-bottom:8px; }
 .account-stat { flex:1; background:var(--card); border-radius:var(--r-cell); padding:14px 10px; text-align:center; }
-.account-stat-val { font-family:'Frank Ruhl Libre',serif; font-size:24px; font-weight:500; color:var(--text); line-height:1; }
+.account-stat-val { font-family:var(--font-display); font-size:24px; font-weight:400; color:var(--text); line-height:1; }
 .account-stat-lbl { font-size:11px; color:var(--muted); margin-top:4px; letter-spacing:0.04em; }
 .acc-row { display:flex; align-items:center; gap:12px; padding:14px 16px; cursor:pointer; transition:background-color var(--t-fast) var(--ease-out); border-bottom:0.5px solid var(--border); }
 .acc-row:last-child { border-bottom:none; }
