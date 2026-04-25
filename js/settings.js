@@ -5,6 +5,7 @@ const NOTIF_DEFAULTS = {hpstDays:0, sefirahDays:0, tvilaDays:0, prishaDays:1, ne
 
 function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag, setMinhag, lang, changeLang}) {
   const [prefs,setPrefs]=React.useState(()=>{try{return JSON.parse(localStorage.getItem(PKEY)||'{}')}catch{return {};}});
+  const [legalDoc,setLegalDoc]=React.useState(null);
 
   const save=(p)=>{setPrefs(p);localStorage.setItem(PKEY,JSON.stringify(p));};
   const toggleEnabled=async(v)=>{
@@ -204,7 +205,13 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
       <div style={{margin:'0 16px 32px',padding:'14px 16px',borderRadius:'var(--r-cell)',fontSize:11,lineHeight:1.9,color:'var(--muted)',textAlign:'center'}}>
         {t('copyright')}<br/>
         <span dir="ltr" style={{unicodeBidi:'plaintext',fontWeight:600,color:'var(--primary)'}}>{t('phone')}</span>
+        <div className="auth-legal" style={{marginTop:12}}>
+          <a onClick={()=>setLegalDoc(LEGAL.terms)} style={{cursor:'pointer'}}>{t('authTerms')}</a>
+          <span className="auth-legal-dot">·</span>
+          <a onClick={()=>setLegalDoc(LEGAL.privacy)} style={{cursor:'pointer'}}>{t('authPrivacy')}</a>
+        </div>
       </div>
+      {legalDoc && <LegalModal doc={legalDoc} onClose={()=>setLegalDoc(null)}/>}
     </div>
   );
 }

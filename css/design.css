@@ -74,8 +74,11 @@
 }
 
 * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-html, body { height:100%; overflow-x:hidden; }
+html { height:100%; overflow-x:clip; }
 body {
+  width:100%; height:100%;
+  overflow-x:clip;
+  overscroll-behavior-x:none;
   font-family:var(--font-body),-apple-system,'Segoe UI',sans-serif;
   background:var(--bg-soft);
   color:var(--text);
@@ -83,12 +86,13 @@ body {
   transition:background-color var(--t-med) var(--ease-out), color var(--t-med) var(--ease-out);
 }
 #root {
+  width:100%;
   max-width:430px;
   margin:0 auto;
   min-height:100vh;
   background:var(--bg);
   position:relative;
-  overflow-x:hidden;
+  overflow-x:clip;
   transition:background-color var(--t-med) var(--ease-out);
 }
 .display { font-family:var(--font-display); font-weight:700; letter-spacing:-0.015em; }
@@ -427,5 +431,5 @@ body {
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
 
 /* ── LOADING ── */
-.loading-screen { width:100%; height:100vh; height:100svh; background:var(--bg); display:flex; align-items:center; justify-content:center; }
+.loading-screen { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:999; }
 .loading-moon { width:48px; height:48px; border-radius:50%; background:var(--primary); animation:moonBreathe 1.8s ease-in-out infinite; }
