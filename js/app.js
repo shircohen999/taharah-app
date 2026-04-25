@@ -2,11 +2,13 @@
 // APP SHELL — state, routing, data persistence, render
 // ═══════════════════════════════════════════════════════
 const SKEY = 'niddah_v4';
+const ONB_KEY = 'tahara_onb_v1'; // 'done' once onboarding has been completed
 
 function initialStage() {
+  // Logged-in user → straight to app
   try { if(JSON.parse(localStorage.getItem('tahara_user_v1')||'null')) return 'app'; } catch {}
-  return localStorage.getItem('tahara_stage_v1')==='app'?'app':
-         localStorage.getItem('tahara_stage_v1')==='auth'?'auth':'intro';
+  // Not logged in: show onboarding unless they've completed it before
+  return localStorage.getItem(ONB_KEY)==='done' ? 'auth' : 'intro';
 }
 
 const TABS=[
@@ -35,9 +37,13 @@ function App() {
   },[palette]);
 
   React.useEffect(()=>{
+    // Safety net: if Firebase never responds (network error, CDN block, etc.)
+    // unblock the UI after 5 s and show onboarding / auth as appropriate.
+    const safety=setTimeout(()=>setAuthLoading(false), 5000);
     const tryBind=()=>{
       if(!window.__fb){setTimeout(tryBind,50);return;}
       const unsub=window.__fb.onAuthStateChanged(async(u)=>{
+        clearTimeout(safety);
         setAuthLoading(false);
         if(u){
           setUser(u);
@@ -48,18 +54,18 @@ function App() {
         } else {
           localStorage.removeItem('tahara_user_v1');
           setUser(null);
-          const saved=localStorage.getItem('tahara_stage_v1');
-          if(saved==='app') setStage('app');
-          else if(saved==='auth') setStage('auth');
+          // Preserve onboarding-first rule: if they haven't finished onboarding, go there.
+          if(localStorage.getItem(ONB_KEY)!=='done') setStage('intro');
+          else setStage('auth');
         }
       });
       return unsub;
     };
     const cleanup=tryBind();
-    return ()=>{ if(typeof cleanup==='function') cleanup(); };
+    return ()=>{ clearTimeout(safety); if(typeof cleanup==='function') cleanup(); };
   },[]);
 
-  React.useEffect(()=>{localStorage.setItem('tahara_stage_v1',stage);},[stage]);
+  // (tahara_stage_v1 no longer used — onboarding state tracked via ONB_KEY)
 
   const notifTimers=React.useRef([]);
   const scheduleNotifications=React.useCallback(()=>{
@@ -160,8 +166,9 @@ function App() {
     </div>
   );
 
-  if(stage==='intro') return <Onboarding onDone={()=>setStage('auth')}/>;
-  if(stage==='auth')  return <AuthScreen onLogin={handleLogin} onGuest={handleGuest}/>;
+  const completeOnboarding=()=>{ localStorage.setItem(ONB_KEY,'done'); setStage('auth'); };
+  if(stage==='intro') return <Onboarding onDone={completeOnboarding}/>;
+  if(stage==='auth')  return <AuthScreen onLogin={handleLogin} onGuest={handleGuest} setMinhag={setMinhag}/>;
 
   return (
     <div>

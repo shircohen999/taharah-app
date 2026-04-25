@@ -104,11 +104,12 @@ function LegalModal({doc, onClose}) {
   );
 }
 
-function AuthScreen({onLogin, onGuest}) {
+function AuthScreen({onLogin, onGuest, setMinhag}) {
   const [mode,setMode]=React.useState('login');
   const [email,setEmail]=React.useState('');
   const [pass,setPass]=React.useState('');
   const [name,setName]=React.useState('');
+  const [selectedMinhag,setSelectedMinhag]=React.useState('ashkenaz');
   const [err,setErr]=React.useState('');
   const [busy,setBusy]=React.useState(false);
   const [legalDoc,setLegalDoc]=React.useState(null);
@@ -119,6 +120,10 @@ function AuthScreen({onLogin, onGuest}) {
     if(!email.includes('@')){setErr('אימייל לא תקין');return;}
     if(pass.length<6){setErr('סיסמה צריכה לפחות 6 תווים');return;}
     setBusy(true);
+    if(mode==='register'){
+      localStorage.setItem(MKEY, selectedMinhag);
+      if(typeof setMinhag==='function') setMinhag(selectedMinhag);
+    }
     try {
       const fb=window.__fb;
       if(!fb) throw new Error('no-firebase');
@@ -157,12 +162,18 @@ function AuthScreen({onLogin, onGuest}) {
         </div>
 
         <div key={mode} className="auth-fields reveal">
-          {mode==='register'&&(
+          {mode==='register'&&(<>
             <div className="field auth-f">
               <label>שם</label>
               <input type="text" value={name} onChange={e=>setName(e.target.value)} placeholder="איך לקרוא לך?"/>
             </div>
-          )}
+            <div className="field auth-f">
+              <label>מנהג הלכתי</label>
+              <select value={selectedMinhag} onChange={e=>setSelectedMinhag(e.target.value)} style={{fontSize:15,fontWeight:400,color:'var(--text)',background:'transparent',border:'none',outline:'none',fontFamily:'inherit',cursor:'pointer',width:'100%',padding:'2px 0'}}>
+                {MINHAGIM.map(m=><option key={m.id} value={m.id}>{m.label}</option>)}
+              </select>
+            </div>
+          </>)}
           <div className="field auth-f">
             <label>אימייל</label>
             <input type="email" dir="ltr" value={email} onChange={e=>setEmail(e.target.value)} placeholder="name@domain.com" autoComplete="email"/>
