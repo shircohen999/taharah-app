@@ -165,6 +165,10 @@ function SettingsScreen({user, onLogout, palette, setPalette, syncStatus, minhag
       <button className="btn-ghost" onClick={onLogout} style={{marginTop:12}}>
         {user?'התנתקי':'חזרה למסך ההתחברות'}
       </button>
+
+      <div style={{margin:'24px 16px 32px',padding:'14px 16px',background:'var(--bg-soft)',borderRadius:'var(--r-cell)',fontSize:11,lineHeight:1.7,color:'var(--muted)',textAlign:'center'}}>
+        ⚠️ <strong>הסתייגות:</strong> האפליקציה הינה כלי עזר אישי בלבד. אינה מהווה תחליף להוראת הלכה של רב מוסמך או לייעוץ רפואי. ההוראות, תאריכי הפרישה והחישובים מבוססים על נוסחאות סטטיסטיות ועלולים לשגות. בכל ספק — יש לפנות לרב הקהילה או לרופא/ה.
+      </div>
     </div>
   );
 }

@@ -81,14 +81,21 @@ function Calendar({cycles, onAddCycle}) {
           const phase=getDayPhase(info?.types);
           const isToday=iso(c.date)===iso(today);
           const isSelected=selected&&iso(selected)===k;
-          const bar=info?.types.has('prisha')?'prisha':info?.types.has('fertile')&&!phase?'fertile':null;
+          const bar=info?.types.has('prisha')?'prisha':info?.types.has('fertile')?'fertile':null;
           return (
             <div
               key={i}
               className={`cal-day${c.other?' other':''}${isToday?' today':''}${isSelected?' selected':''}`}
               data-phase={phase||undefined}
               style={{animationDelay:`${Math.min(i,35)*12}ms`}}
-              onClick={()=>{ if(!c.other){setSelected(c.date);setAddDate(iso(c.date));} }}
+              onClick={()=>{
+                if(c.other){
+                  setViewDate(new Date(c.date.getFullYear(),c.date.getMonth(),1));
+                  setKey(k=>k+1);
+                }
+                setSelected(c.date);
+                setAddDate(iso(c.date));
+              }}
             >
               <div className="d-dot">
                 <div className="d-greg">{c.date.getDate()}</div>

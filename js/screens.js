@@ -131,26 +131,42 @@ function PredictScreen({cycles}) {
 function HistoryScreen({cycles, onClear, onDelete}) {
   const sorted=[...cycles].sort((a,b)=>new Date(b.date)-new Date(a.date));
   const s=computeStats(cycles);
+  // Bleeding length per cycle = diff(hpst, veset) — only for cycles with hpst recorded.
+  const damLen=(c)=>c.hpst?diff(c.hpst,c.date):null;
+  const damLens=cycles.map(damLen).filter(x=>x!==null&&x>0);
+  const damAvg=damLens.length?Math.round(damLens.reduce((a,b)=>a+b,0)/damLens.length*10)/10:null;
   if(!cycles.length) return <div style={{textAlign:'center',padding:'60px 20px',color:'var(--muted)',fontSize:14,lineHeight:1.7}}>עדיין אין היסטוריה.<br/>הוסיפי את הווסת הראשון מהמסך <strong>חישוב</strong>.</div>;
   return (
     <div>
       <div className="stat-row reveal">
         <div className="stat-card"><div className="stat-label">מחזורים</div><div className="stat-val">{cycles.length}</div></div>
-        {s&&<div className="stat-card"><div className="stat-label">ממוצע</div><div className="stat-val">{s.avg}<span style={{fontSize:12,color:'var(--muted)',marginRight:4}}>י'</span></div></div>}
-        {s&&<div className="stat-card"><div className="stat-label">סטיה</div><div className="stat-val">±{s.stddev}</div></div>}
+        {s&&<div className="stat-card"><div className="stat-label">ממוצע מחזור</div><div className="stat-val">{s.avg}<span style={{fontSize:12,color:'var(--muted)',marginRight:4}}>י'</span></div></div>}
+        <div className="stat-card">
+          <div className="stat-label">אורך ראייה</div>
+          <div className="stat-val">
+            {damAvg!==null?<>{damAvg}<span style={{fontSize:12,color:'var(--muted)',marginRight:4}}>י'</span></>:<span style={{fontSize:13,color:'var(--muted)',fontWeight:400}}>—</span>}
+          </div>
+        </div>
       </div>
+      {s&&<div className="stat-row reveal">
+        <div className="stat-card"><div className="stat-label">סטיית מחזור</div><div className="stat-val">±{s.stddev}</div></div>
+        <div className="stat-card"><div className="stat-label">דגימות ראייה</div><div className="stat-val">{damLens.length}<span style={{fontSize:12,color:'var(--muted)',marginRight:4}}>/{cycles.length}</span></div></div>
+      </div>}
       <div className="sec-label">מחזורים שמורים</div>
       <div className="card reveal">
         {sorted.map((c,i)=>{
           const d=new Date(c.date);
           const prev=sorted[i+1];
           const gap=prev?diff(c.date,prev.date):null;
+          const dl=damLen(c);
+          const damStr=dl!==null&&dl>0?`ראייה ${dl} ימים`:c.hpst?null:'ראייה פתוחה';
           return (
             <div key={c.id||i} className="hist-item" style={{animationDelay:`${i*40}ms`}}>
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
                 <div style={{flex:1}}>
                   <div style={{fontSize:14,fontWeight:500}}>{DAY_FULL[d.getDay()]} · {d.getDate()}/{d.getMonth()+1}/{d.getFullYear()}</div>
                   <div style={{fontSize:11,color:'var(--muted)',marginTop:3}}>{fheb(d)} · {c.time==='night'?'🌙 לילה':'🌞 יום'}{gap&&` · מחזור ${gap} ימים`}</div>
+                  {damStr&&<div style={{fontSize:11,color:dl===null?'var(--phase-veset)':'var(--phase-sefirah)',marginTop:4,fontWeight:500}}>{damStr}</div>}
                 </div>
                 <button className="mnav-btn" style={{fontSize:16,opacity:0.5}} onClick={()=>onDelete(c.id)}>×</button>
               </div>

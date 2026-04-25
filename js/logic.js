@@ -100,22 +100,41 @@ function buildMap(cycles) {
     if(!map[k].labels.includes(txt)) map[k].labels.push(txt);
   };
   const sorted=[...cycles].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const today=new Date(); today.setHours(0,0,0,0);
   sorted.forEach((c,idx)=>{
     const start=new Date(c.date);
     mark(start,'veset'); label(start,'תחילת ווסת');
-    for(let i=1;i<=4;i++){
-      mark(ad(start,i),'dam');
-      label(ad(start,i),`ימי ראייה — יום ${i+1}`);
+
+    // ימי ראייה — open-ended until hpst is entered, next cycle, or today.
+    // Capped at 60 days to prevent runaway labelling on stale data.
+    const nextCycleStart=idx<sorted.length-1?new Date(sorted[idx+1].date):null;
+    let damEnd;
+    if(c.hpst) damEnd=ad(new Date(c.hpst),-1);
+    else if(nextCycleStart) damEnd=ad(nextCycleStart,-1);
+    else damEnd=today;
+    const damCap=ad(start,60);
+    if(damEnd>damCap) damEnd=damCap;
+    let dayNum=2;
+    for(let d=ad(start,1); d<=damEnd && dayNum<=61; d=ad(d,1)){
+      mark(d,'dam');
+      label(d,`ימי ראייה — יום ${dayNum}`);
+      dayNum++;
     }
-    const hpstDate=c.hpst?new Date(c.hpst):ad(start,4);
-    const sef=ad(hpstDate,1);
-    const tvila=ad(hpstDate,7);
-    mark(hpstDate,'hpst'); label(hpstDate,'הפסק טהרה');
-    for(let i=0;i<7;i++){
-      mark(ad(sef,i),'sefirah');
-      label(ad(sef,i),`ספירת ${i+1} מתוך 7 נקיים`);
+
+    // Hefsek / sefirah / tvila are only drawn after the user explicitly
+    // marks a hefsek tahara. Without it, the cycle is treated as ongoing.
+    if(c.hpst){
+      const hpstDate=new Date(c.hpst);
+      const sef=ad(hpstDate,1);
+      const tvila=ad(hpstDate,7);
+      mark(hpstDate,'hpst'); label(hpstDate,'הפסק טהרה');
+      for(let i=0;i<7;i++){
+        mark(ad(sef,i),'sefirah');
+        label(ad(sef,i),`ספירת ${i+1} מתוך 7 נקיים`);
+      }
+      mark(tvila,'tvila'); label(tvila,'ליל הטבילה');
     }
-    mark(tvila,'tvila'); label(tvila,'ליל הטבילה');
+
     if(idx>0){
       const gap=diff(c.date,sorted[idx-1].date);
       mark(ad(start,gap),'prisha'); label(ad(start,gap),`עונת הפלגה (${gap} ימים)`);
@@ -140,7 +159,6 @@ function getDayPhase(types) {
   if(types.has('tvila'))   return 'tvila';
   if(types.has('hpst'))    return 'hpst';
   if(types.has('sefirah')) return 'sefirah';
-  if(types.has('fertile')) return 'fertile';
   return null;
 }
 

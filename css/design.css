@@ -229,7 +229,8 @@ body {
   transition:background-color var(--t-med) var(--ease-out), transform var(--t-fast) var(--ease-spring);
   animation:cellIn 420ms var(--ease-out) both;
 }
-.cal-day.other { opacity:0.28; pointer-events:none; }
+.cal-day.other { opacity:0.32; }
+.cal-day.other:hover { opacity:0.55; }
 .cal-day:active { transform:scale(0.92); }
 .cal-day.selected { outline:2px solid var(--primary); outline-offset:-2px; }
 @keyframes cellIn { from{opacity:0;transform:scale(0.7)} to{opacity:1;transform:scale(1)} }
@@ -259,7 +260,6 @@ body {
 .cal-day[data-phase="hpst"]    .d-dot { background:#FFFFFF; color:var(--phase-hpst-ink); border:1.5px solid var(--phase-hpst); }
 .cal-day[data-phase="sefirah"] .d-dot { background:var(--sefirah-soft); color:var(--phase-sefirah); border:1.5px dashed var(--phase-sefirah); }
 .cal-day[data-phase="tvila"]   .d-dot { background:var(--tvila-soft); color:var(--phase-tvila); border:1.5px solid var(--phase-tvila); }
-.cal-day[data-phase="fertile"] .d-dot { background:var(--fertile-soft); color:var(--phase-fertile); }
 
 .d-bar { position:absolute; bottom:-3px; left:18%; right:18%; height:3px; border-radius:2px; transition:background-color var(--t-med) var(--ease-out); }
 
