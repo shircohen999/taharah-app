@@ -130,7 +130,7 @@ function AuthScreen({onLogin, onGuest, setMinhag, lang, changeLang}) {
       <div className="auth-wrap">
         <div className="auth-head">
           <AppLogo size={64} className="auth-glyph"/>
-          <div className="auth-eyebrow">{t('appTitle')}</div>
+          <div className="auth-eyebrow display">{t('appTitle')}</div>
           {!forgotMode && (
             <>
               <h1 className="auth-greet display">{mode==='login'?t('authWelcomeBack'):t('authWelcome')}</h1>

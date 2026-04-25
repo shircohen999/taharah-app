@@ -370,7 +370,7 @@ body {
 .auth-wrap { padding:70px 28px 36px; max-width:430px; margin:0 auto; flex:1; width:100%; box-sizing:border-box; }
 .auth-head { text-align:center; margin-bottom:28px; }
 .auth-glyph { width:64px; height:64px; margin:0 auto 18px; display:block; animation:breathe 4.5s ease-in-out infinite; filter:drop-shadow(0 4px 20px rgba(0,0,0,0.1)); }
-.auth-eyebrow { font-size:10.5px; letter-spacing:0.24em; color:var(--muted); margin-bottom:10px; }
+.auth-eyebrow { font-size:22px; letter-spacing:0.04em; color:var(--primary); margin-bottom:10px; }
 .auth-greet { font-family:var(--font-display); font-size:42px; font-weight:700; line-height:1.15; letter-spacing:-0.02em; color:var(--text); margin-bottom:6px; }
 .auth-lede { font-size:13.5px; color:var(--muted); line-height:1.5; max-width:240px; margin:0 auto; }
 .auth-fields { background:var(--card); border-radius:var(--r-card); padding:6px 4px; margin-bottom:4px; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
