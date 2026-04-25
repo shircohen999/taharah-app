@@ -74,10 +74,11 @@
 }
 
 * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-html { height:100%; overflow-x:clip; }
+html { height:100%; overflow:hidden; }
 body {
   width:100%; height:100%;
-  overflow-x:clip;
+  overflow-x:hidden;
+  overflow-y:auto;
   overscroll-behavior-x:none;
   font-family:var(--font-body),-apple-system,'Segoe UI',sans-serif;
   background:var(--bg-soft);
@@ -92,7 +93,7 @@ body {
   min-height:100vh;
   background:var(--bg);
   position:relative;
-  overflow-x:clip;
+  overflow-x:hidden;
   transition:background-color var(--t-med) var(--ease-out);
 }
 .display { font-family:var(--font-display); font-weight:700; letter-spacing:-0.015em; }
@@ -438,4 +439,19 @@ body {
 
 /* ── LOADING ── */
 .loading-screen { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:999; }
-.loading-logo { animation:moonBreathe 1.8s ease-in-out infinite; filter:drop-shadow(0 4px 16px rgba(0,0,0,0.12)); }
+.loading-logo { animation:logoBreathe 1.8s ease-in-out infinite; filter:drop-shadow(0 4px 16px rgba(0,0,0,0.12)); }
+@keyframes logoBreathe {
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.08)}
+}
+
+/* ── TOPBAR SETTINGS BUTTON ── */
+.topbar-settings {
+  width:36px; height:36px; border-radius:50%;
+  background:var(--bg-soft); color:var(--muted);
+  display:flex; align-items:center; justify-content:center;
+  border:none; cursor:pointer;
+  transition:transform var(--t-fast) var(--ease-spring), background-color var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.topbar-settings:hover { color:var(--text); background:var(--bg-soft); }
+.topbar-settings:active { transform:scale(0.92); }
