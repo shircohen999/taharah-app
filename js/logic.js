@@ -137,9 +137,9 @@ function buildMap(cycles) {
   };
 
   // Marks dam + optional hpst/sefirah/tvila for any dam trigger
-  const applyDamCycle=(startDate,ownHpst,skipDamOnVeset)=>{
+  const applyDamCycle=(startDate,ownHpst,skipDamOnVeset,startDayNum=2)=>{
     const damEnd=getDamEnd(startDate,ownHpst);
-    let dayNum=2;
+    let dayNum=startDayNum;
     for(let d=ad(startDate,1);d<=damEnd&&dayNum<=61;d=ad(d,1)){
       const k=iso(d);
       if(skipDamOnVeset&&map[k]?.types.has('veset')) {dayNum++;continue;}
@@ -187,8 +187,11 @@ function buildMap(cycles) {
   });
 
   // DAM TRIGGER: non-veset triggers extend dam → hpst → sefirah → tvila
+  // lida/hapala: bleeding starts the day after the event → dam count starts at 1
+  // kesem/bedika: the event day is implicitly day 1 → dam count starts at 2
   [...nonVesetDamCycles].sort((a,b)=>new Date(a.date)-new Date(b.date)).forEach(ev=>{
-    applyDamCycle(new Date(ev.date),ev.hpst,true);
+    const startDayNum=(ev.type==='lida'||ev.type==='hapala')?1:2;
+    applyDamCycle(new Date(ev.date),ev.hpst,true,startDayNum);
   });
 
   // Cancel sefirah/tvila periods interrupted by non-veset dam triggers (kesem/bedika during 7 clean days)
