@@ -50,8 +50,11 @@ const renderLabel = (lbl) => {
     case 'kesem':          return t('phaseKesem');
     case 'bedika_lo_nekia':return t('phaseBedikaLoNekia');
     case 'lida':
-      if (lbl.subtype === 'ben') return t('phaseLidaBen');
-      if (lbl.subtype === 'bat') return t('phaseLidaBat');
+      if (lbl.subtype === 'ben')           return t('phaseLidaBen');
+      if (lbl.subtype === 'bat')           return t('phaseLidaBat');
+      if (lbl.subtype === 'twins_ben_ben') return t('phaseLidaTwinsBenBen');
+      if (lbl.subtype === 'twins_bat_bat') return t('phaseLidaTwinsBatBat');
+      if (lbl.subtype === 'twins_ben_bat') return t('phaseLidaTwinsBenBat');
       return t('phaseLida');
     case 'hapala':         return t('phaseHapala');
     case 'herayon':        return t('phaseHerayon');
@@ -130,7 +133,8 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
     const types = info?.types;
     if (types?.has('veset') || types?.has('dam')) return ['hpst'];
     if (types?.has('sefirah')) return ['kesem', 'bedika_lo_nekia'];
-    if (types?.has('herayon')) return ['hapala', 'kesem'];
+    if (types?.has('herayon')) return ['hapala', 'kesem', 'lida'];
+    if (types?.has('prisha')) return ['veset', 'kesem', 'herayon', 'bedika_lo_nekia'];
     return ['veset', 'kesem', 'herayon'];
   };
 
@@ -143,6 +147,8 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
     if (type === 'veset')           return t('calEventTypeVeset');
     if (type === 'kesem')           return t('calEventTypeKesem');
     if (type === 'bedika_lo_nekia') return t('calEventTypeBedikaLoNekia');
+    if (type === 'lida')            return t('calEventTypeLida');
+    if (type === 'hapala')          return t('calEventTypeHapala');
     if (type === 'sheilat_rav')     return t('calEventTypeSheilat');
     if (type === 'herayon')         return t('calEventTypeHerayon');
     if (type === 'bedika_rofea')    return t('calEventTypeBedikaRofea');
@@ -503,6 +509,9 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
                           <option value="">{t('calLidaUnknown')}</option>
                           <option value="ben">{t('calLidaBen')}</option>
                           <option value="bat">{t('calLidaBat')}</option>
+                          <option value="twins_ben_ben">{t('calLidaTwinsBenBen')}</option>
+                          <option value="twins_bat_bat">{t('calLidaTwinsBatBat')}</option>
+                          <option value="twins_ben_bat">{t('calLidaTwinsBenBat')}</option>
                         </select>
                       </div>
                     </>
@@ -636,6 +645,9 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
                           <option value="">{t('calLidaUnknown')}</option>
                           <option value="ben">{t('calLidaBen')}</option>
                           <option value="bat">{t('calLidaBat')}</option>
+                          <option value="twins_ben_ben">{t('calLidaTwinsBenBen')}</option>
+                          <option value="twins_bat_bat">{t('calLidaTwinsBatBat')}</option>
+                          <option value="twins_ben_bat">{t('calLidaTwinsBenBat')}</option>
                         </select>
                       </div>
                     </>

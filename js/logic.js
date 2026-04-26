@@ -191,13 +191,33 @@ function buildMap(cycles) {
     applyDamCycle(new Date(ev.date),ev.hpst,true);
   });
 
-  // Herayon: extend coloring + label until next lida (or today, capped 365 days)
+  // Cancel sefirah/tvila periods interrupted by non-veset dam triggers (kesem/bedika during 7 clean days)
+  [...nonVesetDamCycles].sort((a,b)=>new Date(a.date)-new Date(b.date)).forEach(ev=>{
+    const triggerDate=new Date(ev.date);
+    const trigIso=iso(triggerDate);
+    if(!map[trigIso]?.types.has('sefirah')&&!map[trigIso]?.types.has('tvila')) return;
+    // Find the hpst that started this sefirah period (scan backward up to 7 days)
+    let hpstDate=null;
+    for(let i=1;i<=7;i++){const d=ad(triggerDate,-i);if(map[iso(d)]?.types.has('hpst')){hpstDate=d;break;}}
+    if(!hpstDate) return;
+    // Remove sefirah and tvila from trigger date through tvila date
+    const tvilaDate=ad(hpstDate,7);
+    for(let d=new Date(triggerDate);d<=tvilaDate;d=ad(d,1)){
+      const k=iso(d);
+      if(map[k]){
+        map[k].types.delete('sefirah'); map[k].types.delete('tvila');
+        map[k].labels=map[k].labels.filter(l=>l.key!=='sefirah'&&l.key!=='tvila');
+      }
+    }
+  });
+
+  // Herayon: extend coloring + label until next lida (capped 365 days from start)
   const herCycles=cycles.filter(c=>c.type==='herayon').sort((a,b)=>new Date(a.date)-new Date(b.date));
   const lidaCycles=cycles.filter(c=>c.type==='lida').sort((a,b)=>new Date(a.date)-new Date(b.date));
   herCycles.forEach(her=>{
     const herStart=new Date(her.date);
     const nextLida=lidaCycles.find(l=>new Date(l.date)>herStart);
-    const rawEnd=nextLida?ad(new Date(nextLida.date),-1):today;
+    const rawEnd=nextLida?ad(new Date(nextLida.date),-1):ad(herStart,365);
     const end=rawEnd<ad(herStart,365)?rawEnd:ad(herStart,365);
     const PHASE_TYPES=['veset','dam','hpst','sefirah','tvila'];
     for(let d=ad(herStart,1);d<=end;d=ad(d,1)){
