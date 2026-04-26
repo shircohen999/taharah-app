@@ -166,7 +166,7 @@ function buildMap(cycles) {
       const gap=diff(c.date,sortedVesets[idx-1].date);
       mark(ad(start,gap),'prisha'); label(ad(start,gap),{key:'haflagah',n:gap});
     }
-    mark(ad(start,30),'prisha'); label(ad(start,30),{key:'avg_onah'});
+    mark(ad(start,29),'prisha'); label(ad(start,29),{key:'avg_onah'});
     mark(nextHebSameDay(start),'prisha'); label(nextHebSameDay(start),{key:'month_onah'});
 
     let nextV;
