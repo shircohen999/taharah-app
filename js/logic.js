@@ -62,6 +62,7 @@ function fheb(d) {
     return `${numToGematria(day)} ${mon} ${numToGematriaYear(yr)}`;
   } catch { return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`; }
 }
+function fgreg(d) { return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); }
 function fhebMonth(d) {
   try {
     const parts=new Intl.DateTimeFormat('he-u-ca-hebrew-nu-latn',{year:'numeric',month:'long'}).formatToParts(d);

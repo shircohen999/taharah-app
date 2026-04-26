@@ -106,10 +106,10 @@ function PredictScreen({cycles}) {
     <div className="reveal">
       <div className="sec-label">{t('predictTitle')}</div>
       <div className="card">
-        <div className="result-row"><div><div className="rl">{t('predictNextLabel')}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{dt}</div></div><div className="rv accent">{fheb(s.nextV)}</div></div>
-        <div className="result-row"><div><div className="rl">{t('predictHpstLabel')}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{s.hasRealDamAvg?t('predictHpstSub',s.avgDamLen):t('predictHpstSubDefault')}</div></div><div className="rv">{fheb(s.nextHpst)}</div></div>
-        <div className="result-row"><div><div className="rl">{t('predictOvLabel')}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{t('predictOvSub')}</div></div><div className="rv" style={{color:'var(--phase-fertile)'}}>{fheb(s.ov)}</div></div>
-        <div className="result-row"><div className="rl">{t('predictFertLabel')}</div><div className="rv" style={{fontSize:11}}><div>{fheb(s.fertStart)}</div><div style={{color:'var(--muted)'}}>{t('predictFertTo',fheb(s.fertEnd))}</div></div></div>
+        <div className="result-row"><div><div className="rl">{t('predictNextLabel')}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{dt}</div></div><div className="rv accent"><div>{fheb(s.nextV)}</div><div style={{fontSize:10,color:'var(--muted)',marginTop:2,fontWeight:'normal'}}>{fgreg(s.nextV)}</div></div></div>
+        <div className="result-row"><div><div className="rl">{t('predictHpstLabel')}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{s.hasRealDamAvg?t('predictHpstSub',s.avgDamLen):t('predictHpstSubDefault')}</div></div><div className="rv"><div>{fheb(s.nextHpst)}</div><div style={{fontSize:10,color:'var(--muted)',marginTop:2,fontWeight:'normal'}}>{fgreg(s.nextHpst)}</div></div></div>
+        <div className="result-row"><div><div className="rl">{t('predictOvLabel')}</div><div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{t('predictOvSub')}</div></div><div className="rv" style={{color:'var(--phase-fertile)'}}><div>{fheb(s.ov)}</div><div style={{fontSize:10,color:'var(--muted)',marginTop:2,fontWeight:'normal'}}>{fgreg(s.ov)}</div></div></div>
+        <div className="result-row"><div className="rl">{t('predictFertLabel')}</div><div className="rv" style={{fontSize:11}}><div>{fheb(s.fertStart)}<span style={{fontSize:10,color:'var(--muted)',marginRight:4,fontWeight:'normal'}}>({fgreg(s.fertStart)})</span></div><div style={{color:'var(--muted)'}}>{t('predictFertTo',fheb(s.fertEnd))}<span style={{fontSize:10,marginRight:4,fontWeight:'normal'}}>({fgreg(s.fertEnd)})</span></div></div></div>
       </div>
       <div className="sec-label">{t('predictStatsTitle')}</div>
       <div className="card">
