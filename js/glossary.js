@@ -143,8 +143,8 @@ const GLOSSARY_SECTIONS = [
         phase: 'veset',
         title: 'כתם',
         titleEn: 'Stain (Kesem)',
-        he: 'כתם דם שנמצא על הגוף או הבגד, ללא הרגשה גופנית מקדימה. עשוי לחייב ספירת שבעה נקיים בהתאם לגודלו ומיקומו — יש לשאול רב.',
-        en: 'A blood stain found on the body or garment without a preceding bodily sensation. May require seven clean days depending on size and location — consult a rabbi.',
+        he: 'כתם דם שנמצא על הגוף או הבגד, ללא הרגשה גופנית מקדימה. עשוי לחייב ספירת שבעה נקיים בהתאם לגודלו ומיקומו — יש לשאול רב או יועצת הלכה מוסמכת.',
+        en: 'A blood stain found on the body or garment without a preceding bodily sensation. May require seven clean days depending on size and location — consult a rabbi or a certified halachic advisor.',
       },
       {
         id: 'bedika_lo_nekia',
@@ -167,32 +167,32 @@ const GLOSSARY_SECTIONS = [
         phase: 'lida',
         title: 'לידה',
         titleEn: 'Childbirth',
-        he: 'לידה מפסיקה את מצב הטהרה ומחייבת טבילה. הדינים מורכבים (תלויים בגדר לידת בן או בת ובמהלך הלידה) — יש לפנות לרב.',
-        en: 'Childbirth interrupts the state of tahara and requires immersion. The laws are complex (depending on the sex of the child and circumstances) — consult a rabbi.',
+        he: 'לידה מפסיקה את מצב הטהרה ומחייבת טבילה. הדינים מורכבים (תלויים בגדר לידת בן או בת ובמהלך הלידה) — יש לפנות לרב או יועצת הלכה מוסמכת.',
+        en: 'Childbirth interrupts the state of tahara and requires immersion. The laws are complex (depending on the sex of the child and circumstances) — consult a rabbi or a certified halachic advisor.',
       },
       {
         id: 'hapala',
         phase: 'hapala',
         title: 'הפלה',
         titleEn: 'Miscarriage',
-        he: 'הפלה עשויה לשאת דין לידה מבחינה הלכתית ולחייב טבילה. הדינים תלויים בשלב ההריון ובמהלך ההפלה — יש לפנות לרב.',
-        en: 'A miscarriage may carry halachic birth status and require immersion. The laws depend on the pregnancy stage and how it occurred — consult a rabbi.',
+        he: 'הפלה עשויה לשאת דין לידה מבחינה הלכתית ולחייב טבילה. הדינים תלויים בשלב ההריון ובמהלך ההפלה — יש לפנות לרב או יועצת הלכה מוסמכת.',
+        en: 'A miscarriage may carry halachic birth status and require immersion. The laws depend on the pregnancy stage and how it occurred — consult a rabbi or a certified halachic advisor.',
       },
       {
         id: 'bedika_rofea',
         phase: 'rofea',
         title: 'בדיקת רופא/ה',
         titleEn: 'Medical Exam',
-        he: 'בדיקה גינקולוגית עשויה לגרום לדימום ולחייב שאלת רב בנוגע למצב הטהרה. מומלץ להתייעץ לפני הבדיקה ואחריה.',
-        en: 'A gynecological exam may cause bleeding and require a rabbinic ruling on tahara status. Consulting a rabbi before and after the exam is recommended.',
+        he: 'בדיקה גינקולוגית עשויה לגרום לדימום ולחייב שאלת רב או יועצת הלכה מוסמכת בנוגע למצב הטהרה. מומלץ להתייעץ עם רב או יועצת הלכה מוסמכת לפני הבדיקה ואחריה.',
+        en: 'A gynecological exam may cause bleeding and require a ruling from a rabbi or a certified halachic advisor on tahara status. Consulting a rabbi or halachic advisor before and after the exam is recommended.',
       },
       {
         id: 'sheilat_rav',
         phase: 'sheilat',
-        title: 'שאלת רב',
-        titleEn: 'Rabbinic Question',
-        he: 'תיוג שאלה הלכתית שנשאלה לרב — לרוב בנוגע לכתם, בדיקה לא נקיה, או ספק בדם. ניתן לתעד את התשובה (טהורה / טמאה) לצורך מעקב.',
-        en: 'A logged halachic question posed to a rabbi — typically about a stain, an unclear bedika, or a questionable discharge. The ruling (pure/impure) can be recorded for tracking.',
+        title: 'שאלת רב / יועצת הלכה',
+        titleEn: 'Rabbi / Halachic Advisor Question',
+        he: 'תיוג שאלה הלכתית שנשאלה לרב או יועצת הלכה מוסמכת — לרוב בנוגע לכתם, בדיקה לא נקיה, או ספק בדם. ניתן לתעד את התשובה (טהורה / טמאה) לצורך מעקב.',
+        en: 'A logged halachic question posed to a rabbi or a certified halachic advisor — typically about a stain, an unclear bedika, or a questionable discharge. The ruling (pure/impure) can be recorded for tracking.',
       },
     ],
   },
@@ -230,8 +230,8 @@ function GlossaryScreen({lang}) {
 
       <div style={{padding:'12px 4px 4px', fontSize:11, color:'var(--muted)', lineHeight:1.8}}>
         {isHe
-          ? '⚠️ המידע הוא לעזר בלבד. בכל שאלה הלכתית — יש לפנות לרב.'
-          : '⚠️ This content is for reference only. For any halachic question, consult a rabbi.'}
+          ? '⚠️ המידע הוא לעזר בלבד. בכל שאלה הלכתית — יש לפנות לרב או יועצת הלכה מוסמכת.'
+          : '⚠️ This content is for reference only. For any halachic question, consult a rabbi or a certified halachic advisor.'}
       </div>
     </div>
   );
