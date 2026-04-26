@@ -180,6 +180,9 @@ function computeStats(cycles) {
   const today=new Date(); today.setHours(0,0,0,0);
   const stdR=Math.round(stddev*10)/10;
   const reg=stdR<=2?'high':stdR<=5?'mid':'low';
+  const damLens=sorted.map(c=>c.hpst?diff(c.hpst,c.date):null).filter(x=>x!==null&&x>0);
+  const avgDamLen=damLens.length?Math.round(damLens.reduce((a,b)=>a+b,0)/damLens.length):4;
+  const nextHpst=ad(nextV,avgDamLen);
   return {
     avg:Math.round(avg*10)/10, wavg:Math.round(wavg*10)/10, stddev:stdR,
     min:Math.min(...gaps), max:Math.max(...gaps), count:gaps.length,
@@ -187,5 +190,6 @@ function computeStats(cycles) {
     reg, regKey:reg,
     get regLabel() { return t(reg==='high'?'predictRegHigh':reg==='mid'?'predictRegMid':'predictRegLow'); },
     daysUntil:diff(nextV,today),
+    avgDamLen, nextHpst, hasRealDamAvg: damLens.length>0,
   };
 }
