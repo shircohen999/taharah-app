@@ -33,7 +33,7 @@ const _T = {
     calToday: 'היום', calNoEvents: 'אין אירועים ביום זה',
     calClickInfo: 'לחצי על יום לפרטים', calAddTitle: 'הוסיפי ווסת חדש',
     calAddBtn: 'הוסיפי ללוח', calDateLabel: 'תאריך', calOnahLabel: 'עונה',
-    calHpstLabel: 'הפסק טהרה בפועל (אופציונלי)',
+    calHpstLabel: 'הפסק טהרה בפועל',
     calOnahDay: '🌞 יום (לפני שקיעה)', calOnahNight: '🌙 לילה (אחרי שקיעה)',
     calOnahPlaceholder: '— בחרי עונה —',
     // Legend
@@ -198,7 +198,7 @@ const _T = {
     calToday: 'Today', calNoEvents: 'No events on this day',
     calClickInfo: 'Tap a day for details', calAddTitle: 'Add a new cycle',
     calAddBtn: 'Add to Calendar', calDateLabel: 'Date', calOnahLabel: 'Time of Day',
-    calHpstLabel: 'Hefsek Tahara date (optional)',
+    calHpstLabel: 'Hefsek Tahara date',
     calOnahDay: '🌞 Day (before sunset)', calOnahNight: '🌙 Night (after sunset)',
     calOnahPlaceholder: '— Select time —',
     // Legend

@@ -111,10 +111,14 @@ function Calendar({cycles, onAddCycle, lang}) {
               onClick={()=>{
                 if(c.other){
                   setViewDate(new Date(c.date.getFullYear(),c.date.getMonth(),1));
-                  setKey(k=>k+1);
+                  setKey(prev=>prev+1);
                 }
                 setSelected(c.date);
-                setAddDate(iso(c.date));
+                const dateStr=iso(c.date);
+                setAddDate(dateStr);
+                const existing=cycles.find(cy=>cy.date===dateStr);
+                if(existing){setAddTime(existing.time||'');setAddHpst(existing.hpst||'');}
+                else{setAddTime('');setAddHpst('');}
               }}
             >
               <div className="d-dot">
@@ -158,7 +162,7 @@ function Calendar({cycles, onAddCycle, lang}) {
         <div className="card">
           <div className="field">
             <label>{t('calDateLabel')}</label>
-            <input type="date" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
+            <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
           </div>
           <div className="field">
             <label>{t('calOnahLabel')}</label>
@@ -170,7 +174,7 @@ function Calendar({cycles, onAddCycle, lang}) {
           </div>
           <div className="field">
             <label>{t('calHpstLabel')}</label>
-            <input type="date" value={addHpst} onChange={e=>setAddHpst(e.target.value)}/>
+            <input type="date" dir="ltr" value={addHpst} onChange={e=>setAddHpst(e.target.value)}/>
           </div>
         </div>
         <button className="btn-primary" onClick={handleAdd}>{t('calAddBtn')}</button>
