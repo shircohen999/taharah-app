@@ -163,7 +163,6 @@ function App() {
   if(stage==='auth')  return <AuthScreen onLogin={handleLogin} onGuest={handleGuest} setMinhag={setMinhag} lang={lang} changeLang={changeLang}/>;
 
   const TABS=[
-    {id:'calc',     labelKey:'tabCalc'},
     {id:'calendar', labelKey:'tabCalendar'},
     {id:'predict',  labelKey:'tabPredict'},
     {id:'history',  labelKey:'tabHistory'},
@@ -198,7 +197,6 @@ function App() {
       </div>
 
       <div key={tab} className="page active" style={tab==='calendar'?{padding:0}:{}}>
-        {tab==='calc'     && <CalcScreen cycles={cycles.filter(c=>!c.type||c.type==='veset')} onSave={saveCycle}/>}
         {tab==='calendar' && <Calendar cycles={cycles} onAddCycle={saveCycle} onDeleteCycle={deleteCycle} lang={lang}/>}
         {tab==='predict'  && <PredictScreen cycles={cycles.filter(c=>!c.type||c.type==='veset')}/>}
         {tab==='history'  && <HistoryScreen cycles={cycles.filter(c=>!c.type||c.type==='veset')} onClear={clearAll} onDelete={deleteCycle}/>}
