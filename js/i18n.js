@@ -204,6 +204,7 @@ const _T = {
     confirmLogout: 'להתנתק?',
     alertNoDate: 'אנא בחרי תאריך', alertNoOnah: 'אנא בחרי עונה',
     alertNoDateOnah: 'אנא בחרי תאריך ועונה',
+    alertHpstTooEarly: 'הפסק טהרה מוקדם מדי — יש להמתין לפחות 5 ימים מתחילת הוסת (הוסת = יום א׳)',
     alertNotifsUnsupported: 'הדפדפן אינו תומך בהתראות',
     alertNotifsBlocked: 'יש לאשר התראות בהגדרות הדפדפן',
     // Notifications
@@ -434,6 +435,7 @@ const _T = {
     confirmLogout: 'Log out?',
     alertNoDate: 'Please select a date', alertNoOnah: 'Please select a time of day',
     alertNoDateOnah: 'Please select a date and time',
+    alertHpstTooEarly: 'Hefsek Tahara is too early — at least 5 days must pass from the start of the period (day 1 = period start)',
     alertNotifsUnsupported: 'Your browser does not support notifications',
     alertNotifsBlocked: 'Please allow notifications in browser settings',
     // Notifications

@@ -224,6 +224,8 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
       if (!addHpst) { alert(t('alertNoDate')); return; }
       const parent = getParentCycle(selected);
       if (!parent) { alert(t('calNoParentCycle')); return; }
+      const isVeset = !parent.type || parent.type === 'veset';
+      if (isVeset && diff(addHpst, parent.date) < 4) { alert(t('alertHpstTooEarly')); return; }
       onAddCycle({...parent, hpst: addHpst});
     } else if (type === 'veset') {
       if (!addDate || !addTime) { alert(t('alertNoDateOnah')); return; }
@@ -249,6 +251,8 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
       if (!addHpst) { alert(t('alertNoDate')); return; }
       const parent = getParentCycle(selected || new Date(addHpst));
       if (!parent) { alert(t('calNoParentCycle')); return; }
+      const isVeset = !parent.type || parent.type === 'veset';
+      if (isVeset && diff(addHpst, parent.date) < 4) { alert(t('alertHpstTooEarly')); return; }
       onAddCycle({...parent, hpst: addHpst});
     } else if (type === 'veset') {
       if (!addDate || !addTime) { alert(t('alertNoDateOnah')); return; }
