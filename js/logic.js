@@ -63,6 +63,14 @@ function fheb(d) {
   } catch { return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`; }
 }
 function fgreg(d) { return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); }
+function fhebShort(d) {
+  try {
+    const parts=new Intl.DateTimeFormat('he-u-ca-hebrew-nu-latn',{month:'long',day:'numeric'}).formatToParts(d);
+    const day=parseInt(parts.find(p=>p.type==='day')?.value||'0');
+    const mon=parts.find(p=>p.type==='month')?.value||'';
+    return `${numToGematria(day)} ${mon}`;
+  } catch { return `${d.getDate()}/${d.getMonth()+1}`; }
+}
 function fhebMonth(d) {
   try {
     const parts=new Intl.DateTimeFormat('he-u-ca-hebrew-nu-latn',{year:'numeric',month:'long'}).formatToParts(d);
@@ -164,10 +172,10 @@ function buildMap(cycles) {
 
     if(idx>0){
       const gap=diff(c.date,sortedVesets[idx-1].date);
-      mark(ad(start,gap),'prisha'); label(ad(start,gap),{key:'haflagah',n:gap});
+      mark(ad(start,gap),'prisha'); label(ad(start,gap),{key:'haflagah',n:gap,time:c.time});
     }
-    mark(ad(start,29),'prisha'); label(ad(start,29),{key:'avg_onah'});
-    mark(nextHebSameDay(start),'prisha'); label(nextHebSameDay(start),{key:'month_onah'});
+    mark(ad(start,29),'prisha'); label(ad(start,29),{key:'avg_onah',time:c.time});
+    mark(nextHebSameDay(start),'prisha'); label(nextHebSameDay(start),{key:'month_onah',time:c.time});
 
     let nextV;
     if(idx<sortedVesets.length-1) nextV=new Date(sortedVesets[idx+1].date);

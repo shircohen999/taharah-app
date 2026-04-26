@@ -67,6 +67,15 @@ const renderLabel = (lbl) => {
   }
 };
 
+const PRISHA_KEYS = new Set(['haflagah','avg_onah','month_onah']);
+const prishaTimeText = (lbl, date) => {
+  if (!date || !PRISHA_KEYS.has(lbl.key) || !lbl.time) return null;
+  const s = fhebShort(date);
+  if (lbl.time === 'day')   return t('prishaTimeDay', s);
+  if (lbl.time === 'night') return t('prishaTimeNight', fhebShort(ad(date,-1)), s);
+  return null;
+};
+
 // All non-veset event types (for hasExtra detection)
 const EXTRA_EVENT_TYPES = [
   'kesem','bedika_lo_nekia','lida','hapala','herayon','bedika_rofea','sheilat_rav',
@@ -361,7 +370,13 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
             <div className="d-tags">
               {selectedInfo.labels.map((lbl,i)=>{
                 const ph=labelPhase(lbl);
-                return <span key={i} className={`dtag${ph?` dtag-${ph}`:''}`}>{renderLabel(lbl)}</span>;
+                const sub=prishaTimeText(lbl, selected);
+                return (
+                  <span key={i} className={`dtag${ph?` dtag-${ph}`:''}`} style={sub?{display:'inline-flex',flexDirection:'column',gap:2,alignItems:'flex-start'}:{}}>
+                    <span>{renderLabel(lbl)}</span>
+                    {sub && <span style={{fontSize:11,opacity:0.85,fontWeight:400,lineHeight:1.3}}>{sub}</span>}
+                  </span>
+                );
               })}
             </div>
           ) : <div className="d-empty">{t('calNoEvents')}</div>}

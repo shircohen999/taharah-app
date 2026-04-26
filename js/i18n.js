@@ -60,6 +60,8 @@ const _T = {
     calHpstLabel: 'הפסק טהרה בפועל',
     calOnahDay: '🌞 יום (לפני שקיעה)', calOnahNight: '🌙 לילה (אחרי שקיעה)',
     calOnahPlaceholder: '— בחרי עונה —',
+    prishaTimeDay: d => `🌞 ביום · ${d}`,
+    prishaTimeNight: (d1, d2) => `🌙 הלילה שבין ${d1} ל${d2}`,
     // Calendar — event sheet
     calAddEventBtn: 'הוסיפי אירוע',
     calEventSheetTitle: 'הוסיפי אירוע',
@@ -288,6 +290,8 @@ const _T = {
     calHpstLabel: 'Hefsek Tahara date',
     calOnahDay: '🌞 Day (before sunset)', calOnahNight: '🌙 Night (after sunset)',
     calOnahPlaceholder: '— Select time —',
+    prishaTimeDay: d => `🌞 Day · ${d}`,
+    prishaTimeNight: (d1, d2) => `🌙 Night between ${d1} and ${d2}`,
     // Calendar — event sheet
     calAddEventBtn: 'Add Event',
     calEventSheetTitle: 'Add Event',
