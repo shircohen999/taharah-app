@@ -74,8 +74,8 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
   // formMode: null | 'recommended' | 'custom'
   const [formMode, setFormMode]   = React.useState(null);
   const [deleteMode, setDeleteMode] = React.useState(false);
-  // recommended sub-type (sefirah phase)
-  const [recSubType, setRecSubType] = React.useState('kesem');
+  // which recommended type the user has drilled into (null = showing list)
+  const [recSelectedType, setRecSelectedType] = React.useState(null);
   // custom form
   const [customType, setCustomType]     = React.useState('veset');
   const [addDate, setAddDate]           = React.useState('');
@@ -101,24 +101,29 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
 
   const selectedInfo = selected ? map[iso(selected)] : null;
 
-  // Determine the recommended event type for the selected day
-  const getRecommendedType = (date) => {
+  // Context-aware list of recommended event types for the selected day
+  const getRecommendedOptions = (date) => {
     const info  = date ? map[iso(date)] : null;
     const types = info?.types;
-    if (types?.has('veset') || types?.has('dam')) return 'hpst';
-    if (types?.has('sefirah'))                    return 'sefirah_sub';
-    return 'veset';
+    if (types?.has('veset') || types?.has('dam')) return ['hpst', 'kesem', 'sheilat_rav'];
+    if (types?.has('sefirah'))  return ['bedika_lo_nekia', 'kesem', 'sheilat_rav'];
+    if (types?.has('hpst'))     return ['kesem', 'sheilat_rav'];
+    if (types?.has('tvila'))    return ['veset', 'kesem', 'sheilat_rav'];
+    return ['kesem', 'veset', 'herayon', 'bedika_rofea', 'sheilat_rav'];
   };
 
-  const recommendedType  = selected ? getRecommendedType(selected) : 'veset';
-  const recommendedLabel =
-    recommendedType === 'hpst'        ? t('calRecHpst') :
-    recommendedType === 'sefirah_sub' ? t('calRecKesem') :
-    t('calRecVeset');
-  const recommendedDesc  =
-    recommendedType === 'hpst'        ? t('calRecHpstDesc') :
-    recommendedType === 'sefirah_sub' ? t('calRecKesemDesc') :
-    t('calRecVesetDesc');
+  const recOptions = selected ? getRecommendedOptions(selected) : [];
+
+  const recTypeLabel = (type) => {
+    if (type === 'hpst')            return t('calRecHpst');
+    if (type === 'veset')           return t('calEventTypeVeset');
+    if (type === 'kesem')           return t('calEventTypeKesem');
+    if (type === 'bedika_lo_nekia') return t('calEventTypeBedikaLoNekia');
+    if (type === 'sheilat_rav')     return t('calEventTypeSheilat');
+    if (type === 'herayon')         return t('calEventTypeHerayon');
+    if (type === 'bedika_rofea')    return t('calEventTypeBedikaRofea');
+    return type;
+  };
 
   // Find most recent veset cycle starting on or before `date`
   const getParentCycle = (date) => {
@@ -146,7 +151,7 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
   const resetForm = () => {
     setFormMode(null);
     setDeleteMode(false);
-    setRecSubType('kesem');
+    setRecSelectedType(null);
     setCustomType('veset');
     setAddDate('');setAddTime('');setAddHpst('');setSheilatAnswer('');
   };
@@ -156,40 +161,48 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
   const chooseMode = (mode) => {
     setShowSheet(false);
     setFormMode(mode);
+    setRecSelectedType(null);
     if (!selected) return;
     const dateStr = iso(selected);
     setAddDate(dateStr);
-    if (mode === 'recommended') {
-      if (recommendedType === 'hpst') { setAddHpst(dateStr); setAddTime(''); }
-      else { setAddHpst(''); setAddTime(''); }
-    } else {
-      // custom — pre-fill from existing veset if any
+    setAddHpst('');
+    setAddTime('');
+    setSheilatAnswer('');
+    if (mode === 'custom') {
+      // pre-fill from existing veset if any
       const existing = cycles.find(cy => cy.date === dateStr && (!cy.type || cy.type === 'veset'));
       setCustomType('veset');
       setAddTime(existing?.time || '');
       setAddHpst(existing?.hpst || '');
-      setSheilatAnswer('');
     }
   };
 
   const saveRecommended = () => {
-    if (recommendedType === 'hpst') {
+    const type = recSelectedType;
+    if (type === 'hpst') {
       if (!addHpst) { alert(t('alertNoDate')); return; }
       const parent = getParentCycle(selected);
       if (!parent) { alert(t('calNoParentCycle')); return; }
       onAddCycle({...parent, hpst: addHpst});
-    } else if (recommendedType === 'sefirah_sub') {
-      onAddCycle({type: recSubType, date: addDate});
-    } else {
-      // veset
+    } else if (type === 'veset') {
       if (!addDate || !addTime) { alert(t('alertNoDateOnah')); return; }
       onAddCycle({date: addDate, time: addTime, hpst: addHpst || null});
+    } else if (type === 'sheilat_rav') {
+      onAddCycle({type: 'sheilat_rav', date: addDate, answer: sheilatAnswer || null});
+    } else {
+      if (!addDate) { alert(t('alertNoDate')); return; }
+      onAddCycle({type, date: addDate});
     }
     resetForm();
   };
 
   const saveCustom = () => {
-    if (customType === 'veset') {
+    if (customType === 'hpst') {
+      if (!addDate) { alert(t('alertNoDate')); return; }
+      const parent = getParentCycle(selected || new Date(addDate));
+      if (!parent) { alert(t('calNoParentCycle')); return; }
+      onAddCycle({...parent, hpst: addDate});
+    } else if (customType === 'veset') {
       if (!addDate || !addTime) { alert(t('alertNoDateOnah')); return; }
       onAddCycle({date: addDate, time: addTime, hpst: addHpst || null});
     } else if (customType === 'sheilat_rav') {
@@ -214,24 +227,6 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
     </button>
   );
 
-  // Radio-style toggle for recommended sefirah sub-type
-  const subTypeBtn = (type) => {
-    const active = recSubType === type;
-    return (
-      <button
-        onClick={()=>setRecSubType(type)}
-        style={{
-          flex:1, padding:'8px 6px', fontSize:12, fontWeight: active?600:400,
-          background: active?'var(--primary)':'var(--bg-soft)',
-          color: active?'#fff':'var(--muted)',
-          border:'none', borderRadius:8, cursor:'pointer', fontFamily:'inherit',
-          transition:'background 160ms,color 160ms',
-        }}
-      >
-        {type === 'kesem' ? t('calRecSubKesem') : t('calRecSubBedika')}
-      </button>
-    );
-  };
 
   return (
     <div className="page active" style={{padding:0}}>
@@ -396,50 +391,95 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
           {/* ── Recommended event form ── */}
           {formMode === 'recommended' && (
             <div style={{marginTop:14,borderTop:'0.5px solid var(--border)',paddingTop:14}}>
-              <div style={{fontSize:11,fontWeight:600,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:10}}>
-                {recommendedLabel}
-              </div>
 
-              {/* hpst (dam phase) */}
-              {recommendedType === 'hpst' && (
+              {/* LIST: choose from context-aware options */}
+              {!recSelectedType && (
                 <>
-                  <div className="field" style={fieldStyle}>
-                    <label>{t('calHpstLabel')}</label>
-                    <input type="date" dir="ltr" value={addHpst} onChange={e=>setAddHpst(e.target.value)}/>
+                  <div style={{fontSize:11,fontWeight:600,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:10}}>
+                    {t('calRecEventTitle')}
                   </div>
-                  <div style={btnRow}>{saveBtn(saveRecommended)}{cancelBtn}</div>
+                  {recOptions.map(type=>(
+                    <div
+                      key={type}
+                      onClick={()=>{
+                        setRecSelectedType(type);
+                        if(type==='hpst') setAddHpst(addDate);
+                      }}
+                      style={{
+                        display:'flex',justifyContent:'space-between',alignItems:'center',
+                        padding:'12px 14px',background:'var(--bg-soft)',borderRadius:12,
+                        marginBottom:8,cursor:'pointer',
+                      }}
+                    >
+                      <div style={{fontSize:14,fontWeight:500,color:'var(--text)'}}>{recTypeLabel(type)}</div>
+                      <div style={{fontSize:20,color:'var(--muted)',lineHeight:1,flexShrink:0}}>›</div>
+                    </div>
+                  ))}
+                  <div style={{marginTop:8}}>{cancelBtn}</div>
                 </>
               )}
 
-              {/* sefirah sub-type (kesem / bedika lo nekia) */}
-              {recommendedType === 'sefirah_sub' && (
+              {/* MINI-FORM: fields for the chosen type */}
+              {recSelectedType && (
                 <>
-                  <div style={{display:'flex',gap:6,marginBottom:10}}>
-                    {subTypeBtn('kesem')}{subTypeBtn('bedika_lo_nekia')}
+                  <button
+                    onClick={()=>setRecSelectedType(null)}
+                    style={{background:'none',border:'none',cursor:'pointer',padding:'0 0 10px',color:'var(--primary)',fontSize:13,fontFamily:'inherit'}}
+                  >
+                    ‹ {t('calRecBack')}
+                  </button>
+                  <div style={{fontSize:11,fontWeight:600,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:10}}>
+                    {recTypeLabel(recSelectedType)}
                   </div>
-                  <div className="field" style={fieldStyle}>
-                    <label>{t('calDateLabel')}</label>
-                    <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
-                  </div>
-                  <div style={btnRow}>{saveBtn(saveRecommended)}{cancelBtn}</div>
-                </>
-              )}
 
-              {/* veset (default / tahora phase) */}
-              {recommendedType === 'veset' && (
-                <>
-                  <div className="field" style={fieldStyle}>
-                    <label>{t('calDateLabel')}</label>
-                    <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
-                  </div>
-                  <div className="field" style={fieldStyle}>
-                    <label>{t('calOnahLabel')}</label>
-                    <select value={addTime} onChange={e=>setAddTime(e.target.value)}>
-                      <option value="">{t('calOnahPlaceholder')}</option>
-                      <option value="day">{t('calOnahDay')}</option>
-                      <option value="night">{t('calOnahNight')}</option>
-                    </select>
-                  </div>
+                  {recSelectedType === 'hpst' && (
+                    <div className="field" style={fieldStyle}>
+                      <label>{t('calHpstLabel')}</label>
+                      <input type="date" dir="ltr" value={addHpst} onChange={e=>setAddHpst(e.target.value)}/>
+                    </div>
+                  )}
+
+                  {(recSelectedType==='kesem'||recSelectedType==='bedika_lo_nekia'||recSelectedType==='herayon'||recSelectedType==='bedika_rofea') && (
+                    <div className="field" style={fieldStyle}>
+                      <label>{t('calDateLabel')}</label>
+                      <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
+                    </div>
+                  )}
+
+                  {recSelectedType === 'veset' && (
+                    <>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calDateLabel')}</label>
+                        <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
+                      </div>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calOnahLabel')}</label>
+                        <select value={addTime} onChange={e=>setAddTime(e.target.value)}>
+                          <option value="">{t('calOnahPlaceholder')}</option>
+                          <option value="day">{t('calOnahDay')}</option>
+                          <option value="night">{t('calOnahNight')}</option>
+                        </select>
+                      </div>
+                    </>
+                  )}
+
+                  {recSelectedType === 'sheilat_rav' && (
+                    <>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calDateLabel')}</label>
+                        <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
+                      </div>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calSheilatAnswerLabel')}</label>
+                        <select value={sheilatAnswer} onChange={e=>setSheilatAnswer(e.target.value)}>
+                          <option value="">{t('calSheilatNoAnswer')}</option>
+                          <option value="tahora">{t('calSheilatTahora')}</option>
+                          <option value="tamea">{t('calSheilatTamea')}</option>
+                        </select>
+                      </div>
+                    </>
+                  )}
+
                   <div style={btnRow}>{saveBtn(saveRecommended)}{cancelBtn}</div>
                 </>
               )}
@@ -458,6 +498,7 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
                 <label>{t('calEventTypeLabel')}</label>
                 <select value={customType} onChange={e=>{setCustomType(e.target.value);setAddTime('');setAddHpst('');setSheilatAnswer('');}}>
                   <option value="veset">{t('calEventTypeVeset')}</option>
+                  <option value="hpst">{t('calRecHpst')}</option>
                   <option value="kesem">{t('calEventTypeKesem')}</option>
                   <option value="bedika_lo_nekia">{t('calEventTypeBedikaLoNekia')}</option>
                   <option value="lida">{t('calEventTypeLida')}</option>
@@ -546,8 +587,7 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
             >
               <div>
                 <div style={{fontSize:14,fontWeight:600}}>{t('calRecEventTitle')}</div>
-                <div style={{fontSize:12,color:'var(--primary)',marginTop:3,fontWeight:500}}>{recommendedLabel}</div>
-                <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{recommendedDesc}</div>
+                <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>{t('calRecEventSub')}</div>
               </div>
               <div style={{fontSize:22,color:'var(--muted)',lineHeight:1,flexShrink:0,marginRight:4}}>›</div>
             </div>
