@@ -12,7 +12,7 @@ const MoonIcon = ({phase='full',size=18,color='currentColor'}) => {
   return <svg width={size} height={size} viewBox="0 0 18 18" className="moon-svg">{shapes[phase]}</svg>;
 };
 
-// labelPhase: maps a label object {key, n?} → CSS phase class
+// labelPhase: maps a label key → CSS class for dtag colouring
 const labelPhase = (lbl) => {
   if (!lbl) return null;
   const k = lbl.key;
@@ -23,6 +23,13 @@ const labelPhase = (lbl) => {
   if (k === 'tvila')    return 'tvila';
   if (k === 'ovulation' || k === 'fertile') return 'fertile';
   if (k === 'haflagah' || k === 'avg_onah' || k === 'month_onah') return 'prisha';
+  // New event types — כתם and בדיקה לא נקיה share veset colour per user request
+  if (k === 'kesem' || k === 'bedika_lo_nekia') return 'veset';
+  if (k === 'lida')         return 'lida';
+  if (k === 'hapala')       return 'hapala';
+  if (k === 'herayon')      return 'herayon';
+  if (k === 'bedika_rofea') return 'rofea';
+  if (k === 'sheilat_rav')  return 'sheilat';
   return null;
 };
 
@@ -40,22 +47,44 @@ const renderLabel = (lbl) => {
     case 'avg_onah':   return t('phaseAvgOnah');
     case 'haflagah':   return t('phaseHaflagah', lbl.n);
     case 'month_onah': return t('phaseMonthOnah');
-    default:           return lbl.key;
+    case 'kesem':          return t('phaseKesem');
+    case 'bedika_lo_nekia':return t('phaseBedikaLoNekia');
+    case 'lida':           return t('phaseLida');
+    case 'hapala':         return t('phaseHapala');
+    case 'herayon':        return t('phaseHerayon');
+    case 'bedika_rofea':   return t('phaseBedikaRofea');
+    case 'sheilat_rav':
+      if (lbl.answer === 'tahora') return t('phaseSheilatTahora');
+      if (lbl.answer === 'tamea')  return t('phaseSheilatTamea');
+      return t('phaseSheilat');
+    default: return lbl.key;
   }
 };
 
+// All non-veset event types available in the custom form
+const EXTRA_EVENT_TYPES = [
+  'kesem','bedika_lo_nekia','lida','hapala','herayon','bedika_rofea','sheilat_rav',
+];
+
 function Calendar({cycles, onAddCycle, lang}) {
   const [viewDate, setViewDate] = React.useState(()=>new Date());
-  const [selected, setSelected] = React.useState(null);
-  const [key, setKey] = React.useState(0);
+  const [selected, setSelected]   = React.useState(null);
+  const [key, setKey]             = React.useState(0);
   const [showSheet, setShowSheet] = React.useState(false);
-  const [formMode, setFormMode] = React.useState(null); // null | 'recommended' | 'custom'
-  const [addDate, setAddDate] = React.useState('');
-  const [addTime, setAddTime] = React.useState('');
-  const [addHpst, setAddHpst] = React.useState('');
+  // formMode: null | 'recommended' | 'custom'
+  const [formMode, setFormMode]   = React.useState(null);
+  // recommended sub-type (sefirah phase)
+  const [recSubType, setRecSubType] = React.useState('kesem');
+  // custom form
+  const [customType, setCustomType]     = React.useState('veset');
+  const [addDate, setAddDate]           = React.useState('');
+  const [addTime, setAddTime]           = React.useState('');
+  const [addHpst, setAddHpst]           = React.useState('');
+  const [sheilatAnswer, setSheilatAnswer] = React.useState('');
 
-  const map = React.useMemo(()=>buildMap(cycles),[cycles]);
+  const map   = React.useMemo(()=>buildMap(cycles),[cycles]);
   const today = React.useMemo(()=>{const d=new Date();d.setHours(0,0,0,0);return d;},[]);
+
   const vy=viewDate.getFullYear(), vm=viewDate.getMonth();
   const first=new Date(vy,vm,1);
   const lastDate=new Date(vy,vm+1,0).getDate();
@@ -66,32 +95,44 @@ function Calendar({cycles, onAddCycle, lang}) {
   const tail=7-((startDow+lastDate)%7);
   if(tail<7) for(let i=1;i<=tail;i++) cells.push({date:new Date(vy,vm+1,i),other:true});
 
-  const changeMonth=(d)=>{
-    setViewDate(prev=>new Date(prev.getFullYear(),prev.getMonth()+d,1));
-    setKey(k=>k+1);
-  };
+  const changeMonth=(d)=>{setViewDate(prev=>new Date(prev.getFullYear(),prev.getMonth()+d,1));setKey(k=>k+1);};
   const goToday=()=>{const n=new Date();setViewDate(new Date(n.getFullYear(),n.getMonth(),1));setKey(k=>k+1);};
 
   const selectedInfo = selected ? map[iso(selected)] : null;
 
-  // Determine recommended event type based on the selected day's phase
+  // Determine the recommended event type for the selected day
   const getRecommendedType = (date) => {
-    const info = date ? map[iso(date)] : null;
+    const info  = date ? map[iso(date)] : null;
     const types = info?.types;
     if (types?.has('veset') || types?.has('dam')) return 'hpst';
+    if (types?.has('sefirah'))                    return 'sefirah_sub';
     return 'veset';
   };
 
-  const recommendedType = selected ? getRecommendedType(selected) : 'veset';
-  const recommendedLabel = recommendedType === 'hpst' ? t('calRecHpst') : t('calRecVeset');
-  const recommendedDesc  = recommendedType === 'hpst' ? t('calRecHpstDesc') : t('calRecVesetDesc');
+  const recommendedType  = selected ? getRecommendedType(selected) : 'veset';
+  const recommendedLabel =
+    recommendedType === 'hpst'        ? t('calRecHpst') :
+    recommendedType === 'sefirah_sub' ? t('calRecKesem') :
+    t('calRecVeset');
+  const recommendedDesc  =
+    recommendedType === 'hpst'        ? t('calRecHpstDesc') :
+    recommendedType === 'sefirah_sub' ? t('calRecKesemDesc') :
+    t('calRecVesetDesc');
 
-  // Find the most recent cycle that started on or before the given date
+  // Find most recent veset cycle starting on or before `date`
   const getParentCycle = (date) => {
     if (!date || !cycles.length) return null;
     return [...cycles]
+      .filter(c => !c.type || c.type === 'veset')
       .sort((a,b) => new Date(b.date) - new Date(a.date))
       .find(c => new Date(c.date) <= date) || null;
+  };
+
+  const resetForm = () => {
+    setFormMode(null);
+    setRecSubType('kesem');
+    setCustomType('veset');
+    setAddDate('');setAddTime('');setAddHpst('');setSheilatAnswer('');
   };
 
   const openSheet = () => { setShowSheet(true); setFormMode(null); };
@@ -106,9 +147,12 @@ function Calendar({cycles, onAddCycle, lang}) {
       if (recommendedType === 'hpst') { setAddHpst(dateStr); setAddTime(''); }
       else { setAddHpst(''); setAddTime(''); }
     } else {
-      const existing = cycles.find(cy => cy.date === dateStr);
+      // custom — pre-fill from existing veset if any
+      const existing = cycles.find(cy => cy.date === dateStr && (!cy.type || cy.type === 'veset'));
+      setCustomType('veset');
       setAddTime(existing?.time || '');
       setAddHpst(existing?.hpst || '');
+      setSheilatAnswer('');
     }
   };
 
@@ -118,24 +162,64 @@ function Calendar({cycles, onAddCycle, lang}) {
       const parent = getParentCycle(selected);
       if (!parent) { alert(t('calNoParentCycle')); return; }
       onAddCycle({...parent, hpst: addHpst});
+    } else if (recommendedType === 'sefirah_sub') {
+      onAddCycle({type: recSubType, date: addDate});
     } else {
+      // veset
       if (!addDate || !addTime) { alert(t('alertNoDateOnah')); return; }
       onAddCycle({date: addDate, time: addTime, hpst: addHpst || null});
     }
-    setFormMode(null);
+    resetForm();
   };
 
   const saveCustom = () => {
-    if (!addDate || !addTime) { alert(t('alertNoDateOnah')); return; }
-    onAddCycle({date: addDate, time: addTime, hpst: addHpst || null});
-    setFormMode(null);
+    if (customType === 'veset') {
+      if (!addDate || !addTime) { alert(t('alertNoDateOnah')); return; }
+      onAddCycle({date: addDate, time: addTime, hpst: addHpst || null});
+    } else if (customType === 'sheilat_rav') {
+      onAddCycle({type: 'sheilat_rav', date: addDate, answer: sheilatAnswer || null});
+    } else {
+      onAddCycle({type: customType, date: addDate});
+    }
+    resetForm();
   };
 
+  // --- helpers ---
   const fieldStyle = {background:'var(--bg-soft)', borderRadius:10, marginBottom:6};
-  const btnRowStyle = {display:'flex', gap:8, marginTop:10};
+  const btnRow = {display:'flex', gap:8, marginTop:10};
+  const cancelBtn = (
+    <button className="btn-ghost" style={{margin:0,padding:'11px 16px',fontSize:13,width:'auto'}} onClick={resetForm}>
+      {t('calCancelBtn')}
+    </button>
+  );
+  const saveBtn = (onClick) => (
+    <button className="btn-primary" style={{flex:1,margin:0,padding:'11px 0',fontSize:14}} onClick={onClick}>
+      {t('calSaveBtn')}
+    </button>
+  );
+
+  // Radio-style toggle for recommended sefirah sub-type
+  const subTypeBtn = (type) => {
+    const active = recSubType === type;
+    return (
+      <button
+        onClick={()=>setRecSubType(type)}
+        style={{
+          flex:1, padding:'8px 6px', fontSize:12, fontWeight: active?600:400,
+          background: active?'var(--primary)':'var(--bg-soft)',
+          color: active?'#fff':'var(--muted)',
+          border:'none', borderRadius:8, cursor:'pointer', fontFamily:'inherit',
+          transition:'background 160ms,color 160ms',
+        }}
+      >
+        {type === 'kesem' ? t('calRecSubKesem') : t('calRecSubBedika')}
+      </button>
+    );
+  };
 
   return (
     <div className="page active" style={{padding:0}}>
+      {/* ── Month nav ── */}
       <div className="month-nav">
         <button className="mnav-btn" onClick={()=>changeMonth(-1)}>‹</button>
         <div style={{textAlign:'center'}}>
@@ -152,6 +236,7 @@ function Calendar({cycles, onAddCycle, lang}) {
         {t('dayHeaders').map((d,i)=><div key={i} className="dow-cell">{d}</div>)}
       </div>
 
+      {/* ── Calendar grid ── */}
       <div className="cal-grid" key={key}>
         {cells.map((c,i)=>{
           const k=iso(c.date);
@@ -160,6 +245,8 @@ function Calendar({cycles, onAddCycle, lang}) {
           const isToday=iso(c.date)===iso(today);
           const isSelected=selected&&iso(selected)===k;
           const bar=info?.types.has('prisha')?'prisha':info?.types.has('fertile')?'fertile':null;
+          // Small dot indicator for non-veset events on this day
+          const hasExtra=info?.types&&[...info.types].some(t=>EXTRA_EVENT_TYPES.includes(t));
           return (
             <div
               key={i}
@@ -169,13 +256,16 @@ function Calendar({cycles, onAddCycle, lang}) {
               onClick={()=>{
                 if(c.other){setViewDate(new Date(c.date.getFullYear(),c.date.getMonth(),1));setKey(prev=>prev+1);}
                 setSelected(c.date);
-                setFormMode(null);
+                resetForm();
                 setShowSheet(false);
               }}
             >
               <div className="d-dot">
                 <div className="d-greg">{c.date.getDate()}</div>
                 <div className="d-heb">{fhebDay(c.date)}</div>
+                {hasExtra && !phase && (
+                  <div style={{position:'absolute',bottom:2,width:4,height:4,borderRadius:2,background:'var(--phase-sheilat)'}}/>
+                )}
               </div>
               {bar&&<div className="d-bar" style={{background:bar==='prisha'?'var(--phase-prisha)':'var(--phase-fertile)'}}/>}
             </div>
@@ -183,6 +273,7 @@ function Calendar({cycles, onAddCycle, lang}) {
         })}
       </div>
 
+      {/* ── Legend ── */}
       <div className="legend">
         <div className="li"><div className="ld" style={{background:'var(--phase-veset)'}}/>{ t('legendVeset')}</div>
         <div className="li"><div className="ld" style={{background:'var(--veset-soft)'}}/>{ t('legendDam')}</div>
@@ -191,9 +282,14 @@ function Calendar({cycles, onAddCycle, lang}) {
         <div className="li"><div className="ld" style={{background:'var(--tvila-soft)',border:'1.5px solid var(--phase-tvila)'}}/>{ t('legendTvila')}</div>
         <div className="li"><div className="lb" style={{background:'var(--phase-prisha)'}}/>{ t('legendPrisha')}</div>
         <div className="li"><div className="lb" style={{background:'var(--phase-fertile)'}}/>{ t('legendFertile')}</div>
+        <div className="li"><div className="ld" style={{background:'var(--lida-soft)',border:'1.5px solid var(--phase-lida)'}}/>{ t('legendLida')}</div>
+        <div className="li"><div className="ld" style={{background:'var(--hapala-soft)',border:'1.5px solid var(--phase-hapala)'}}/>{ t('legendHapala')}</div>
+        <div className="li"><div className="ld" style={{background:'var(--herayon-soft)',border:'1.5px solid var(--phase-herayon)'}}/>{ t('legendHerayon')}</div>
+        <div className="li"><div className="ld" style={{background:'var(--rofea-soft)',border:'1.5px solid var(--phase-rofea)'}}/>{ t('legendRofea')}</div>
+        <div className="li"><div className="ld" style={{background:'var(--sheilat-soft)',border:'1.5px solid var(--phase-sheilat)'}}/>{ t('legendSheilat')}</div>
       </div>
 
-      {/* Day detail panel */}
+      {/* ── Day detail panel ── */}
       {selected ? (
         <div className="detail-panel" key={iso(selected)}>
           <div className="d-date">{dayFull(selected.getDay())}, {selected.getDate()}/{selected.getMonth()+1} · {fheb(selected)}</div>
@@ -207,7 +303,7 @@ function Calendar({cycles, onAddCycle, lang}) {
             </div>
           ) : <div className="d-empty">{t('calNoEvents')}</div>}
 
-          {/* Add-event button — hidden while a form is open */}
+          {/* Add-event button */}
           {!formMode && (
             <button
               onClick={openSheet}
@@ -217,7 +313,6 @@ function Calendar({cycles, onAddCycle, lang}) {
                 border:'none',borderRadius:999,fontSize:13,cursor:'pointer',
                 fontWeight:600,fontFamily:'inherit',
                 boxShadow:'0 2px 8px rgba(0,0,0,0.12)',
-                transition:'transform 160ms,filter 160ms',
               }}
             >
               <span style={{fontSize:18,lineHeight:1,marginTop:-1}}>+</span>
@@ -225,24 +320,40 @@ function Calendar({cycles, onAddCycle, lang}) {
             </button>
           )}
 
-          {/* Recommended event form */}
+          {/* ── Recommended event form ── */}
           {formMode === 'recommended' && (
             <div style={{marginTop:14,borderTop:'0.5px solid var(--border)',paddingTop:14}}>
               <div style={{fontSize:11,fontWeight:600,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:10}}>
                 {recommendedLabel}
               </div>
-              {recommendedType === 'hpst' ? (
+
+              {/* hpst (dam phase) */}
+              {recommendedType === 'hpst' && (
                 <>
                   <div className="field" style={fieldStyle}>
                     <label>{t('calHpstLabel')}</label>
                     <input type="date" dir="ltr" value={addHpst} onChange={e=>setAddHpst(e.target.value)}/>
                   </div>
-                  <div style={btnRowStyle}>
-                    <button className="btn-primary" style={{flex:1,margin:0,padding:'11px 0',fontSize:14}} onClick={saveRecommended}>{t('calSaveBtn')}</button>
-                    <button className="btn-ghost" style={{margin:0,padding:'11px 16px',fontSize:13,width:'auto'}} onClick={()=>setFormMode(null)}>{t('calCancelBtn')}</button>
-                  </div>
+                  <div style={btnRow}>{saveBtn(saveRecommended)}{cancelBtn}</div>
                 </>
-              ) : (
+              )}
+
+              {/* sefirah sub-type (kesem / bedika lo nekia) */}
+              {recommendedType === 'sefirah_sub' && (
+                <>
+                  <div style={{display:'flex',gap:6,marginBottom:10}}>
+                    {subTypeBtn('kesem')}{subTypeBtn('bedika_lo_nekia')}
+                  </div>
+                  <div className="field" style={fieldStyle}>
+                    <label>{t('calDateLabel')}</label>
+                    <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
+                  </div>
+                  <div style={btnRow}>{saveBtn(saveRecommended)}{cancelBtn}</div>
+                </>
+              )}
+
+              {/* veset (default / tahora phase) */}
+              {recommendedType === 'veset' && (
                 <>
                   <div className="field" style={fieldStyle}>
                     <label>{t('calDateLabel')}</label>
@@ -256,41 +367,71 @@ function Calendar({cycles, onAddCycle, lang}) {
                       <option value="night">{t('calOnahNight')}</option>
                     </select>
                   </div>
-                  <div style={btnRowStyle}>
-                    <button className="btn-primary" style={{flex:1,margin:0,padding:'11px 0',fontSize:14}} onClick={saveRecommended}>{t('calSaveBtn')}</button>
-                    <button className="btn-ghost" style={{margin:0,padding:'11px 16px',fontSize:13,width:'auto'}} onClick={()=>setFormMode(null)}>{t('calCancelBtn')}</button>
-                  </div>
+                  <div style={btnRow}>{saveBtn(saveRecommended)}{cancelBtn}</div>
                 </>
               )}
             </div>
           )}
 
-          {/* Full / custom event form */}
+          {/* ── Custom / all-events form ── */}
           {formMode === 'custom' && (
             <div style={{marginTop:14,borderTop:'0.5px solid var(--border)',paddingTop:14}}>
               <div style={{fontSize:11,fontWeight:600,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:10}}>
                 {t('calAddTitle')}
               </div>
+
+              {/* Event type selector */}
+              <div className="field" style={fieldStyle}>
+                <label>{t('calEventTypeLabel')}</label>
+                <select value={customType} onChange={e=>{setCustomType(e.target.value);setAddTime('');setAddHpst('');setSheilatAnswer('');}}>
+                  <option value="veset">{t('calEventTypeVeset')}</option>
+                  <option value="kesem">{t('calEventTypeKesem')}</option>
+                  <option value="bedika_lo_nekia">{t('calEventTypeBedikaLoNekia')}</option>
+                  <option value="lida">{t('calEventTypeLida')}</option>
+                  <option value="hapala">{t('calEventTypeHapala')}</option>
+                  <option value="herayon">{t('calEventTypeHerayon')}</option>
+                  <option value="bedika_rofea">{t('calEventTypeBedikaRofea')}</option>
+                  <option value="sheilat_rav">{t('calEventTypeSheilat')}</option>
+                </select>
+              </div>
+
+              {/* Date — always */}
               <div className="field" style={fieldStyle}>
                 <label>{t('calDateLabel')}</label>
                 <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
               </div>
-              <div className="field" style={fieldStyle}>
-                <label>{t('calOnahLabel')}</label>
-                <select value={addTime} onChange={e=>setAddTime(e.target.value)}>
-                  <option value="">{t('calOnahPlaceholder')}</option>
-                  <option value="day">{t('calOnahDay')}</option>
-                  <option value="night">{t('calOnahNight')}</option>
-                </select>
-              </div>
-              <div className="field" style={fieldStyle}>
-                <label>{t('calHpstLabel')}</label>
-                <input type="date" dir="ltr" value={addHpst} onChange={e=>setAddHpst(e.target.value)}/>
-              </div>
-              <div style={btnRowStyle}>
-                <button className="btn-primary" style={{flex:1,margin:0,padding:'11px 0',fontSize:14}} onClick={saveCustom}>{t('calSaveBtn')}</button>
-                <button className="btn-ghost" style={{margin:0,padding:'11px 16px',fontSize:13,width:'auto'}} onClick={()=>setFormMode(null)}>{t('calCancelBtn')}</button>
-              </div>
+
+              {/* Veset-only extra fields */}
+              {customType === 'veset' && (
+                <>
+                  <div className="field" style={fieldStyle}>
+                    <label>{t('calOnahLabel')}</label>
+                    <select value={addTime} onChange={e=>setAddTime(e.target.value)}>
+                      <option value="">{t('calOnahPlaceholder')}</option>
+                      <option value="day">{t('calOnahDay')}</option>
+                      <option value="night">{t('calOnahNight')}</option>
+                    </select>
+                  </div>
+                  <div className="field" style={fieldStyle}>
+                    <label>{t('calHpstLabel')}</label>
+                    <input type="date" dir="ltr" value={addHpst} onChange={e=>setAddHpst(e.target.value)}/>
+                  </div>
+                </>
+              )}
+
+              {/* Sheilat rav — answer field */}
+              {customType === 'sheilat_rav' && (
+                <div className="field" style={fieldStyle}>
+                  <label>{t('calSheilatAnswerLabel')}</label>
+                  <select value={sheilatAnswer} onChange={e=>setSheilatAnswer(e.target.value)}>
+                    <option value="">{t('calSheilatNoAnswer')}</option>
+                    <option value="tahora">{t('calSheilatTahora')}</option>
+                    <option value="tamea">{t('calSheilatTamea')}</option>
+                  </select>
+                </div>
+              )}
+
+              <div style={btnRow}>{saveBtn(saveCustom)}{cancelBtn}</div>
             </div>
           )}
         </div>
@@ -298,7 +439,7 @@ function Calendar({cycles, onAddCycle, lang}) {
         <div className="detail-panel"><div className="d-empty">{t('calClickInfo')}</div></div>
       )}
 
-      {/* Bottom sheet — event type picker */}
+      {/* ── Event-type selection sheet ── */}
       {showSheet && (
         <div
           style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.45)',zIndex:200,display:'flex',alignItems:'flex-end'}}
@@ -338,7 +479,7 @@ function Calendar({cycles, onAddCycle, lang}) {
               <div style={{fontSize:22,color:'var(--muted)',lineHeight:1,flexShrink:0,marginRight:4}}>›</div>
             </div>
 
-            {/* Custom / all events option */}
+            {/* All-events option */}
             <div
               onClick={()=>chooseMode('custom')}
               style={{

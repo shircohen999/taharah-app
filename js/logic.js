@@ -103,10 +103,12 @@ function buildMap(cycles) {
   const label=(date,obj)=>{
     const k=iso(date);
     if(!map[k]) map[k]={types:new Set(),labels:[]};
-    const dup=map[k].labels.some(l=>l.key===obj.key&&l.n===obj.n);
+    const dup=map[k].labels.some(l=>l.key===obj.key&&l.n===obj.n&&l.answer===obj.answer);
     if(!dup) map[k].labels.push(obj);
   };
-  const sorted=[...cycles].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  // Only veset entries drive the phase logic
+  const vesetCycles=cycles.filter(c=>!c.type||c.type==='veset');
+  const sorted=[...vesetCycles].sort((a,b)=>new Date(a.date)-new Date(b.date));
   const today=new Date(); today.setHours(0,0,0,0);
   sorted.forEach((c,idx)=>{
     const start=new Date(c.date);
@@ -154,6 +156,12 @@ function buildMap(cycles) {
     for(let i=-4;i<=1;i++){const fd=ad(ov,i);if(!map[iso(fd)]?.types.has('veset')){mark(fd,'fertile');if(i!==0)label(fd,{key:'fertile'});}}
     label(ov,{key:'ovulation'});
   });
+  // Non-veset events: mark as simple labels on their date
+  cycles.filter(c=>c.type&&c.type!=='veset').forEach(ev=>{
+    const date=new Date(ev.date);
+    mark(date,ev.type);
+    label(date,ev.type==='sheilat_rav'?{key:'sheilat_rav',answer:ev.answer||null}:{key:ev.type});
+  });
   return map;
 }
 
@@ -168,8 +176,9 @@ function getDayPhase(types) {
 }
 
 function computeStats(cycles) {
-  if(cycles.length<2) return null;
-  const sorted=[...cycles].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const vesets=cycles.filter(c=>!c.type||c.type==='veset');
+  if(vesets.length<2) return null;
+  const sorted=[...vesets].sort((a,b)=>new Date(a.date)-new Date(b.date));
   const gaps=sorted.slice(1).map((c,i)=>diff(c.date,sorted[i].date));
   const avg=gaps.reduce((a,b)=>a+b,0)/gaps.length;
   const stddev=Math.sqrt(gaps.reduce((a,b)=>a+(b-avg)**2,0)/gaps.length);

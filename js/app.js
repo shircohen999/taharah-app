@@ -63,7 +63,8 @@ function App() {
     const ND={hpstDays:0,sefirahDays:0,tvilaDays:0,prishaDays:1,nextDays:2,bedikaDays:0};
     const off=type=>prefs[`${type}Days`]!==undefined?prefs[`${type}Days`]:ND[`${type}Days`];
     const upcoming=[];
-    cycles.forEach(c=>{
+    const vesetCyclesNotif=cycles.filter(c=>!c.type||c.type==='veset');
+    vesetCyclesNotif.forEach(c=>{
       const start=new Date(c.date);
       const hpstDate=c.hpst?new Date(c.hpst):ad(start,4);
       const sef=ad(hpstDate,1);
@@ -102,10 +103,17 @@ function App() {
   const saveCycle=async(c)=>{
     setCycles(prev=>{
       const entry={id:Date.now(),...c};
-      const ei=prev.findIndex(x=>x.date===c.date);
       let next;
-      if(ei>=0){entry.id=prev[ei].id;const copy=[...prev];copy[ei]=entry;next=copy;}
-      else next=[entry,...prev].slice(0,24);
+      if(!c.type||c.type==='veset'){
+        // veset: one per date — update if exists
+        const ei=prev.findIndex(x=>x.date===c.date&&(!x.type||x.type==='veset'));
+        if(ei>=0){entry.id=prev[ei].id;const copy=[...prev];copy[ei]=entry;next=copy;}
+        else next=[entry,...prev];
+      } else {
+        // non-veset events: always add new (no dedup)
+        next=[entry,...prev];
+      }
+      next=next.slice(0,120);
       localStorage.setItem(SKEY,JSON.stringify(next));
       if(user&&window.__fb) window.__fb.saveCycles(user.uid,next).then(ok=>{setSyncStatus(ok?'synced':'sync_error');});
       return next;
@@ -188,10 +196,10 @@ function App() {
       </div>
 
       <div key={tab} className="page active" style={tab==='calendar'?{padding:0}:{}}>
-        {tab==='calc'     && <CalcScreen cycles={cycles} onSave={saveCycle}/>}
+        {tab==='calc'     && <CalcScreen cycles={cycles.filter(c=>!c.type||c.type==='veset')} onSave={saveCycle}/>}
         {tab==='calendar' && <Calendar cycles={cycles} onAddCycle={saveCycle} lang={lang}/>}
-        {tab==='predict'  && <PredictScreen cycles={cycles}/>}
-        {tab==='history'  && <HistoryScreen cycles={cycles} onClear={clearAll} onDelete={deleteCycle}/>}
+        {tab==='predict'  && <PredictScreen cycles={cycles.filter(c=>!c.type||c.type==='veset')}/>}
+        {tab==='history'  && <HistoryScreen cycles={cycles.filter(c=>!c.type||c.type==='veset')} onClear={clearAll} onDelete={deleteCycle}/>}
         {tab==='glossary' && <GlossaryScreen lang={lang}/>}
         {tab==='settings' && <SettingsScreen user={user} onLogout={handleLogout} palette={palette} setPalette={setPalette} syncStatus={syncStatus} minhag={minhag} setMinhag={setMinhag} lang={lang} changeLang={changeLang}/>}
         {tab!=='settings' && (

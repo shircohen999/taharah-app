@@ -28,6 +28,18 @@
   --tvila-soft:   #DBE7F0;
   --tahora-soft:  #F5E9D4;
   --fertile-soft: #FDEEDE;
+  /* new event-type colors */
+  --phase-lida:    #B8602A;
+  --lida-soft:     #F5E2D4;
+  --phase-hapala:  #8A6A9A;
+  --hapala-soft:   #EDE6F4;
+  --phase-herayon: #3A8E78;
+  --herayon-soft:  #D4EDE8;
+  --phase-rofea:   #3A6E9A;
+  --rofea-soft:    #D4E4F0;
+  --phase-sheilat: #9A7820;
+  --sheilat-soft:  #F4ECC8;
+
   --r-card: 20px;
   --r-cell: 14px;
   --r-pill: 999px;
@@ -295,6 +307,11 @@ body {
 .dtag.dtag-tvila   { background:var(--tvila-soft);    color:var(--phase-tvila);    border:1.5px solid var(--phase-tvila);   padding:1.5px 8.5px; }
 .dtag.dtag-prisha  { background:var(--phase-prisha);  color:#fff; }
 .dtag.dtag-fertile { background:var(--phase-fertile); color:#fff; }
+.dtag.dtag-lida    { background:var(--lida-soft);     color:var(--phase-lida); }
+.dtag.dtag-hapala  { background:var(--hapala-soft);   color:var(--phase-hapala); }
+.dtag.dtag-herayon { background:var(--herayon-soft);  color:var(--phase-herayon); }
+.dtag.dtag-rofea   { background:var(--rofea-soft);    color:var(--phase-rofea); }
+.dtag.dtag-sheilat { background:var(--sheilat-soft);  color:var(--phase-sheilat); }
 @keyframes tagPop { from{opacity:0;transform:scale(0.7)} to{opacity:1;transform:scale(1)} }
 .dtag:nth-child(2){animation-delay:60ms}
 .dtag:nth-child(3){animation-delay:120ms}
