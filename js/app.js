@@ -110,8 +110,10 @@ function App() {
         if(ei>=0){entry.id=prev[ei].id;const copy=[...prev];copy[ei]=entry;next=copy;}
         else next=[entry,...prev];
       } else {
-        // non-veset events: always add new (no dedup)
-        next=[entry,...prev];
+        // non-veset: update in-place if same id (e.g. adding hpst to existing kesem), else add new
+        const existingIdx=c.id?prev.findIndex(x=>x.id===c.id):-1;
+        if(existingIdx>=0){const copy=[...prev];copy[existingIdx]=entry;next=copy;}
+        else next=[entry,...prev];
       }
       next=next.slice(0,120);
       localStorage.setItem(SKEY,JSON.stringify(next));

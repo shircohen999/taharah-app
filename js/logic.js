@@ -92,7 +92,7 @@ function nextHebSameDay(from) {
 }
 
 // Labels stored as structured objects so calendar.js can translate them
-// at render time via renderLabel(). Format: {key, n?}
+// at render time via renderLabel(). Format: {key, n?, answer?, subtype?}
 function buildMap(cycles) {
   const map={};
   const mark=(date,type)=>{
@@ -103,64 +103,92 @@ function buildMap(cycles) {
   const label=(date,obj)=>{
     const k=iso(date);
     if(!map[k]) map[k]={types:new Set(),labels:[]};
-    const dup=map[k].labels.some(l=>l.key===obj.key&&l.n===obj.n&&l.answer===obj.answer);
+    const dup=map[k].labels.some(l=>l.key===obj.key&&l.n===obj.n&&l.answer===obj.answer&&l.subtype===obj.subtype);
     if(!dup) map[k].labels.push(obj);
   };
-  // Only veset entries drive the phase logic
-  const vesetCycles=cycles.filter(c=>!c.type||c.type==='veset');
-  const sorted=[...vesetCycles].sort((a,b)=>new Date(a.date)-new Date(b.date));
   const today=new Date(); today.setHours(0,0,0,0);
-  sorted.forEach((c,idx)=>{
-    const start=new Date(c.date);
-    mark(start,'veset'); label(start,{key:'veset'});
 
-    // ימי ראייה — open-ended until hpst is entered, next cycle, or today.
-    const nextCycleStart=idx<sorted.length-1?new Date(sorted[idx+1].date):null;
-    let damEnd;
-    if(c.hpst) damEnd=ad(new Date(c.hpst),-1);
-    else if(nextCycleStart) damEnd=ad(nextCycleStart,-1);
-    else damEnd=today;
-    const damCap=ad(start,60);
-    if(damEnd>damCap) damEnd=damCap;
+  // Veset cycles (drive prisha + fertile window logic)
+  const vesetCycles=cycles.filter(c=>!c.type||c.type==='veset');
+  const sortedVesets=[...vesetCycles].sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+  // Non-veset events that trigger a dam cycle
+  const NON_VESET_TRIGGERS=['kesem','bedika_lo_nekia','lida','hapala'];
+  const nonVesetDamCycles=cycles.filter(c=>
+    NON_VESET_TRIGGERS.includes(c.type)||
+    (c.type==='bedika_rofea'&&c.answer==='tamea')||
+    (c.type==='sheilat_rav'&&c.answer==='tamea')
+  );
+
+  // All dam-trigger dates sorted (used to cap dam extension at next trigger)
+  const allDamTriggerDates=[
+    ...sortedVesets.map(c=>c.date),
+    ...nonVesetDamCycles.map(c=>c.date),
+  ].filter((v,i,a)=>a.indexOf(v)===i).sort();
+
+  // Returns end-of-dam date for a trigger starting at startDate with optional ownHpst
+  const getDamEnd=(startDate,ownHpst)=>{
+    if(ownHpst) return ad(new Date(ownHpst),-1);
+    const startIso=iso(startDate);
+    const nextTrigger=allDamTriggerDates.find(d=>d>startIso);
+    const rawEnd=nextTrigger?ad(new Date(nextTrigger),-1):today;
+    const cap=ad(startDate,60);
+    return rawEnd<cap?rawEnd:cap;
+  };
+
+  // Marks dam + optional hpst/sefirah/tvila for any dam trigger
+  const applyDamCycle=(startDate,ownHpst,skipDamOnVeset)=>{
+    const damEnd=getDamEnd(startDate,ownHpst);
     let dayNum=2;
-    for(let d=ad(start,1); d<=damEnd && dayNum<=61; d=ad(d,1)){
-      mark(d,'dam');
-      label(d,{key:'dam',n:dayNum});
-      dayNum++;
+    for(let d=ad(startDate,1);d<=damEnd&&dayNum<=61;d=ad(d,1)){
+      const k=iso(d);
+      if(skipDamOnVeset&&map[k]?.types.has('veset')) {dayNum++;continue;}
+      mark(d,'dam'); label(d,{key:'dam',n:dayNum}); dayNum++;
     }
-
-    if(c.hpst){
-      const hpstDate=new Date(c.hpst);
+    if(ownHpst){
+      const hpstDate=new Date(ownHpst);
       const sef=ad(hpstDate,1);
       const tvila=ad(hpstDate,7);
       mark(hpstDate,'hpst'); label(hpstDate,{key:'hpst'});
-      for(let i=0;i<7;i++){
-        mark(ad(sef,i),'sefirah');
-        label(ad(sef,i),{key:'sefirah',n:i+1});
-      }
+      for(let i=0;i<7;i++){mark(ad(sef,i),'sefirah');label(ad(sef,i),{key:'sefirah',n:i+1});}
       mark(tvila,'tvila'); label(tvila,{key:'tvila'});
     }
+  };
+
+  // Process veset cycles: mark start, dam cycle, prisha, fertile window
+  sortedVesets.forEach((c,idx)=>{
+    const start=new Date(c.date);
+    mark(start,'veset'); label(start,{key:'veset'});
+    applyDamCycle(start,c.hpst,false);
 
     if(idx>0){
-      const gap=diff(c.date,sorted[idx-1].date);
+      const gap=diff(c.date,sortedVesets[idx-1].date);
       mark(ad(start,gap),'prisha'); label(ad(start,gap),{key:'haflagah',n:gap});
     }
     mark(ad(start,30),'prisha'); label(ad(start,30),{key:'avg_onah'});
-    const monthOnah=nextHebSameDay(start);
-    mark(monthOnah,'prisha'); label(monthOnah,{key:'month_onah'});
+    mark(nextHebSameDay(start),'prisha'); label(nextHebSameDay(start),{key:'month_onah'});
+
     let nextV;
-    if(idx<sorted.length-1) nextV=new Date(sorted[idx+1].date);
-    else if(sorted.length>=2) nextV=ad(new Date(sorted[sorted.length-1].date),diff(sorted[sorted.length-1].date,sorted[sorted.length-2].date));
+    if(idx<sortedVesets.length-1) nextV=new Date(sortedVesets[idx+1].date);
+    else if(sortedVesets.length>=2) nextV=ad(new Date(sortedVesets[sortedVesets.length-1].date),diff(sortedVesets[sortedVesets.length-1].date,sortedVesets[sortedVesets.length-2].date));
     else nextV=ad(start,30);
     const ov=ad(nextV,-14);
     for(let i=-4;i<=1;i++){const fd=ad(ov,i);if(!map[iso(fd)]?.types.has('veset')){mark(fd,'fertile');if(i!==0)label(fd,{key:'fertile'});}}
     label(ov,{key:'ovulation'});
   });
-  // Non-veset events: mark as simple labels on their date
+
+  // Mark all non-veset events on their own date first
   cycles.filter(c=>c.type&&c.type!=='veset').forEach(ev=>{
     const date=new Date(ev.date);
     mark(date,ev.type);
-    label(date,ev.type==='sheilat_rav'?{key:'sheilat_rav',answer:ev.answer||null}:{key:ev.type});
+    if(ev.type==='sheilat_rav') label(date,{key:'sheilat_rav',answer:ev.answer||null});
+    else if(ev.type==='lida') label(date,{key:'lida',subtype:ev.subtype||null});
+    else label(date,{key:ev.type});
+  });
+
+  // DAM TRIGGER: non-veset triggers extend dam → hpst → sefirah → tvila
+  [...nonVesetDamCycles].sort((a,b)=>new Date(a.date)-new Date(b.date)).forEach(ev=>{
+    applyDamCycle(new Date(ev.date),ev.hpst,true);
   });
 
   // Herayon: extend coloring + label until next lida (or today, capped 365 days)
@@ -175,27 +203,7 @@ function buildMap(cycles) {
     for(let d=ad(herStart,1);d<=end;d=ad(d,1)){
       const k=iso(d);
       if(PHASE_TYPES.some(p=>map[k]?.types.has(p))) continue;
-      mark(d,'herayon');
-      label(d,{key:'herayon'});
-    }
-  });
-
-  // Kesem: extend dam-like coloring until next veset's hpst/start (or today, capped 60 days)
-  const kesCycles=cycles.filter(c=>c.type==='kesem').sort((a,b)=>new Date(a.date)-new Date(b.date));
-  kesCycles.forEach(kes=>{
-    const kesStart=new Date(kes.date);
-    const nextVeset=sorted.find(v=>new Date(v.date)>kesStart);
-    let rawEnd;
-    if(nextVeset){
-      rawEnd=nextVeset.hpst?ad(new Date(nextVeset.hpst),-1):ad(new Date(nextVeset.date),-1);
-    } else {
-      rawEnd=today;
-    }
-    const end=rawEnd<ad(kesStart,60)?rawEnd:ad(kesStart,60);
-    for(let d=ad(kesStart,1);d<=end;d=ad(d,1)){
-      const k=iso(d);
-      if(map[k]?.types.has('veset')||map[k]?.types.has('dam')||map[k]?.types.has('hpst')) continue;
-      mark(d,'kesem');
+      mark(d,'herayon'); label(d,{key:'herayon'});
     }
   });
 

@@ -49,7 +49,10 @@ const renderLabel = (lbl) => {
     case 'month_onah': return t('phaseMonthOnah');
     case 'kesem':          return t('phaseKesem');
     case 'bedika_lo_nekia':return t('phaseBedikaLoNekia');
-    case 'lida':           return t('phaseLida');
+    case 'lida':
+      if (lbl.subtype === 'ben') return t('phaseLidaBen');
+      if (lbl.subtype === 'bat') return t('phaseLidaBat');
+      return t('phaseLida');
     case 'hapala':         return t('phaseHapala');
     case 'herayon':        return t('phaseHerayon');
     case 'bedika_rofea':   return t('phaseBedikaRofea');
@@ -100,6 +103,8 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
   const [addTime, setAddTime]           = React.useState('');
   const [addHpst, setAddHpst]           = React.useState('');
   const [sheilatAnswer, setSheilatAnswer] = React.useState('');
+  const [lidaSubtype, setLidaSubtype]   = React.useState('');
+  const [bedikaRofeaAnswer, setBedikaRofeaAnswer] = React.useState('');
 
   const map   = React.useMemo(()=>buildMap(cycles),[cycles]);
   const today = React.useMemo(()=>{const d=new Date();d.setHours(0,0,0,0);return d;},[]);
@@ -123,11 +128,10 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
   const getRecommendedOptions = (date) => {
     const info  = date ? map[iso(date)] : null;
     const types = info?.types;
-    if (types?.has('veset') || types?.has('dam')) return ['hpst', 'kesem'];
-    if (types?.has('sefirah'))  return ['bedika_lo_nekia', 'kesem'];
-    if (types?.has('hpst'))     return ['kesem'];
-    if (types?.has('tvila'))    return ['veset', 'kesem'];
-    return ['kesem', 'veset', 'herayon'];
+    if (types?.has('veset') || types?.has('dam')) return ['hpst'];
+    if (types?.has('sefirah')) return ['kesem', 'bedika_lo_nekia'];
+    if (types?.has('herayon')) return ['hapala', 'kesem'];
+    return ['veset', 'kesem', 'herayon'];
   };
 
   const recOptions = selected ? getRecommendedOptions(selected) : [];
@@ -145,11 +149,18 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
     return type;
   };
 
-  // Find most recent veset cycle starting on or before `date`
+  // Find most recent dam-triggering event starting on or before `date`
+  const DAM_TRIGGER_TYPES = new Set(['veset','kesem','bedika_lo_nekia','lida','hapala']);
   const getParentCycle = (date) => {
     if (!date || !cycles.length) return null;
     return [...cycles]
-      .filter(c => !c.type || c.type === 'veset')
+      .filter(c => {
+        const tp = c.type || 'veset';
+        if (DAM_TRIGGER_TYPES.has(tp)) return true;
+        if (tp === 'bedika_rofea' && c.answer === 'tamea') return true;
+        if (tp === 'sheilat_rav' && c.answer === 'tamea') return true;
+        return false;
+      })
       .sort((a,b) => new Date(b.date) - new Date(a.date))
       .find(c => new Date(c.date) <= date) || null;
   };
@@ -174,6 +185,7 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
     setRecSelectedType(null);
     setCustomSelectedType(null);
     setAddDate('');setAddTime('');setAddHpst('');setSheilatAnswer('');
+    setLidaSubtype('');setBedikaRofeaAnswer('');
   };
 
   const openSheet = () => { setShowSheet(true); setFormMode(null); };
@@ -201,6 +213,12 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
     } else if (type === 'veset') {
       if (!addDate || !addTime) { alert(t('alertNoDateOnah')); return; }
       onAddCycle({date: addDate, time: addTime, hpst: addHpst || null});
+    } else if (type === 'lida') {
+      if (!addDate) { alert(t('alertNoDate')); return; }
+      onAddCycle({type: 'lida', date: addDate, subtype: lidaSubtype || null});
+    } else if (type === 'bedika_rofea') {
+      if (!addDate) { alert(t('alertNoDate')); return; }
+      onAddCycle({type: 'bedika_rofea', date: addDate, answer: bedikaRofeaAnswer || null});
     } else if (type === 'sheilat_rav') {
       onAddCycle({type: 'sheilat_rav', date: addDate, answer: sheilatAnswer || null});
     } else {
@@ -220,6 +238,12 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
     } else if (type === 'veset') {
       if (!addDate || !addTime) { alert(t('alertNoDateOnah')); return; }
       onAddCycle({date: addDate, time: addTime, hpst: addHpst || null});
+    } else if (type === 'lida') {
+      if (!addDate) { alert(t('alertNoDate')); return; }
+      onAddCycle({type: 'lida', date: addDate, subtype: lidaSubtype || null});
+    } else if (type === 'bedika_rofea') {
+      if (!addDate) { alert(t('alertNoDate')); return; }
+      onAddCycle({type: 'bedika_rofea', date: addDate, answer: bedikaRofeaAnswer || null});
     } else if (type === 'sheilat_rav') {
       onAddCycle({type: 'sheilat_rav', date: addDate, answer: sheilatAnswer || null});
     } else {
@@ -460,11 +484,28 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
                     </div>
                   )}
 
-                  {(recSelectedType==='kesem'||recSelectedType==='bedika_lo_nekia'||recSelectedType==='herayon'||recSelectedType==='bedika_rofea') && (
+                  {['kesem','bedika_lo_nekia','herayon','hapala'].includes(recSelectedType) && (
                     <div className="field" style={fieldStyle}>
                       <label>{t('calDateLabel')}</label>
                       <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
                     </div>
+                  )}
+
+                  {recSelectedType === 'lida' && (
+                    <>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calDateLabel')}</label>
+                        <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
+                      </div>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calLidaSubtypeLabel')}</label>
+                        <select value={lidaSubtype} onChange={e=>setLidaSubtype(e.target.value)}>
+                          <option value="">{t('calLidaUnknown')}</option>
+                          <option value="ben">{t('calLidaBen')}</option>
+                          <option value="bat">{t('calLidaBat')}</option>
+                        </select>
+                      </div>
+                    </>
                   )}
 
                   {recSelectedType === 'veset' && (
@@ -479,6 +520,23 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
                           <option value="">{t('calOnahPlaceholder')}</option>
                           <option value="day">{t('calOnahDay')}</option>
                           <option value="night">{t('calOnahNight')}</option>
+                        </select>
+                      </div>
+                    </>
+                  )}
+
+                  {recSelectedType === 'bedika_rofea' && (
+                    <>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calDateLabel')}</label>
+                        <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
+                      </div>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calBedikaResultLabel')}</label>
+                        <select value={bedikaRofeaAnswer} onChange={e=>setBedikaRofeaAnswer(e.target.value)}>
+                          <option value="">{t('calSheilatNoAnswer')}</option>
+                          <option value="tahora">{t('calSheilatTahora')}</option>
+                          <option value="tamea">{t('calSheilatTamea')}</option>
                         </select>
                       </div>
                     </>
@@ -559,11 +617,28 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
                     </div>
                   )}
 
-                  {(customSelectedType==='kesem'||customSelectedType==='bedika_lo_nekia'||customSelectedType==='lida'||customSelectedType==='hapala'||customSelectedType==='herayon'||customSelectedType==='bedika_rofea') && (
+                  {['kesem','bedika_lo_nekia','herayon','hapala'].includes(customSelectedType) && (
                     <div className="field" style={fieldStyle}>
                       <label>{t('calDateLabel')}</label>
                       <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
                     </div>
+                  )}
+
+                  {customSelectedType === 'lida' && (
+                    <>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calDateLabel')}</label>
+                        <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
+                      </div>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calLidaSubtypeLabel')}</label>
+                        <select value={lidaSubtype} onChange={e=>setLidaSubtype(e.target.value)}>
+                          <option value="">{t('calLidaUnknown')}</option>
+                          <option value="ben">{t('calLidaBen')}</option>
+                          <option value="bat">{t('calLidaBat')}</option>
+                        </select>
+                      </div>
+                    </>
                   )}
 
                   {customSelectedType === 'veset' && (
@@ -583,6 +658,23 @@ function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
                       <div className="field" style={fieldStyle}>
                         <label>{t('calHpstLabel')}</label>
                         <input type="date" dir="ltr" value={addHpst} onChange={e=>setAddHpst(e.target.value)}/>
+                      </div>
+                    </>
+                  )}
+
+                  {customSelectedType === 'bedika_rofea' && (
+                    <>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calDateLabel')}</label>
+                        <input type="date" dir="ltr" value={addDate} onChange={e=>setAddDate(e.target.value)}/>
+                      </div>
+                      <div className="field" style={fieldStyle}>
+                        <label>{t('calBedikaResultLabel')}</label>
+                        <select value={bedikaRofeaAnswer} onChange={e=>setBedikaRofeaAnswer(e.target.value)}>
+                          <option value="">{t('calSheilatNoAnswer')}</option>
+                          <option value="tahora">{t('calSheilatTahora')}</option>
+                          <option value="tamea">{t('calSheilatTamea')}</option>
+                        </select>
                       </div>
                     </>
                   )}
