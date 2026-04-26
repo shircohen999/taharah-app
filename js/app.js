@@ -197,7 +197,7 @@ function App() {
 
       <div key={tab} className="page active" style={tab==='calendar'?{padding:0}:{}}>
         {tab==='calc'     && <CalcScreen cycles={cycles.filter(c=>!c.type||c.type==='veset')} onSave={saveCycle}/>}
-        {tab==='calendar' && <Calendar cycles={cycles} onAddCycle={saveCycle} lang={lang}/>}
+        {tab==='calendar' && <Calendar cycles={cycles} onAddCycle={saveCycle} onDeleteCycle={deleteCycle} lang={lang}/>}
         {tab==='predict'  && <PredictScreen cycles={cycles.filter(c=>!c.type||c.type==='veset')}/>}
         {tab==='history'  && <HistoryScreen cycles={cycles.filter(c=>!c.type||c.type==='veset')} onClear={clearAll} onDelete={deleteCycle}/>}
         {tab==='glossary' && <GlossaryScreen lang={lang}/>}

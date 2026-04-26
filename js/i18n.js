@@ -76,6 +76,9 @@ const _T = {
     calSaveBtn: 'שמרי',
     calCancelBtn: 'ביטול',
     calNoParentCycle: 'לא נמצא ווסת מתאים לעדכון',
+    calDeleteEventBtn: 'מחקי אירוע',
+    calDeleteEventTitle: 'בחרי אירוע למחיקה',
+    calDeleteEmpty: 'אין אירועים הניתנים למחיקה ביום זה',
     // Legend
     legendVeset: 'תחילת ווסת', legendDam: 'ימי ראייה', legendHpst: 'הפסק טהרה',
     legendSefirah: '7 נקיים', legendTvila: 'ליל הטבילה',
@@ -285,6 +288,9 @@ const _T = {
     calSaveBtn: 'Save',
     calCancelBtn: 'Cancel',
     calNoParentCycle: 'No matching cycle found to update',
+    calDeleteEventBtn: 'Delete Event',
+    calDeleteEventTitle: 'Select event to delete',
+    calDeleteEmpty: 'No deletable events on this day',
     // Legend
     legendVeset: 'Period Start', legendDam: 'Period Days', legendHpst: 'Hefsek Tahara',
     legendSefirah: '7 Clean Days', legendTvila: 'Mikveh Night',

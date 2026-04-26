@@ -66,13 +66,14 @@ const EXTRA_EVENT_TYPES = [
   'kesem','bedika_lo_nekia','lida','hapala','herayon','bedika_rofea','sheilat_rav',
 ];
 
-function Calendar({cycles, onAddCycle, lang}) {
+function Calendar({cycles, onAddCycle, onDeleteCycle, lang}) {
   const [viewDate, setViewDate] = React.useState(()=>new Date());
   const [selected, setSelected]   = React.useState(null);
   const [key, setKey]             = React.useState(0);
   const [showSheet, setShowSheet] = React.useState(false);
   // formMode: null | 'recommended' | 'custom'
   const [formMode, setFormMode]   = React.useState(null);
+  const [deleteMode, setDeleteMode] = React.useState(false);
   // recommended sub-type (sefirah phase)
   const [recSubType, setRecSubType] = React.useState('kesem');
   // custom form
@@ -128,8 +129,23 @@ function Calendar({cycles, onAddCycle, lang}) {
       .find(c => new Date(c.date) <= date) || null;
   };
 
+  // Events that originate on the selected day (deletable)
+  const originatingEvents = React.useMemo(()=>
+    selected ? cycles.filter(c => c.date === iso(selected)) : [],
+  [cycles, selected]);
+
+  // Human-readable label for a raw cycle/event object
+  const getCycleLabel = (c) => {
+    if (!c.type || c.type === 'veset') {
+      const timeStr = c.time === 'night' ? ` · ${t('calOnahNight')}` : c.time === 'day' ? ` · ${t('calOnahDay')}` : '';
+      return t('phaseVeset') + timeStr;
+    }
+    return renderLabel({key: c.type, answer: c.answer || null});
+  };
+
   const resetForm = () => {
     setFormMode(null);
+    setDeleteMode(false);
     setRecSubType('kesem');
     setCustomType('veset');
     setAddDate('');setAddTime('');setAddHpst('');setSheilatAnswer('');
@@ -256,7 +272,8 @@ function Calendar({cycles, onAddCycle, lang}) {
               onClick={()=>{
                 if(c.other){setViewDate(new Date(c.date.getFullYear(),c.date.getMonth(),1));setKey(prev=>prev+1);}
                 setSelected(c.date);
-                resetForm();
+                setFormMode(null);
+                setDeleteMode(false);
                 setShowSheet(false);
               }}
             >
@@ -303,21 +320,77 @@ function Calendar({cycles, onAddCycle, lang}) {
             </div>
           ) : <div className="d-empty">{t('calNoEvents')}</div>}
 
-          {/* Add-event button */}
-          {!formMode && (
-            <button
-              onClick={openSheet}
-              style={{
-                display:'inline-flex',alignItems:'center',gap:6,marginTop:12,
-                padding:'8px 18px',background:'var(--primary)',color:'#fff',
-                border:'none',borderRadius:999,fontSize:13,cursor:'pointer',
-                fontWeight:600,fontFamily:'inherit',
-                boxShadow:'0 2px 8px rgba(0,0,0,0.12)',
-              }}
-            >
-              <span style={{fontSize:18,lineHeight:1,marginTop:-1}}>+</span>
-              {t('calAddEventBtn')}
-            </button>
+          {/* Add + Delete buttons row */}
+          {!formMode && !deleteMode && (
+            <div style={{display:'flex',gap:8,marginTop:12,flexWrap:'wrap'}}>
+              <button
+                onClick={openSheet}
+                style={{
+                  display:'inline-flex',alignItems:'center',gap:6,
+                  padding:'8px 18px',background:'var(--primary)',color:'#fff',
+                  border:'none',borderRadius:999,fontSize:13,cursor:'pointer',
+                  fontWeight:600,fontFamily:'inherit',
+                  boxShadow:'0 2px 8px rgba(0,0,0,0.12)',
+                }}
+              >
+                <span style={{fontSize:18,lineHeight:1,marginTop:-1}}>+</span>
+                {t('calAddEventBtn')}
+              </button>
+              {originatingEvents.length > 0 && (
+                <button
+                  onClick={()=>setDeleteMode(true)}
+                  style={{
+                    display:'inline-flex',alignItems:'center',gap:5,
+                    padding:'8px 14px',background:'transparent',color:'var(--muted)',
+                    border:'0.5px solid var(--border-mid)',borderRadius:999,fontSize:13,
+                    cursor:'pointer',fontFamily:'inherit',
+                  }}
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                  </svg>
+                  {t('calDeleteEventBtn')}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Delete list */}
+          {deleteMode && (
+            <div style={{marginTop:14,borderTop:'0.5px solid var(--border)',paddingTop:14}}>
+              <div style={{fontSize:11,fontWeight:600,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:10}}>
+                {t('calDeleteEventTitle')}
+              </div>
+              {originatingEvents.length === 0 ? (
+                <div className="d-empty">{t('calDeleteEmpty')}</div>
+              ) : (
+                originatingEvents.map((c,i) => (
+                  <div key={c.id||i} style={{
+                    display:'flex',justifyContent:'space-between',alignItems:'center',
+                    padding:'10px 14px',background:'var(--bg-soft)',borderRadius:10,marginBottom:6,
+                  }}>
+                    <div style={{fontSize:13,color:'var(--text)',fontWeight:500}}>
+                      {getCycleLabel(c)}
+                    </div>
+                    <button
+                      onClick={()=>{
+                        onDeleteCycle(c.id);
+                        if(originatingEvents.length <= 1) setDeleteMode(false);
+                      }}
+                      style={{
+                        background:'transparent',border:'none',cursor:'pointer',
+                        color:'var(--muted)',fontSize:20,padding:'2px 6px',
+                        fontWeight:300,lineHeight:1,flexShrink:0,
+                      }}
+                      aria-label="מחקי"
+                    >×</button>
+                  </div>
+                ))
+              )}
+              <button className="btn-ghost" style={{margin:0,marginTop:6,padding:'10px',fontSize:13}} onClick={()=>setDeleteMode(false)}>
+                {t('calCancelBtn')}
+              </button>
+            </div>
           )}
 
           {/* ── Recommended event form ── */}
