@@ -23,14 +23,14 @@ function CalcScreen({cycles, onSave}) {
     onot.push({name:t('phaseAvgOnah'),sub:t('calcMiddleSub'),d:ad(vDate,30)});
     onot.push({name:t('phaseMonthOnah'),sub:t('calcMonthSub'),d:nextHebSameDay(vDate)});
     setResults({vDate,isNight,hpstDate,sef,tvila,onot,customHpst:!!hpst});
-    onSave({date,time,hpst:hpst||null,tvila:iso(tvila)});
+    onSave({date,time,hpst:hpst||null});
   };
 
   return (
     <div>
       <div className="sec-label">{t('calcTitle')}</div>
       <div className="card">
-        <div className="field"><label>{t('calcDateLabel')}</label><input type="date" value={date} onChange={e=>setDate(e.target.value)}/></div>
+        <div className="field"><label>{t('calcDateLabel')}</label><input type="date" dir="ltr" value={date} onChange={e=>setDate(e.target.value)}/></div>
         <div className="field">
           <label>{t('calOnahLabel')}</label>
           <select value={time} onChange={e=>setTime(e.target.value)}>
@@ -39,11 +39,11 @@ function CalcScreen({cycles, onSave}) {
             <option value="night">{t('calOnahNight')}</option>
           </select>
         </div>
-        <div className="field"><label>{t('calHpstLabel')}</label><input type="date" value={hpst} onChange={e=>setHpst(e.target.value)}/></div>
+        <div className="field"><label>{t('calHpstLabel')}</label><input type="date" dir="ltr" value={hpst} onChange={e=>setHpst(e.target.value)}/></div>
       </div>
       <div className="sec-label">{t('calcPrevTitle')}</div>
       <div className="card">
-        <div className="field"><label>{t('calcPrevLabel')}</label><input type="date" value={prev} onChange={e=>setPrev(e.target.value)}/></div>
+        <div className="field"><label>{t('calcPrevLabel')}</label><input type="date" dir="ltr" value={prev} onChange={e=>setPrev(e.target.value)}/></div>
       </div>
       <button className="btn-primary" onClick={calc}>{t('calcBtn')}</button>
 
@@ -133,8 +133,9 @@ function HistoryScreen({cycles, onClear, onDelete}) {
   const damLens=cycles.map(damLen).filter(x=>x!==null&&x>0);
   const damAvg=damLens.length?Math.round(damLens.reduce((a,b)=>a+b,0)/damLens.length*10)/10:null;
   if(!cycles.length) return (
-    <div style={{textAlign:'center',padding:'60px 20px',color:'var(--muted)',fontSize:14,lineHeight:1.7}}
-      dangerouslySetInnerHTML={{__html:t('histNoCycles').replace('\n','<br/>').replace(t('histNoCyclesStrong'),`<strong>${t('histNoCyclesStrong')}</strong>`)}}/>
+    <div style={{textAlign:'center',padding:'60px 20px',color:'var(--muted)',fontSize:14,lineHeight:1.7}}>
+      {t('histNoCycles').split('\n').map((l,i)=><div key={i}>{l}</div>)}
+    </div>
   );
   return (
     <div>

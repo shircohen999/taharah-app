@@ -2,7 +2,6 @@
 // APP SHELL — state, routing, data persistence, render
 // ═══════════════════════════════════════════════════════
 const SKEY = 'niddah_v4';
-const ONB_KEY = 'tahara_onb_v1'; // 'done' once onboarding has been completed
 
 function initialStage() {
   try { if(JSON.parse(localStorage.getItem('tahara_user_v1')||'null')) return 'app'; } catch {}
@@ -149,7 +148,7 @@ function App() {
     </div>
   );
 
-  const completeOnboarding=()=>{ localStorage.setItem(ONB_KEY,'done'); setStage('auth'); };
+  const completeOnboarding=()=>setStage('auth');
   if(stage==='intro') return <Onboarding onDone={completeOnboarding} lang={lang}/>;
   if(stage==='auth')  return <AuthScreen onLogin={handleLogin} onGuest={handleGuest} setMinhag={setMinhag} lang={lang} changeLang={changeLang}/>;
 

@@ -71,7 +71,6 @@ const _T = {
     predictTip: (cnt,gaps) => `<strong>חישוב ביוץ:</strong> שיטת Ogino-Knaus — שלב לוטיאלי קבוע של כ-14 יום. התחזית מתייחסת ל-${cnt} מחזורים שמורים (${gaps} מרווחים).`,
     // History
     histNoCycles: 'עדיין אין היסטוריה.\nהוסיפי את הווסת הראשון מהמסך חישוב.',
-    histNoCyclesStrong: 'חישוב',
     histCyclesLabel: 'מחזורים', histAvgLabel: 'ממוצע מחזור',
     histDamLabel: 'אורך ראייה', histStddevLabel: 'סטיית מחזור',
     histDamSamplesLabel: 'דגימות ראייה', histSavedTitle: 'מחזורים שמורים',
@@ -236,7 +235,6 @@ const _T = {
     predictTip: (cnt,gaps) => `<strong>Ovulation estimate:</strong> Ogino-Knaus method — fixed luteal phase of ~14 days. Forecast based on ${cnt} saved cycles (${gaps} intervals).`,
     // History
     histNoCycles: 'No history yet.\nAdd your first period from the Calculate screen.',
-    histNoCyclesStrong: 'Calculate',
     histCyclesLabel: 'Cycles', histAvgLabel: 'Avg Cycle',
     histDamLabel: 'Period Length', histStddevLabel: 'Cycle Deviation',
     histDamSamplesLabel: 'Period Samples', histSavedTitle: 'Saved Cycles',

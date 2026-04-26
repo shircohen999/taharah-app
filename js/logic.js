@@ -27,10 +27,6 @@ const minhagLabel = (id) => {
   const m = MINHAGIM.find(m=>m.id===id)||MINHAGIM[0];
   return t(m.labelKey);
 };
-const minhagSub = (id) => {
-  const m = MINHAGIM.find(m=>m.id===id)||MINHAGIM[0];
-  return t(m.subKey);
-};
 
 const GEMATRIA_TABLE = [
   [400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],
@@ -148,7 +144,8 @@ function buildMap(cycles) {
       mark(ad(start,gap),'prisha'); label(ad(start,gap),{key:'haflagah',n:gap});
     }
     mark(ad(start,30),'prisha'); label(ad(start,30),{key:'avg_onah'});
-    mark(nextHebSameDay(start),'prisha'); label(nextHebSameDay(start),{key:'month_onah'});
+    const monthOnah=nextHebSameDay(start);
+    mark(monthOnah,'prisha'); label(monthOnah,{key:'month_onah'});
     let nextV;
     if(idx<sorted.length-1) nextV=new Date(sorted[idx+1].date);
     else if(sorted.length>=2) nextV=ad(new Date(sorted[sorted.length-1].date),diff(sorted[sorted.length-1].date,sorted[sorted.length-2].date));
