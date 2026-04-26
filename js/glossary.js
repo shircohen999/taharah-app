@@ -135,6 +135,67 @@ const GLOSSARY_SECTIONS = [
       },
     ],
   },
+  {
+    labelKey: 'glossaryEvents',
+    terms: [
+      {
+        id: 'kesem',
+        phase: 'veset',
+        title: 'כתם',
+        titleEn: 'Stain (Kesem)',
+        he: 'כתם דם שנמצא על הגוף או הבגד, ללא הרגשה גופנית מקדימה. עשוי לחייב ספירת שבעה נקיים בהתאם לגודלו ומיקומו — יש לשאול רב.',
+        en: 'A blood stain found on the body or garment without a preceding bodily sensation. May require seven clean days depending on size and location — consult a rabbi.',
+      },
+      {
+        id: 'bedika_lo_nekia',
+        phase: 'veset',
+        title: 'בדיקה לא נקיה',
+        titleEn: 'Unclean Bedika',
+        he: 'בדיקה פנימית שנמצאו בה כתמים אדומים או צהובים. מחייבת חזרה על ספירת הנקיים מהיום הבא, לאחר הפסק טהרה מחודש.',
+        en: 'An internal examination that revealed red or yellow staining. Requires restarting the clean-day count from the next day, with a new hefsek tahara if needed.',
+      },
+      {
+        id: 'herayon',
+        phase: 'herayon',
+        title: 'הריון',
+        titleEn: 'Pregnancy',
+        he: 'אישה בהריון שאינה רואה דם — טהורה לבעלה. תיוג ההריון בלוח עוזר לעקוב אחר הפסקת המחזור עד ללידה.',
+        en: 'A pregnant woman who is not bleeding is tehora to her husband. Logging the pregnancy helps track the pause in cycles until childbirth.',
+      },
+      {
+        id: 'lida',
+        phase: 'lida',
+        title: 'לידה',
+        titleEn: 'Childbirth',
+        he: 'לידה מפסיקה את מצב הטהרה ומחייבת טבילה. הדינים מורכבים (תלויים בגדר לידת בן או בת ובמהלך הלידה) — יש לפנות לרב.',
+        en: 'Childbirth interrupts the state of tahara and requires immersion. The laws are complex (depending on the sex of the child and circumstances) — consult a rabbi.',
+      },
+      {
+        id: 'hapala',
+        phase: 'hapala',
+        title: 'הפלה',
+        titleEn: 'Miscarriage',
+        he: 'הפלה עשויה לשאת דין לידה מבחינה הלכתית ולחייב טבילה. הדינים תלויים בשלב ההריון ובמהלך ההפלה — יש לפנות לרב.',
+        en: 'A miscarriage may carry halachic birth status and require immersion. The laws depend on the pregnancy stage and how it occurred — consult a rabbi.',
+      },
+      {
+        id: 'bedika_rofea',
+        phase: 'rofea',
+        title: 'בדיקת רופא/ה',
+        titleEn: 'Medical Exam',
+        he: 'בדיקה גינקולוגית עשויה לגרום לדימום ולחייב שאלת רב בנוגע למצב הטהרה. מומלץ להתייעץ לפני הבדיקה ואחריה.',
+        en: 'A gynecological exam may cause bleeding and require a rabbinic ruling on tahara status. Consulting a rabbi before and after the exam is recommended.',
+      },
+      {
+        id: 'sheilat_rav',
+        phase: 'sheilat',
+        title: 'שאלת רב',
+        titleEn: 'Rabbinic Question',
+        he: 'תיוג שאלה הלכתית שנשאלה לרב — לרוב בנוגע לכתם, בדיקה לא נקיה, או ספק בדם. ניתן לתעד את התשובה (טהורה / טמאה) לצורך מעקב.',
+        en: 'A logged halachic question posed to a rabbi — typically about a stain, an unclear bedika, or a questionable discharge. The ruling (pure/impure) can be recorded for tracking.',
+      },
+    ],
+  },
 ];
 
 function GlossaryScreen({lang}) {

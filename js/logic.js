@@ -162,6 +162,43 @@ function buildMap(cycles) {
     mark(date,ev.type);
     label(date,ev.type==='sheilat_rav'?{key:'sheilat_rav',answer:ev.answer||null}:{key:ev.type});
   });
+
+  // Herayon: extend coloring + label until next lida (or today, capped 365 days)
+  const herCycles=cycles.filter(c=>c.type==='herayon').sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const lidaCycles=cycles.filter(c=>c.type==='lida').sort((a,b)=>new Date(a.date)-new Date(b.date));
+  herCycles.forEach(her=>{
+    const herStart=new Date(her.date);
+    const nextLida=lidaCycles.find(l=>new Date(l.date)>herStart);
+    const rawEnd=nextLida?ad(new Date(nextLida.date),-1):today;
+    const end=rawEnd<ad(herStart,365)?rawEnd:ad(herStart,365);
+    const PHASE_TYPES=['veset','dam','hpst','sefirah','tvila'];
+    for(let d=ad(herStart,1);d<=end;d=ad(d,1)){
+      const k=iso(d);
+      if(PHASE_TYPES.some(p=>map[k]?.types.has(p))) continue;
+      mark(d,'herayon');
+      label(d,{key:'herayon'});
+    }
+  });
+
+  // Kesem: extend dam-like coloring until next veset's hpst/start (or today, capped 60 days)
+  const kesCycles=cycles.filter(c=>c.type==='kesem').sort((a,b)=>new Date(a.date)-new Date(b.date));
+  kesCycles.forEach(kes=>{
+    const kesStart=new Date(kes.date);
+    const nextVeset=sorted.find(v=>new Date(v.date)>kesStart);
+    let rawEnd;
+    if(nextVeset){
+      rawEnd=nextVeset.hpst?ad(new Date(nextVeset.hpst),-1):ad(new Date(nextVeset.date),-1);
+    } else {
+      rawEnd=today;
+    }
+    const end=rawEnd<ad(kesStart,60)?rawEnd:ad(kesStart,60);
+    for(let d=ad(kesStart,1);d<=end;d=ad(d,1)){
+      const k=iso(d);
+      if(map[k]?.types.has('veset')||map[k]?.types.has('dam')||map[k]?.types.has('hpst')) continue;
+      mark(d,'kesem');
+    }
+  });
+
   return map;
 }
 

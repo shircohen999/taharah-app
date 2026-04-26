@@ -15,6 +15,7 @@ const _T = {
     tabHistory: 'היסטוריה', tabSettings: 'הגדרות', tabGlossary: 'מילון',
     glossaryCycle: 'מחזור הטהרה', glossaryPrisha: 'עונות פרישה',
     glossaryFertility: 'פוריות', glossaryGeneral: 'כללי',
+    glossaryEvents: 'אירועים נוספים',
     // Phase labels
     phaseVeset: 'תחילת ווסת',
     phaseDam: n => `ימי ראייה — יום ${n}`,
@@ -229,6 +230,7 @@ const _T = {
     tabHistory: 'History', tabSettings: 'Settings', tabGlossary: 'Glossary',
     glossaryCycle: 'Tahara Cycle', glossaryPrisha: 'Separation Periods',
     glossaryFertility: 'Fertility', glossaryGeneral: 'General',
+    glossaryEvents: 'Life & Health Events',
     // Phase labels
     phaseVeset: 'Period Start',
     phaseDam: n => `Period — Day ${n}`,
