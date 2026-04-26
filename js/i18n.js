@@ -193,7 +193,7 @@ const _T = {
     // Onboarding
     onbTitle1: 'ברוכה הבאה', onbSub1: 'לוח הטהרה האישי שלך — פרטי, שקט, מדויק.',
     onbTitle2: 'הלוח מבין הכל',
-    onbSub2: 'הפסק טהרה, שבעה נקיים, ליל הטבילה ושלוש עונות הפרישה — מחושבים אוטומטית.',
+    onbSub2: 'הפסק טהרה, שבעה נקיים, ליל הטבילה ושלוש עונות הפרישה — מחושבים אוטומטית. בנוסף: חלון פוריות, ביוץ משוער, תחזית הווסת הבא, וסיום הווסת המשוער. אפשר גם לתעד כתם, הריון, לידה, הפלה ועוד — והלוח יתאים את עצמו.',
     onbTitle3: 'יום ולילה — לפי ההלכה',
     onbSub3: 'הלוח זוכר אם הווסת נראתה ביום או בלילה, ומתאים את עונות הפרישה בלי להסתבך.',
     onbNext: 'המשיכי', onbStart: 'בואי נתחיל', onbSkip: 'דלגי',
@@ -421,7 +421,7 @@ const _T = {
     // Onboarding
     onbTitle1: 'Welcome', onbSub1: 'Your personal tahara calendar — private, calm, precise.',
     onbTitle2: 'Everything calculated',
-    onbSub2: 'Hefsek tahara, seven clean days, mikveh night, and three onot — all calculated automatically.',
+    onbSub2: 'Hefsek tahara, seven clean days, mikveh night, and three onot — all calculated automatically. Also: fertile window, ovulation estimate, next period forecast, and estimated period end. You can also log stains, pregnancy, childbirth, miscarriage, and more — the calendar adapts automatically.',
     onbTitle3: 'Day or night — by halacha',
     onbSub3: 'The calendar remembers whether the period started by day or night, and adjusts the onot automatically.',
     onbNext: 'Next', onbStart: "Let's begin", onbSkip: 'Skip',
